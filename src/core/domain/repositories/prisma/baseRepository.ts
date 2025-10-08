@@ -1,6 +1,7 @@
 import { BaseModel } from "src/infra/db/prismaService";
+import { base_repository_interface } from "../baseRepository";
 
-export class base_repository implements base_repository{
+export class base_repository implements base_repository_interface{
 
     public model:BaseModel<any>; 
 

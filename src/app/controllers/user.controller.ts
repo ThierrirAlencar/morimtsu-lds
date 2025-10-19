@@ -4,14 +4,16 @@ import { log } from "console";
 import { Response } from "express";
 import { UserService } from "src/core/services/user.service";
 import { AuthRequest } from "src/infra/interfaces/AuthRequest";
-import { entityAlreadyExistsError, entityDoesNotExists, triedToUpdateForbidenValue } from "src/infra/utils/errors";
+import { entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, triedToUpdateForbidenValue } from "src/infra/utils/errors";
+import { AuthService } from "src/infra/validators/auth.service";
 import z, { email } from "zod";
 
 
 @Controller("user")
 export class userController{
     constructor(
-        private userService:UserService
+        private userService:UserService,
+        private authService:AuthService
     ){}
 
     @Post("/")
@@ -123,5 +125,40 @@ export class userController{
         }
     }
  
+    @Post('login')
+    async login(@Req() req: Request, @Res() res:Response) {
+      const { Email, Password } = z
+        .object({
+          Email: z
+            .string({ message: 'Por favor informe um Email' })
+            .email('Por favor informe um Email válido'),
+          Password: z.string({ message: 'Informe a senha' }),
+        })
+        .parse(req.body);
+  
+      try {
+        
+        const response = await this.userService.login(Email, Password);
+        
+        const token = await this.authService.generateToken({id:response.userId});
+
+        res.status(200).send({
+          statusCode: 200,
+          description: 'Login realizado com sucesso',
+          userId: token,
+        });
+
+      } catch (err) {
+        if (err instanceof entityDoesNotExists) {
+            res.status(err.http_status).send(err)
+        }else if (err instanceof InvalidPasswordError) {
+            res.status(err.http_status).send(err)
+        }
+        res.status(500).send( {
+            description: 'Erro desconhecido',
+            error: err.message,
+          },)
+      }
+    }
 
 }

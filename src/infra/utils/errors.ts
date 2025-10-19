@@ -24,6 +24,12 @@ export class entityDoesNotExists extends baseError{
 
 export class InvalidInformationProvided extends baseError{
     code=4;
-    description:"some invalid or mismatched information was provided";
+    description = "some invalid or mismatched information was provided";
     http_status = 401
+}
+
+export class InvalidPasswordError extends baseError{
+    code=5;
+    description= "The provided password is invalid";
+    http_status = 409
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { hash } from 'bcryptjs';
+import { compare, hash } from 'bcryptjs';
 import { Prisma, Role } from 'generated/prisma';
 import { PrismaService } from 'src/infra/database/prisma.service';
-import { entityAlreadyExistsError, entityDoesNotExists, triedToUpdateForbidenValue } from 'src/infra/utils/errors';
+import { entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, triedToUpdateForbidenValue } from 'src/infra/utils/errors';
 import { string } from 'zod';
 import { _includes } from 'zod/v4/core';
 
@@ -120,4 +120,24 @@ export class UserService {
     }
   }
 
+  async login(email:string, password:string){
+        const doesTheUserExists = await this.__prisma.user.findUnique({
+            where:{
+                email
+            }
+        })
+        if(!doesTheUserExists){
+            throw new entityDoesNotExists()
+        }
+        
+        const doesThePasswordMatch = await compare(password,doesTheUserExists.password)
+
+        if(!doesThePasswordMatch){
+            throw new InvalidPasswordError()
+        }
+        
+        return{
+            userId:doesTheUserExists.id
+        }
+    }
 }

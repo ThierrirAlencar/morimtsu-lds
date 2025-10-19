@@ -5,6 +5,7 @@ import { PrismaService } from 'src/infra/database/prisma.service';
 import { AuthService } from 'src/infra/validators/auth.service';
 import { JwtStrategy } from 'src/infra/validators/jwt.strategy';
 import { AuthController } from '../controllers/auth.controller';
+import { mailService } from 'src/core/services/mail.service';
 
 
 @Module({
@@ -15,7 +16,7 @@ import { AuthController } from '../controllers/auth.controller';
               signOptions: { expiresIn: '30d' },
         }),
     ],
-    providers:[AuthService,JwtService,JwtStrategy,PrismaService],
+    providers:[AuthService,JwtService,JwtStrategy,PrismaService,mailService],
     exports:[AuthService],
     controllers: [AuthController]
 })

@@ -1,0 +1,106 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Rank { //In the future this should be JiuJitsu slashes
+  BASIC
+  INTERMEDIATE
+  ADVANCED 
+}
+
+model User {
+  id String @id @default(uuid())
+
+  //true data
+  password String
+  role Role @default(USER)
+
+  //prime keys
+  name String @unique 
+  email String @unique
+  
+  //Foreign keys
+  users UserClasses[]
+}
+
+model Class {
+  id String @id @default(cuid())
+  
+  //True data
+  name String @unique
+  description String?
+
+
+  //Foreign keys
+  classes UserClasses[]
+  students StudentClasses[]
+} 
+
+model student {
+  id String @id @default(uuid())
+  
+  //True data
+  name String
+  nickname String?
+  Contact String 
+  birthDate DateTime
+
+  //Prime keys
+  email String @unique
+  CPF String @unique
+  
+  //Extra
+  createdAt DateTime @default(now())
+
+
+  //Relations
+  classes StudentClasses[]
+  formData StudentForm?
+}
+
+model StudentForm{
+  id String @id @default(cuid())
+
+  //True data
+  Rating Int @default(0)
+  Presence Int @default(0)
+  Comments String?
+  Rank Rank @default(BASIC)
+
+  //Foreign Keys
+  student student @relation(fields: [studentId], references: [id])
+  studentId String @unique
+}
+
+
+//Relational classes (FK Classes to many to many relations)
+
+model UserClasses {
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+  class   Class  @relation(fields: [classId], references: [id])
+  classId String
+
+  @@id([userId, classId])
+}
+
+model StudentClasses {
+  student    student   @relation(fields: [studentId], references: [id])
+  studentId  String
+  class      Class     @relation(fields: [classId], references: [id])
+  classId    String
+
+  @@id([studentId, classId])
+}

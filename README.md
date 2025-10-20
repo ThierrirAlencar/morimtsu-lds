@@ -7,7 +7,11 @@ Morimitsu-LDS is an complete api for morimitsu app.
 ## Project setup
 
 ```bash
-$ npm install
+# Install dependencies
+$ npm install --force
+
+# Setup the database (With Docker)
+$ docker compose up
 ```
 
 ## Compile and run the project
@@ -16,8 +20,7 @@ $ npm install
 # development
 $ npm run start
 
-# Setup the database (With Docker)
-$ docker compose up
+
 
 # watch mode
 $ npm run start:dev

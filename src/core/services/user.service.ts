@@ -23,16 +23,22 @@ export class UserService {
 
   async create(data:Prisma.UserCreateInput): Promise<safe_user> {
     const {email,name,password,role} = data
-    const doesTheUserExists = await this.__prisma.user.findUnique({
+    const doesAnyUserWithTheSameEmailAdressExists = await this.__prisma.user.findUnique({
       where:{
         email:data.email
       }
     })
-  
-    if(doesTheUserExists){
+    if(doesAnyUserWithTheSameEmailAdressExists){
       throw new entityAlreadyExistsError();
     }
-
+    const doesAnyUserWithTheSameNameExists = await this.__prisma.user.findUnique({
+      where:{
+        name:data.name
+      }
+    })
+    if(doesAnyUserWithTheSameNameExists){
+      throw new entityAlreadyExistsError();
+    }
     const _password = await hash(password,9);
     const _user = await this.__prisma.user.create({data:{email,name,password:_password,role:role || "USER"}});
     

@@ -1,17 +1,25 @@
-import { Controller, Patch, Put, Req, Res} from '@nestjs/common';
+import { Body, Controller, Patch, Put, Req, Res} from '@nestjs/common';
 import { Response, Request } from 'express';
 import { mailService } from 'src/core/services/mail.service';
 import { entityDoesNotExists, InvalidInformationProvided } from 'src/infra/utils/errors';
 import { z } from 'zod';
+import { sendCodeDTO } from '../dto/auth';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
     constructor(private mailService:mailService){}
+
+    @ApiResponse({status:200, description:"Email enviado com sucesso", example:{
+            DescriptioN:"Successfully sent email",
+            codeString:"String enviada para o usuário, armazenar em cookie"      
+    }})
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Patch("")
-    async sendCode(@Req() req:Request, @Res() res: Response){
+    async sendCode(@Body() body:sendCodeDTO, @Res() res: Response){
         const {email} = z.object({
             email:z.string().email()
-        }).parse(req.body)
+        }).parse(body)
     
         try{
             const response = await this.mailService.sendRecoveryEmail(email);
@@ -27,6 +35,8 @@ export class AuthController {
         }
     }
 
+
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Put("")
     async updateUserPassword(@Req() req:Request, @Res() res: Response){
         const {newPassword,passport,refString} = z.object({

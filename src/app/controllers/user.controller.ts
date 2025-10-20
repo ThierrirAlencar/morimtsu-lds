@@ -27,6 +27,8 @@ export class userController{
                 _user: any
             }
     })
+    @ApiResponse({status:409, description:"Já existe um usuário com o nome ou email utilizado"})
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Post("/")
     async post(@Body() body:createUserDTO, @Res() res:Response){
         const {email,name,password,role} = z.object({
@@ -55,7 +57,8 @@ export class userController{
                 res.status(err.http_status).send(err)
             }else{
                 res.status(500).send({
-                    description:"erro desconhecido"
+                    description:"erro desconhecido",
+                    err
                 })
             }
         }
@@ -66,6 +69,8 @@ export class userController{
             description:"User updated with success",
             body:any
     }})
+    @ApiResponse({status:404, description:"Usuário não encontrado"})
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
     @Put("/")
     async put(@Req() req: AuthRequest,@Body() body:updateUserDTO, @Res() res: Response){
@@ -97,6 +102,9 @@ export class userController{
         }
     }
 
+    @ApiResponse({status:200, description:"usuário deletado com sucesso"})
+    @ApiResponse({status:404, description:"Usuário não encontrado"})
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
     @Delete("/")
     async remove(@Req() req: AuthRequest, @Res() res: Response){
@@ -118,7 +126,18 @@ export class userController{
             }
         }
     }
-    
+
+    @ApiResponse({status:200, description:"perfil retornado com sucesso", example:{
+            status:200,
+            description:"User profile fetched with success",
+            body:{
+                role:"USER",
+                email:"example@gmail.com",
+                name:"example Name"
+            }
+    }})
+    @ApiResponse({status:404, description:"Usuário não encontrado"})
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
     @Get("/profile")
     async profile(@Req() req: AuthRequest, @Res() res: Response){
@@ -140,7 +159,15 @@ export class userController{
             }
         }
     }
- 
+    
+    @ApiResponse({status:404, description:"Usuário não encontrado"})
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @ApiResponse({status: 200, description:"Login efetuado com sucesso", example:{
+            statusCode: 200,
+          description: 'Login realizado com sucesso',
+          userId: "Token JWT",
+    }})
+    @ApiResponse({status:409,description:"Senha inválida"})
     @Post('login')
     async login(@Req() req: Request, @Body() body:LoginDTO,@Res() res:Response) {
       const { Email, Password } = z

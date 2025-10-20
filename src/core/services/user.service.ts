@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
+import { log } from 'console';
 import { Prisma, Role } from 'generated/prisma';
 import { PrismaService } from 'src/infra/database/prisma.service';
 import { entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, triedToUpdateForbidenValue } from 'src/infra/utils/errors';
@@ -27,14 +28,14 @@ export class UserService {
         email:data.email
       }
     })
-
+  
     if(doesTheUserExists){
       throw new entityAlreadyExistsError();
     }
 
     const _password = await hash(password,9);
-    const _user = await this.__prisma.user.create({data:{email,name,password:_password}});
-
+    const _user = await this.__prisma.user.create({data:{email,name,password:_password,role:role || "USER"}});
+    
     return {
       email:_user.email,
       name:_user.name,

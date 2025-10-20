@@ -1,13 +1,14 @@
-import { Controller, Delete, Get, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { log } from "console";
 import { Response } from "express";
 import { UserService } from "src/core/services/user.service";
 import { AuthRequest } from "src/infra/interfaces/AuthRequest";
 import { entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, triedToUpdateForbidenValue } from "src/infra/utils/errors";
 import { AuthService } from "src/infra/validators/auth.service";
-import z, { email } from "zod";
-
+import z, { any, email } from "zod";
+import { createUserDTO, LoginDTO, updateUserDTO } from "../dto/user";
+import { ApiResponse } from "@nestjs/swagger";
+import {User} from "generated/prisma"
 
 @Controller("user")
 export class userController{
@@ -15,22 +16,32 @@ export class userController{
         private userService:UserService,
         private authService:AuthService
     ){}
-
+    
+    @ApiResponse({ status: 201, description: 'Usuário criado com sucesso',example:
+            {
+                status:201, 
+                description:"User created with success",
+                body:{
+                    name:"name",email:"email",role:"USER"
+                },
+                _user: any
+            }
+    })
     @Post("/")
-    async post(@Req() req:Request, @Res() res:Response){
+    async post(@Body() body:createUserDTO, @Res() res:Response){
         const {email,name,password,role} = z.object({
             name:z.string(),
             email:z.string().email(),
             password:z.string(),
             role:z.enum(["ADMIN","USER"]).optional().default("USER")
-        }).parse(req.body)
+        }).parse(body)
     
         try{
-
+            
             const _user = await this.userService.create({
                 email,name,password,role
             })
-
+            console.log("Q")
             res.send({
                 status:201, 
                 description:"User created with success",
@@ -50,26 +61,31 @@ export class userController{
         }
     }
 
+    @ApiResponse({status:201, description: "Update feito com sucesso", example:{
+            status:200,
+            description:"User updated with success",
+            body:any
+    }})
     @UseGuards(AuthGuard("jwt"))
-    @Put("/:id")
-    async put(@Req() req: AuthRequest, @Res() res: Response){
+    @Put("/")
+    async put(@Req() req: AuthRequest,@Body() body:updateUserDTO, @Res() res: Response){
         const {id} = z.object({
             id:z.string().uuid()
         }).parse(req.user)
-        const body = z.object({
+        const __body = z.object({
             name: z.string().optional(),
             password: z.string().optional(),
             role: z.enum(["ADMIN","USER"]).optional(),
             email: z.string().email().optional()
-        }).parse(req.body)
+        }).parse(body)
 
         try{
-            const _user = await this.userService.update(id, body as any)
+            const _user = await this.userService.update(id, __body as any)
             res.send({
-                status:200,
+                status:201,
                 description:"User updated with success",
                 body:_user
-            })
+            }).status(201)
         }catch(err){
             if(err instanceof entityDoesNotExists){
                 res.status(err.http_status).send(err)
@@ -82,7 +98,7 @@ export class userController{
     }
 
     @UseGuards(AuthGuard("jwt"))
-    @Delete("/:id")
+    @Delete("/")
     async remove(@Req() req: AuthRequest, @Res() res: Response){
         const {id} = z.object({
             id:z.string().uuid()
@@ -104,7 +120,7 @@ export class userController{
     }
     
     @UseGuards(AuthGuard("jwt"))
-    @Get("/:id/profile")
+    @Get("/profile")
     async profile(@Req() req: AuthRequest, @Res() res: Response){
         const {id} = z.object({
             id:z.string().uuid()
@@ -126,7 +142,7 @@ export class userController{
     }
  
     @Post('login')
-    async login(@Req() req: Request, @Res() res:Response) {
+    async login(@Req() req: Request, @Body() body:LoginDTO,@Res() res:Response) {
       const { Email, Password } = z
         .object({
           Email: z
@@ -134,7 +150,7 @@ export class userController{
             .email('Por favor informe um Email válido'),
           Password: z.string({ message: 'Informe a senha' }),
         })
-        .parse(req.body);
+        .parse(body);
   
       try {
         

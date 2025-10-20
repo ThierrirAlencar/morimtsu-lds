@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "name":"admin",
-    "email":"admin@gmail.com",
+    "email":"s@gmail.com",
     "password":"admin123",
     "role":"ADMIN"
 }
@@ -42,9 +42,6 @@ Content-Type: application/json
 
 {
   "name": "Novo Nome de Usuário",
-  "password": "NovaSenhaSegura!123",
-  "role": "USER",
-  "email": "novoemail@exemplo.com"
 }
 
 ### 🗑️ Excluir usuário (DELETE /user/:id)

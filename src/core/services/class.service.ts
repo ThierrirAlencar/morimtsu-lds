@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma, student, User } from "generated/prisma";
 import { PrismaService } from "src/infra/database/prisma.service";
-import { entityDoesNotExists } from "src/infra/utils/errors";
+import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
 
 
 @Injectable()
@@ -17,15 +17,30 @@ export class classService{
         const {name,description} = data
 
         //Automaticaly assigns it to the admin user
-        const id = userId ?? await this.__prisma.user.findFirst({
+        const adminOrCoach = userId ?await this.__prisma.user.findUnique({
+            where:{
+                id:userId
+            }
+        }) : await this.__prisma.user.findFirst({
             where:{
                 role:"ADMIN"
             }
+        })  
+
+        const doesTheClassWithTheSameNameExists = await this.__prisma.class.findUnique({
+            where:{
+                name
+            }
         })
 
+        if(doesTheClassWithTheSameNameExists){
+            throw new entityAlreadyExistsError()
+        }
+
+        
         const doesTheUserExists = await this.__prisma.user.findUnique({
             where:{
-                id:userId
+                id:adminOrCoach.id
             }
         })
 
@@ -34,12 +49,15 @@ export class classService{
         }
 
         const _class = await this.__prisma.class.create({
-            data
+            data:{
+                name, 
+                description
+            }
         })
 
         const _relation = await this.__prisma.userClasses.create({
             data:{
-                classId:_class.id,userId
+                classId:_class.id,userId:adminOrCoach.id
             }
         })
 

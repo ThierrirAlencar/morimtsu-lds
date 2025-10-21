@@ -16,7 +16,22 @@ export class classController{
     }
 
 
-    @ApiResponse({status:201, description:"class criada com sucesso"})
+    @ApiResponse({status:201, description:"class criada com sucesso",example:JSON.parse(`
+            {
+  "description": "Class created and add to any ADMIN user",
+  "_response": {
+    "_class": {
+      "id": "cmh0lx2fe0000ildk9cbn0s0p",
+      "name": "Test Class REST - without coach v1",
+      "description": "Classe criada pelo teste REST"
+    },
+    "_relation": {
+      "userId": "81b6ea92-734d-40d2-8f0d-7003e3546933",
+      "classId": "cmh0lx2fe0000ildk9cbn0s0p"
+    }
+  }
+}
+        `)})
     @ApiResponse({status:404, description:"Usuário administrador ou professor nao foi encontrado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Post("/")
@@ -46,7 +61,17 @@ export class classController{
     }
 
     // PUT /class/:id
-    @ApiResponse({status:200, description:"class atualizada com sucesso"})
+    @ApiResponse({status:201, description:"class atualizada com sucesso",example:JSON.parse(`
+            {
+  "status": 200,
+  "description": "Class updated with success",
+  "_class": {
+    "id": "cmh0lx2fe0000ildk9cbn0s0p",
+    "name": "Test Class REST - without coach v1",
+    "description": "Descrição atualizada"
+  }
+}
+        `)})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Put("/:id")
     async update(@Param("id") id:string, @Body() body:any, @Res() res:Response){
@@ -57,8 +82,8 @@ export class classController{
 
         try{
             const _class = await this._classService.update(parsed as any, id)
-            res.status(200).send({
-                status:200,
+            res.status(201).send({
+                status:201,
                 description:"Class updated with success",
                 _class
             })
@@ -89,7 +114,27 @@ export class classController{
     }
 
     // GET /class/:id
-    @ApiResponse({status:200, description:"class retornada com sucesso"})
+    @ApiResponse({status:200, description:"class retornada com sucesso",example:JSON.parse(`
+        {
+  "status": 200,
+  "description": "Class fetched with success",
+  "class": {
+    "id": "cmh0lx2fe0000ildk9cbn0s0p",
+    "name": "Test Class REST - without coach v1",
+    "description": "Descrição atualizada"
+  },
+  "students": [],
+  "coachs": [
+    {
+      "id": "81b6ea92-734d-40d2-8f0d-7003e3546933",
+      "password": "$2b$09$zu1y9GFGpj2tNtIfWyIahOdCCi6ZsbiUc8WyiSl78sLFm0ufrH3wG",
+      "role": "ADMIN",
+      "name": "ts",
+      "email": "s@gmail.com"
+    }
+  ]
+}
+            `)})
     @ApiResponse({status:404, description:"Classe não encontrada"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Get("/:id")

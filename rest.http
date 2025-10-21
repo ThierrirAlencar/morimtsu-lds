@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "name":"ts",
-    "email":"s@gmail.com",
+    "email":"e@gmail.com",
     "password":"admin123",
     "role":"USER"
 }
@@ -61,7 +61,7 @@ POST http://127.0.0.1:3000/class
 Content-Type: application/json
 
 {
-  "name": "Test Class REST",
+  "name": "Test Class REST - without coach v1",
   "description": "Classe criada pelo teste REST"
 }
 
@@ -76,16 +76,15 @@ Content-Type: application/json
 }
 
 ### Get class by id
-GET http://127.0.0.1:3000/class/{{classId}}
+GET http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
 
 ### Update class
-PUT http://127.0.0.1:3000/class/{{classId}}
+PUT http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
 Content-Type: application/json
 
 {
-  "name": "Test Class REST - Updated",
   "description": "Descrição atualizada"
 }
 
 ### Delete class
-DELETE http://127.0.0.1:3000/class/{{classId}}
+DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p

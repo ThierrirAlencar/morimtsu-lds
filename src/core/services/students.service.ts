@@ -1,0 +1,284 @@
+import { Injectable } from "@nestjs/common";
+import { Prisma, Rank, student, StudentClasses, StudentForm } from "generated/prisma";
+import { retry } from "rxjs";
+import { PrismaService } from "src/infra/database/prisma.service";
+import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
+import { string } from "zod";
+
+interface QueryStudentFilters {
+    query?: string;
+    maxAge?:number;
+    minAge?:number;
+    CPF?:string;
+    email?:string;
+    Presence?:number //from studentForm
+    Rank?:Rank // from studentForm
+    class?:string //the class id from studentClasses relationship 
+}
+
+interface genericStudentReturn{
+    student:{
+            nickname:string,
+            email:string,
+            personal:{
+                name:string,
+                CPF:string,
+                contact:string,
+                birthDate:Date,
+            },
+            createdAt:Date,
+            form:StudentForm
+
+        }
+}
+
+@Injectable()
+export class studentServices{
+    constructor(
+        private _prisma:PrismaService
+    ){
+
+    }
+
+    async create(data:Prisma.studentCreateInput, formData:Prisma.StudentFormUncheckedCreateInput):Promise<genericStudentReturn>{
+        const theresAnyStudentWithTheSameUniqueValues = await this._prisma.student.findFirst({
+            where: {
+                OR: [
+                    { email: data.email },
+                    { CPF: data.CPF },
+                    ]
+            }
+        })
+    
+        if(theresAnyStudentWithTheSameUniqueValues){
+            throw new entityAlreadyExistsError()
+        }
+
+        const _student = await this._prisma.student.create({
+            data
+        })
+
+        const _studenForm = await this._prisma.studentForm.create({
+            data:{
+                Rank:formData.Rank,
+                Comments:formData.Comments,
+                Presence:formData.Presence,
+                studentId:_student.id,
+                Rating:formData.Rating,
+            }
+        })
+
+        return{
+            student:{
+                nickname:_student.nickname,
+                email:_student.email,
+                personal:{
+                    name:_student.name,
+                    CPF:_student.CPF,
+                    contact:_student.Contact,
+                    birthDate:_student.birthDate,
+                },
+                createdAt:_student.createdAt,
+                form:_studenForm
+
+            }
+        }
+    }
+
+    async delete(id:string):Promise<student>{
+        const doesTheStudentExists = await this._prisma.student.findUnique({
+            where:{
+                id
+            }
+        })
+    
+        if(!doesTheStudentExists){
+            throw new entityDoesNotExists()
+        }
+
+        const _deleteForm = await this._prisma.studentForm.delete({
+            where:{
+                studentId:id
+            }
+        })
+
+        const deleteStudent = await this._prisma.student.delete({
+            where:{
+                id
+            }
+        })
+
+        return deleteStudent;
+    
+    }
+
+    async updatePersonal(data:Prisma.studentUpdateInput, id:string):Promise<student>{
+        const {CPF,Contact,birthDate,email,name,nickname} = data
+        
+        const _studentpersonalUpdate = await this._prisma.student.update({
+            where:{
+                id
+            },
+            data
+        })
+
+        return _studentpersonalUpdate
+    }
+
+    async studentFormUpdate(formData:Prisma.StudentFormUpdateInput,id:string):Promise<StudentForm>{
+        const {Comments,Presence,Rank,Rating} = formData;
+        
+
+        const updateFormdata = await this._prisma.studentForm.update({
+            where:{
+                studentId:id
+            },
+            data:formData
+        })
+
+        return updateFormdata
+    }
+
+    async getStudent(id:string){
+        const doesTheStudentExists = await this._prisma.student.findUnique({
+            where:{
+                id
+            }
+        })
+        
+        if(!doesTheStudentExists){
+            throw new entityDoesNotExists()
+        }
+
+        const _studentForm = await this._prisma.studentForm.findUnique({
+            where:{
+                studentId:id
+            }
+        })
+
+        return{
+            student:{
+                nickname:doesTheStudentExists.nickname,
+                email:doesTheStudentExists.email,
+                personal:{
+                    name:doesTheStudentExists.name,
+                    CPF:doesTheStudentExists.CPF,
+                    contact:doesTheStudentExists.Contact,
+                    birthDate:doesTheStudentExists.birthDate,
+                },
+                createdAt:doesTheStudentExists.createdAt,
+                form:_studentForm
+
+            },
+            
+        }
+
+    }
+
+    async joinClass(studentId:string,classId:string):Promise<StudentClasses>{
+        const doesTheStudentExists = await this._prisma.student.findUnique({
+            where:{
+                id:studentId
+            }
+        })
+
+        if(!doesTheStudentExists){
+            throw new entityDoesNotExists()
+        }
+
+        const doesTheClassExists = await this._prisma.class.findUnique({
+            where:{
+                id:classId
+            }
+        })
+
+        if(!doesTheClassExists){
+            throw new entityDoesNotExists()
+        }
+
+        return await this._prisma.studentClasses.create({
+            data:{
+                classId,
+                studentId
+            }
+        })
+
+    }
+
+    async queryStudent(filters?: QueryStudentFilters): Promise<genericStudentReturn[]> {
+        const now = new Date();
+        
+        const students = await this._prisma.student.findMany({
+            where: {
+                AND: [
+                    // Text search filters
+                    filters?.query ? {
+                        OR: [
+                            { name: { contains: filters.query, mode: 'insensitive' } },
+                            { email: { contains: filters.query, mode: 'insensitive' } },
+                            { nickname: { contains: filters.query, mode: 'insensitive' } }
+                        ]
+                    } : {},
+                    
+                    // Exact match filters
+                    filters?.CPF ? { CPF: filters.CPF } : {},
+                    filters?.email ? { email: filters.email } : {},
+                    
+                    // Age filter using birthDate
+                    filters?.minAge || filters?.maxAge ? {
+                        birthDate: {
+                            // If maxAge is 20, person must be born after (now - 20 years)
+                            gte: filters?.maxAge ? new Date(now.getFullYear() - filters.maxAge - 1, now.getMonth(), now.getDate()) : undefined,
+                            // If minAge is 10, person must be born before (now - 10 years)
+                            lte: filters?.minAge ? new Date(now.getFullYear() - filters.minAge, now.getMonth(), now.getDate()) : undefined,
+                        }
+                    } : {},
+
+                    // Class relationship filter
+                    filters?.class ? {
+                        classes: {
+                            some: {
+                                classId: filters.class
+                            }
+                        }
+                    } : {},
+                ]
+            },
+            include: {
+                formData: true,
+                classes: true
+            }
+        });
+
+        // Additional filtering for form-related filters that might be complex for Prisma
+        let filteredStudents = students;
+        
+        if (filters?.Presence) {
+            filteredStudents = filteredStudents.filter(student => 
+                student.formData?.Presence === filters.Presence
+            );
+        }
+
+        if (filters?.Rank) {
+            filteredStudents = filteredStudents.filter(student => 
+                student.formData?.Rank === filters.Rank
+            );
+        }
+
+        // Map to return format
+        return filteredStudents.map(student => ({
+            student: {
+                nickname: student.nickname,
+                email: student.email,
+                personal: {
+                    name: student.name,
+                    CPF: student.CPF,
+                    contact: student.Contact,
+                    birthDate: student.birthDate,
+                },
+                createdAt: student.createdAt,
+                form: student.formData
+            }
+        }));
+}
+}

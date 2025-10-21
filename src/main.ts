@@ -20,6 +20,7 @@ async function bootstrap() {
     .addTag("user","rotas de criação e gerenciamento de usuários")
     .addTag("Auth","Rotas de autenticação de usuários")
     .addTag("class","rotas de criação e gerenciamento de turmas")
+    .addTag("students","rotas de criação e gerenciamento de estudantes")
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);

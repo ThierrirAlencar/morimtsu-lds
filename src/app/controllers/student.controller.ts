@@ -9,7 +9,7 @@ import { CreateStudentDTO, QueryStudentFiltersDTO, UpdateStudentFormDTO, UpdateS
 import z from "zod";
 
 
-@ApiTags('Students')
+@ApiTags('students')
 @Controller("student")
 export class StudentController {
     constructor(

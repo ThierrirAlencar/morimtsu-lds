@@ -3,7 +3,7 @@ import { Response, Request } from 'express';
 import { mailService } from 'src/core/services/mail.service';
 import { entityDoesNotExists, InvalidInformationProvided } from 'src/infra/utils/errors';
 import { z } from 'zod';
-import { sendCodeDTO } from '../dto/auth';
+import { sendCodeDTO, updateUserPassword } from '../dto/auth';
 import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
@@ -38,12 +38,8 @@ export class AuthController {
 
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Put("")
-    async updateUserPassword(@Req() req:Request, @Res() res: Response){
-        const {newPassword,passport,refString} = z.object({
-            passport:z.string(),
-            refString:z.string(),
-            newPassword:z.string(),
-        }).parse(req.body)
+    async updateUserPassword(@Req() req:Request,@Body() body:updateUserPassword, @Res() res: Response){
+        const {newPassword,passport,refString} = body
     
         try{
             const response = await this.mailService.updateUserPasswordBasedInPassword(refString,passport,newPassword);

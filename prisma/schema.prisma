@@ -14,11 +14,21 @@ enum Role {
   ADMIN
 }
 
-enum Rank { //In the future this should be JiuJitsu slashes
-  BASIC
-  INTERMEDIATE
-  ADVANCED 
+enum Rank {
+  WHITE        // Faixa Branca
+  GRAY         // Faixa Cinza
+  YELLOW       // Faixa Amarela
+  ORANGE       // Faixa Laranja
+  GREEN        // Faixa Verde
+  BLUE         // Faixa Azul
+  PURPLE       // Faixa Roxa
+  BROWN        // Faixa Marrom
+  BLACK        // Faixa Preta
+  RED_BLACK    // Faixa Vermelha e Preta (Coral)
+  RED_WHITE    // Faixa Vermelha e Branca (Coral)
+  RED          // Faixa Vermelha (Mestre)
 }
+
 
 model User {
   id String @id @default(uuid())
@@ -44,6 +54,9 @@ model Class {
 
   icon_url String? 
 
+  startTime DateTime? @db.Time  // apenas horário (sem data)
+  endTime   DateTime? @db.Time
+
   maxAge Int @default(99)
   minAge Int @default(0)
   
@@ -65,6 +78,10 @@ model student {
   email String @unique
   CPF String @unique
   
+  //Parent contact
+  parentName String?
+  parentContact String?
+
   //Extra
   createdAt DateTime @default(now())
 
@@ -81,7 +98,7 @@ model StudentForm{
   Rating Int @default(0)
   Presence Int @default(0)
   Comments String?
-  Rank Rank @default(BASIC)
+  Rank Rank @default(WHITE)
 
   //Foreign Keys
   student student @relation(fields: [studentId], references: [id])

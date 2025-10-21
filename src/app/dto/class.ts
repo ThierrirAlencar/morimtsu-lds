@@ -1,4 +1,5 @@
 import { ApiParam, ApiProperty, ApiPropertyOptional, ApiQuery } from "@nestjs/swagger";
+import { IsString, Matches } from "class-validator"; 
 
 export class createClassDTO{
 
@@ -6,6 +7,29 @@ export class createClassDTO{
         description:"Nome da turma"
     })
     name: string
+
+
+    
+    @IsString()
+    @Matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, {
+        message: "O horário de início deve estar no formato HH:mm",
+    })
+    @ApiProperty({
+        description:"O horário de início de uma aula",
+        nullable:true,
+        example: "8:00"
+    })
+    startTime: string;
+
+    @ApiProperty({
+        description: "Horário de finalização da aula nesta turma (HH:mm)",
+        example: "10:00",
+    })
+    @IsString()
+    @Matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, {
+        message: "O horário de fim deve estar no formato HH:mm",
+    })
+    endTime: string;
 
     @ApiProperty({
         description:"URl da imagem de ícone da turma",
@@ -46,6 +70,28 @@ export class updateClassDTO{
     })
     name?: string
 
+    @IsString()
+    @Matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, {
+        message: "O horário de início deve estar no formato HH:mm",
+    })
+    @ApiProperty({
+        description:"O horário de início de uma aula",
+        nullable:true,
+        example: "8:00"
+    })
+    startTime?: string;
+
+    @ApiProperty({
+        description: "Horário de finalização da aula nesta turma (HH:mm)",
+        example: "10:00",
+        nullable:true
+    })
+    @IsString()
+    @Matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, {
+        message: "O horário de fim deve estar no formato HH:mm",
+    })
+    endTime: string;
+
     @ApiProperty({
         description:"Descrição da turma",
         nullable:true
@@ -64,6 +110,18 @@ export class updateClassDTO{
         nullable:true
     })
     iconURL?: string
+
+        @ApiProperty({
+        description:"A idade máxima de um aluno da turma",
+        nullable:true,
+    })
+    maxAge: number
+    
+    @ApiProperty({
+        description:"A idade mínima de um aluno da turma",
+        nullable:true,
+    })
+    minAge: number
 }
 
 

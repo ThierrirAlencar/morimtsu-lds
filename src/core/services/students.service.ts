@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Prisma, Rank, student, StudentClasses, StudentForm } from "generated/prisma";
 import { retry } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
-import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
+import { entityAlreadyExistsError, entityDoesNotExists, prohibitedAction } from "src/infra/utils/errors";
 import { string } from "zod";
 
 interface QueryStudentFilters {
@@ -40,6 +40,22 @@ export class studentServices{
 
     }
 
+    private validateStudentAge(birthDate: Date, requiredAge: number): boolean {
+        const today = new Date();
+        const birthDateTime = new Date(birthDate);
+        
+        // Calculate age
+        let age = today.getFullYear() - birthDateTime.getFullYear();
+        
+        // Adjust age if birthday hasn't occurred this year
+        const monthDiff = today.getMonth() - birthDateTime.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateTime.getDate())) {
+            age--;
+        }
+        
+        return age >= requiredAge;
+    }
+
     async create(data:Prisma.studentCreateInput, formData:Prisma.StudentFormUncheckedCreateInput):Promise<genericStudentReturn>{
         const theresAnyStudentWithTheSameUniqueValues = await this._prisma.student.findFirst({
             where: {
@@ -49,7 +65,12 @@ export class studentServices{
                     ]
             }
         })
-    
+        
+        //Retorna um erro se as informações do responsável nao forem informadas
+        if(!this.validateStudentAge(new Date(data.birthDate),18) && !data.parentContact){
+            throw new prohibitedAction()
+        }
+
         if(theresAnyStudentWithTheSameUniqueValues){
             throw new entityAlreadyExistsError()
         }
@@ -196,6 +217,9 @@ export class studentServices{
             throw new entityDoesNotExists()
         }
 
+        if(!this.validateStudentAge(doesTheStudentExists.birthDate,doesTheClassExists.minAge)){
+            throw new prohibitedAction()
+        }
         return await this._prisma.studentClasses.create({
             data:{
                 classId,

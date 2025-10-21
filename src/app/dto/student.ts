@@ -26,6 +26,18 @@ export class CreateStudentDTO{
         contact: string
 
         @ApiProperty({
+            description:"O telefone de contato do responsável legal do estudante estudante(Obrigatório se for menor de idade)",
+            nullable:true
+        })
+        parentsContact?: string
+
+        @ApiProperty({
+            description:"O nome do responsável legal do estudante (Obrigatório se for menor de idade)",
+            nullable:true
+        })
+        parentName?: string
+
+        @ApiProperty({
             description:"O dia de aniversário do estudante"
         })
         birthDate:Date

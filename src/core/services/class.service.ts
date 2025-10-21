@@ -157,11 +157,19 @@ export class classService{
     }
 
 
-   async getManyWithFilters(filters:classFilters):Promise<Class[]>{
+   async getManyWithFilters(filters:classFilters,userId:string):Promise<Class[]>{
         const {query, minAge, maxAge} = filters;
-        
-        const classes = await this.__prisma.class.findMany({
+        const _userClasses = await this.__prisma.userClasses.findMany({
+            where:{
+                userId
+            }
+        })
+
+        var _classList:Class[] = []
+        for(let i =0; i<_userClasses.length;i++){
+            const classes = await this.__prisma.class.findMany({
             where: {
+                id: _userClasses[i].classId,
                 AND: [
                     // Search in both name and description if query exists
                     {
@@ -193,9 +201,12 @@ export class classService{
                         } : undefined
                     }
                 ]
-            }
-        });
+                }
+            });
+            _classList = _classList.concat(classes)
+        }
+        
 
-        return classes;
+        return _classList;
    }
 }

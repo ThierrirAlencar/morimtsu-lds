@@ -33,3 +33,9 @@ export class InvalidPasswordError extends baseError{
     description= "The provided password is invalid";
     http_status = 409
 }
+
+export class prohibitedAction extends baseError{
+    code=6;
+    description = "Tried to execute a prohibited action."
+    public http_status: number = 405;
+}

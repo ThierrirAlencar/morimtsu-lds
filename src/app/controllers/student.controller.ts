@@ -4,7 +4,7 @@ import { ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { Prisma, Rank } from "generated/prisma";
 import { studentServices } from "src/core/services/students.service";
-import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
+import { baseError, entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
 import { CreateStudentDTO, QueryStudentFiltersDTO, UpdateStudentFormDTO, UpdateStudentPersonalDTO } from "../dto/student";
 import z from "zod";
 
@@ -20,6 +20,7 @@ export class StudentController {
     @ApiResponse({ status: 201, description: "Student created successfully" })
     @ApiResponse({ status: 409, description: "Student already exists" })
     @ApiResponse({ status: 500, description: "Internal server error" })
+    @ApiResponse({ status: 405, description: "Student is below 18 and needs to inform a parent contact" })
     async create(@Body() body: CreateStudentDTO, @Res() res: Response) {
         try {
             const student = await this.studentService.create(
@@ -131,6 +132,7 @@ export class StudentController {
     @Post("/:id/join/:classId")
     @ApiResponse({ status: 200, description: "Student joined class successfully" })
     @ApiResponse({ status: 404, description: "Student or class not found" })
+    @ApiResponse({ status: 405, description: "Student is too young or old to join this class" })
     async joinClass(@Param("id") id: string, @Param("classId") classId: string, @Res() res: Response) {
         try {
             const relation = await this.studentService.joinClass(id, classId);
@@ -139,8 +141,8 @@ export class StudentController {
                 data: relation
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }

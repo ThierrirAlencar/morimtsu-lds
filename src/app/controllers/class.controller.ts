@@ -1,10 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { classService } from "src/core/services/class.service";
 import { baseError, entityDoesNotExists } from "src/infra/utils/errors";
 import z from "zod";
 import { createClassDTO, QueryClassParams, updateClassDTO } from "../dto/class";
 import { ApiResponse } from "@nestjs/swagger";
+import { timeStringToDate } from "src/infra/utils/toDateTimeString";
+import { Prisma } from "generated/prisma";
+import { AuthGuard } from "@nestjs/passport";
+import { AuthRequest } from "src/infra/interfaces/AuthRequest";
 
 
 @Controller("/class")
@@ -36,11 +40,13 @@ export class classController{
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Post("/")
     async create(@Body() body:createClassDTO, @Res() res:Response) {
-        const {name,description,coachId,iconURL,maxAge,minAge} = body
+        const {name,description,coachId,iconURL,maxAge,minAge,endTime,startTime} = body
     
         try{
             const _response = await this._classService.create({
-                name,description,icon_url:iconURL,maxAge,minAge
+                name,description,icon_url:iconURL,maxAge,minAge,
+                endTime:timeStringToDate(endTime),
+                startTime:timeStringToDate(startTime)
             },coachId)
 
             res.status(201).send({
@@ -71,13 +77,14 @@ export class classController{
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Put("/:id")
     async update(@Param("id") id:string, @Body() body:updateClassDTO, @Res() res:Response){
-        const parsed = z.object({
-            name: z.string().optional(),
-            description: z.string().optional()
-        }).parse(body)
+        const {startTime,description,name,iconURL:icon_url,endTime,maxAge,minAge} = body
 
         try{
-            const _class = await this._classService.update(parsed as any, id)
+            const _class = await this._classService.update({
+                description,icon_url,maxAge,minAge,name,
+                endTime:endTime?timeStringToDate(endTime):undefined,
+                startTime:startTime?timeStringToDate(startTime):undefined
+            } as Prisma.ClassUpdateInput, id)
             res.status(201).send({
                 status:201,
                 description:"Class updated with success",
@@ -168,20 +175,24 @@ export class classController{
     `)})
     
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @UseGuards(AuthGuard("jwt"))
     @Get("/")
-    async getMany(@Query() query: QueryClassParams, @Res() res:Response) {
+    async getMany(@Query() query: QueryClassParams, @Req() req:AuthRequest, @Res() res:Response) {
         const filters = z.object({
             query: z.string().optional().default(""),
             minAge: z.number().min(0).optional(),
             maxAge: z.number().min(0).optional()
         }).parse(query);
 
+
+        const userId = req.user.id
+
         try {
             const classes = await this._classService.getManyWithFilters({
                 query: filters.query,
                 minAge: filters.minAge,
                 maxAge: filters.maxAge
-            });
+            },userId);
 
             res.status(200).send({
                 status: 200,

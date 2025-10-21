@@ -15,18 +15,24 @@ enum Role {
 }
 
 enum Rank {
-  WHITE        // Faixa Branca
-  GRAY         // Faixa Cinza
-  YELLOW       // Faixa Amarela
-  ORANGE       // Faixa Laranja
-  GREEN        // Faixa Verde
-  BLUE         // Faixa Azul
-  PURPLE       // Faixa Roxa
-  BROWN        // Faixa Marrom
-  BLACK        // Faixa Preta
-  RED_BLACK    // Faixa Vermelha e Preta (Coral)
-  RED_WHITE    // Faixa Vermelha e Branca (Coral)
-  RED          // Faixa Vermelha (Mestre)
+  BRANCA
+  CINZA_BRANCA
+  CINZA
+  CINZA_PRETA
+  AMARELA_BRANCA
+  AMARELA
+  AMARELA_PRETA
+  LARANJA_BRANCA
+  LARANJA
+  LARANJA_PRETA
+  VERDE_BRANCA
+  VERDE
+  VERDE_PRETA
+  AZUL
+  ROXA
+  MARROM
+  PRETA
+  VERMELHA
 }
 
 
@@ -98,7 +104,7 @@ model StudentForm{
   Rating Int @default(0)
   Presence Int @default(0)
   Comments String?
-  Rank Rank @default(WHITE)
+  Rank Rank @default(BRANCA)
 
   //Foreign Keys
   student student @relation(fields: [studentId], references: [id])

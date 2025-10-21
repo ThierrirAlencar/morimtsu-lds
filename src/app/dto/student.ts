@@ -118,3 +118,56 @@ export class UpdateStudentPersonalDTO{
         })
         nickname?: string
 }
+
+
+export class QueryStudentFiltersDTO{
+    
+    @ApiProperty({
+        description:"Query de busca através do nome do aluno",
+        nullable:true
+    })
+    query?: string
+    @ApiProperty({
+        description:"Query de busca através da idade mínima do aluno",
+        nullable:true
+    })
+    minAge?:number
+    
+    @ApiProperty({
+        description:"Query de busca através da idade máxima do aluno",
+        nullable:true
+    })
+    maxAge?:number
+
+    @ApiProperty({
+        description:"Query de busca através do CPF do aluno",
+        nullable:true
+    })
+    CPF?:string
+
+    @ApiProperty({
+        description:"Query de busca através do email do aluno",
+        nullable:true
+    })
+    email?:string
+
+    @ApiProperty({
+        description:"Query de busca através da faixa do aluno",
+        nullable:true,
+        enumName:"Rank",
+        enum:Rank
+    })
+    Rank?:Rank 
+    
+    @ApiProperty({
+        description:"Query de busca através da turma ao qual o aluni pertence, informar id da turma",
+        nullable:true
+    })
+    class?: string
+
+    @ApiProperty({
+        description:"Query de busca através do número de presenças que o aluno possuí",
+        nullable:true
+    })
+    Presence?: number
+}

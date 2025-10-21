@@ -1,11 +1,11 @@
 
-import { Body, Controller, Delete, Get, Param, Post, Put, Res } from "@nestjs/common";
-import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from "@nestjs/common";
+import { ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
-import { Prisma } from "generated/prisma";
+import { Prisma, Rank } from "generated/prisma";
 import { studentServices } from "src/core/services/students.service";
 import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
-import { CreateStudentDTO, UpdateStudentFormDTO, UpdateStudentPersonalDTO } from "../dto/student";
+import { CreateStudentDTO, QueryStudentFiltersDTO, UpdateStudentFormDTO, UpdateStudentPersonalDTO } from "../dto/student";
 import z from "zod";
 
 
@@ -143,6 +143,44 @@ export class StudentController {
                 return res.status(404).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    @Get()
+    @ApiResponse({ status: 200, description: "Students filtered successfully" })
+    @ApiQuery({ name: 'query', required: false, type: String, description: 'Search in name, email or nickname' })
+    @ApiQuery({ name: 'minAge', required: false, type: Number, description: 'Minimum age filter' })
+    @ApiQuery({ name: 'maxAge', required: false, type: Number, description: 'Maximum age filter' })
+    @ApiQuery({ name: 'CPF', required: false, type: String, description: 'Filter by exact CPF match' })
+    @ApiQuery({ name: 'email', required: false, type: String, description: 'Filter by exact email match' })
+    @ApiQuery({ name: 'Presence', required: false, type: Number, description: 'Filter by student form presence' })
+    @ApiQuery({ name: 'Rank', required: false, enum: Rank, description: 'Filter by student rank' })
+    @ApiQuery({ name: 'class', required: false, type: String, description: 'Filter by class ID' })
+    async query(@Query() queryParams: QueryStudentFiltersDTO, @Res() res: Response) {
+        try {
+            const filters: QueryStudentFiltersDTO = {
+                query: queryParams.query,
+                minAge: queryParams.minAge ? Number(queryParams.minAge) : undefined,
+                maxAge: queryParams.maxAge ? Number(queryParams.maxAge) : undefined,
+                CPF: queryParams.CPF,
+                email: queryParams.email,
+                Presence: queryParams.Presence ? Number(queryParams.Presence) : undefined,
+                Rank: queryParams.Rank as Rank,
+                class: queryParams.class
+            };
+
+            const students = await this.studentService.queryStudent(filters);
+            
+            return res.status(200).json({
+                message: "Students filtered successfully",
+                count: students.length,
+                data: students
+            });
+        } catch (error) {
+            return res.status(500).json({ 
+                message: "Internal server error",
+                error: error.message 
+            });
         }
     }
 }

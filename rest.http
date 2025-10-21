@@ -51,3 +51,41 @@ Authorization: Bearer {{token}}
 ### 👤 Obter perfil do usuário (GET /user/:id/profile)
 GET http://127.0.0.1:3000/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c/profile
 Authorization: Bearer {{token}}
+
+# REST tests for classController
+# Substitua {{baseUrl}} pelo endereço da sua API (ex: http://localhost:3000)
+# Após criar a class, copie o id retornado e substitua {{classId}} nos requests seguintes.
+
+### Create class (without coachId)
+POST http://127.0.0.1:3000/class
+Content-Type: application/json
+
+{
+  "name": "Test Class REST",
+  "description": "Classe criada pelo teste REST"
+}
+
+### Create class (with coachId)
+POST http://127.0.0.1:3000/class
+Content-Type: application/json
+
+{
+  "name": "Test Class With Coach",
+  "description": "Classe com coach fornecido",
+  "coachId": "00000000-0000-0000-0000-000000000000"
+}
+
+### Get class by id
+GET http://127.0.0.1:3000/class/{{classId}}
+
+### Update class
+PUT http://127.0.0.1:3000/class/{{classId}}
+Content-Type: application/json
+
+{
+  "name": "Test Class REST - Updated",
+  "description": "Descrição atualizada"
+}
+
+### Delete class
+DELETE http://127.0.0.1:3000/class/{{classId}}

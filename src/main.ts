@@ -7,6 +7,12 @@ async function bootstrap() {
   const HOST = process.env.HOST ?? "0.0.0.0"
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({
+    origin: '*', // ou especificamente: origin: 'http://192.168.0.7:8082'
+    methods: 'GET,POST,PUT,DELETE',
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('MorimitsuLDS-api')
     .setDescription('')

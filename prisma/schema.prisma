@@ -42,6 +42,8 @@ model Class {
   name String @unique
   description String?
 
+  icon_url String? 
+
   maxAge Int @default(99)
   minAge Int @default(0)
   

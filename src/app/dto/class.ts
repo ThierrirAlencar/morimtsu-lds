@@ -8,6 +8,12 @@ export class createClassDTO{
     name: string
 
     @ApiProperty({
+        description:"URl da imagem de ícone da turma",
+        nullable:true
+    })
+    iconURL?: string
+
+    @ApiProperty({
         description:"Descrição da turma",
         nullable:true
     })
@@ -38,19 +44,26 @@ export class updateClassDTO{
         description:"Nome da turma",
         nullable:true
     })
-    name: string | null
+    name?: string
 
     @ApiProperty({
         description:"Descrição da turma",
         nullable:true
     })
-    description:string | null
+    description?:string
 
     @ApiProperty({
         description:"Id de um professor. Por padrão o usuário ADMIN será adicionado se este campo estiver em branco",
         nullable:true
     })
-    coachId:string | null
+    coachId?:string | null
+
+    
+    @ApiProperty({
+        description:"URl da imagem de ícone da turma",
+        nullable:true
+    })
+    iconURL?: string
 }
 
 

@@ -18,7 +18,7 @@ export class classService{
 
     //Creates a class and automatically assigns it to the ADMIN user
     async create(data:Prisma.ClassUncheckedCreateInput,userId:string | null){
-        const {name,description,maxAge,minAge} = data
+        const {name,description,maxAge,minAge,icon_url} = data
 
         //Automaticaly assigns it to the admin user
         const adminOrCoach = userId ?await this.__prisma.user.findUnique({
@@ -56,7 +56,7 @@ export class classService{
             data:{
                 name, 
                 description,
-                maxAge,minAge
+                maxAge,minAge,icon_url
             }
         })
 

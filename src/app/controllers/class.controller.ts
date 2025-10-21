@@ -36,15 +36,11 @@ export class classController{
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Post("/")
     async create(@Body() body:createClassDTO, @Res() res:Response) {
-        const {name,description,coachId} = z.object({
-            name: z.string(),
-            description: z.string().optional(),
-            coachId:z.string().uuid().optional().nullable()
-        }).parse(body)
+        const {name,description,coachId,iconURL,maxAge,minAge} = body
     
         try{
             const _response = await this._classService.create({
-                name,description
+                name,description,icon_url:iconURL,maxAge,minAge
             },coachId)
 
             res.status(201).send({

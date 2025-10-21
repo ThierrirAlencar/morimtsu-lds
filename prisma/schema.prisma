@@ -42,7 +42,9 @@ model Class {
   name String @unique
   description String?
 
-
+  maxAge Int @default(99)
+  minAge Int @default(0)
+  
   //Foreign keys
   classes UserClasses[]
   students StudentClasses[]

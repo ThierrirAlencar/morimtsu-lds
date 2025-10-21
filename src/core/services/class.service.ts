@@ -1,9 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, student, User } from "generated/prisma";
+import { Class, Prisma, student, User } from "generated/prisma";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
 
-
+interface classFilters{
+    query:string
+    minAge:number,
+    maxAge:number
+}
 @Injectable()
 export class classService{
     constructor(
@@ -14,7 +18,7 @@ export class classService{
 
     //Creates a class and automatically assigns it to the ADMIN user
     async create(data:Prisma.ClassUncheckedCreateInput,userId:string | null){
-        const {name,description} = data
+        const {name,description,maxAge,minAge} = data
 
         //Automaticaly assigns it to the admin user
         const adminOrCoach = userId ?await this.__prisma.user.findUnique({
@@ -37,7 +41,7 @@ export class classService{
             throw new entityAlreadyExistsError()
         }
 
-        
+
         const doesTheUserExists = await this.__prisma.user.findUnique({
             where:{
                 id:adminOrCoach.id
@@ -51,7 +55,8 @@ export class classService{
         const _class = await this.__prisma.class.create({
             data:{
                 name, 
-                description
+                description,
+                maxAge,minAge
             }
         })
 
@@ -68,7 +73,7 @@ export class classService{
     }
 
     async update(data:Prisma.ClassUpdateInput,id:string){
-        const {name,description} = data
+        const {name,description,maxAge,minAge} = data
 
         const _class = await this.__prisma.class.update({
             where:{
@@ -150,4 +155,47 @@ export class classService{
             coachs:_classCoachsList
         }
     }
+
+
+   async getManyWithFilters(filters:classFilters):Promise<Class[]>{
+        const {query, minAge, maxAge} = filters;
+        
+        const classes = await this.__prisma.class.findMany({
+            where: {
+                AND: [
+                    // Search in both name and description if query exists
+                    {
+                        OR: query ? [
+                            {
+                                name: {
+                                    contains: query,
+                                    mode: 'insensitive'
+                                }
+                            },
+                            {
+                                description: {
+                                    contains: query,
+                                    mode: 'insensitive'
+                                }
+                            }
+                        ] : undefined
+                    },
+                    // Filter by minimum age if provided
+                    {
+                        minAge: minAge ? {
+                            gte: minAge
+                        } : undefined
+                    },
+                    // Filter by maximum age if provided
+                    {
+                        maxAge: maxAge ? {
+                            lte: maxAge
+                        } : undefined
+                    }
+                ]
+            }
+        });
+
+        return classes;
+   }
 }

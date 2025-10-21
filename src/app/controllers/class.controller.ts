@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from "@nestjs/common";
 import { Response } from "express";
 import { classService } from "src/core/services/class.service";
 import { baseError, entityDoesNotExists } from "src/infra/utils/errors";
 import z from "zod";
-import { createClassDTO } from "../dto/class";
+import { createClassDTO, QueryClassParams, updateClassDTO } from "../dto/class";
 import { ApiResponse } from "@nestjs/swagger";
 
 
@@ -74,7 +74,7 @@ export class classController{
         `)})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Put("/:id")
-    async update(@Param("id") id:string, @Body() body:any, @Res() res:Response){
+    async update(@Param("id") id:string, @Body() body:updateClassDTO, @Res() res:Response){
         const parsed = z.object({
             name: z.string().optional(),
             description: z.string().optional()
@@ -154,5 +154,48 @@ export class classController{
             }
         }
     }
+    
+    @ApiResponse({status:200, description:"Classes filtradas retornadas com sucesso", example: JSON.parse(`
+        {
+            "status": 200,
+            "description": "Classes filtered with success",
+            "classes": [
+                {
+                    "id": "example-id-1",
+                    "name": "Swimming Class",
+                    "description": "Swimming lessons for beginners",
+                    "minAge": 5,
+                    "maxAge": 12
+                }
+            ]
+        }
+    `)})
+    
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @Get("/")
+    async getMany(@Query() query: QueryClassParams, @Res() res:Response) {
+        const filters = z.object({
+            query: z.string().optional().default(""),
+            minAge: z.number().min(0).optional(),
+            maxAge: z.number().min(0).optional()
+        }).parse(query);
 
+        try {
+            const classes = await this._classService.getManyWithFilters({
+                query: filters.query,
+                minAge: filters.minAge,
+                maxAge: filters.maxAge
+            });
+
+            res.status(200).send({
+                status: 200,
+                description: "Classes filtered with success",
+                classes
+            });
+        } catch(err) {
+            res.status(500).send({
+                description: "erro desconhecido"
+            });
+        }
+    }
 }

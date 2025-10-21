@@ -88,3 +88,6 @@ Content-Type: application/json
 
 ### Delete class
 DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
+
+### Get filtered classes (only query)
+GET http://localhost:3000/class?query=Test

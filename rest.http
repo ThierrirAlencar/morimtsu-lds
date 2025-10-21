@@ -5,7 +5,7 @@ Content-Type: application/json
     "name":"ts",
     "email":"s@gmail.com",
     "password":"admin123",
-    "role":"ADMIN"
+    "role":"USER"
 }
 
 ### Enviar código de recuperação
@@ -31,8 +31,8 @@ POST http://127.0.0.1:3000/user/login
 Content-Type: application/json
 
 {
-  "Email": "usuario@exemplo.com",
-  "Password": "senha123"
+  "Email": "s@gmail.com",
+  "Password": "admin123"
 }
 
 ### ⚙️ Atualizar dados do usuário (PUT /user/:id)

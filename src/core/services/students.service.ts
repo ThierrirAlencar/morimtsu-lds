@@ -57,7 +57,7 @@ export class studentServices{
         return age >= requiredAge;
     }
 
-    async create(data:Prisma.studentCreateInput, formData:Prisma.StudentFormUncheckedCreateInput):Promise<genericStudentReturn>{
+    async create(data:Prisma.studentCreateInput, formData:Prisma.StudentFormUncheckedCreateInput, classId?:string):Promise<genericStudentReturn>{
         const theresAnyStudentWithTheSameUniqueValues = await this._prisma.student.findFirst({
             where: {
                 OR: [
@@ -92,7 +92,23 @@ export class studentServices{
                 Rating:formData.Rating,
             }
         })
+        if(classId){
+            const doesTheClassExists = await this._prisma.class.findUnique({
+                where:{
+                    id:classId
+                }
+            })
+            if(!doesTheClassExists){
+                throw new entityDoesNotExists()
+            }
 
+            await this._prisma.studentClasses.create({
+                data:{
+                    classId,
+                    studentId:_student.id
+                }
+            })
+        }
         return{
             student:{
                 nickname:_student.nickname,
@@ -296,6 +312,7 @@ export class studentServices{
         // Map to return format
         return filteredStudents.map(student => ({
             student: {
+                id:student.id,
                 nickname: student.nickname,
                 email: student.email,
                 personal: {

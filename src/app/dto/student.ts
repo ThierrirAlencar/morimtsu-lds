@@ -70,6 +70,12 @@ export class CreateStudentDTO{
             description:"A avaliação do estudante, por padrão 0"
         })
         rating?: number
+
+        @ApiProperty({
+            description:"ID da turma que o estudante irá entrar ao ser criado",
+            nullable:true
+        })
+        classId?:string
         
 }
 

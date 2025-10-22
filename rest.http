@@ -113,7 +113,7 @@ Content-Type: application/json
   "rank": "BRANCA",
   "comments": "Beginner",
   "presence": 100,
-  "rating": 5
+  "rating": 5,
 }
 
 ### Get student by id
@@ -142,18 +142,18 @@ Content-Type: application/json
 }
 
 ### Delete student
-DELETE {{baseUrl}}/student/{{studentId}}
+DELETE http://127.0.0.1:3000/student/{{studentId}}
 
 
 ### Student joins a class
-POST {{baseUrl}}/student/{{studentId}}/join/{{classId}}
+POST http://127.0.0.1:3000/student/{{studentId}}/join/cmh2ds8qi000afa222rxz7aqq
 
 
 ### Query students - full filter
-GET {{baseUrl}}/student?query=Joao&minAge=10&maxAge=18&CPF=12345678900&email=joao.silva@example.com&Presence=100&Rank=WHITE&class={{classId}}
+GET http://127.0.0.1:3000/student?query=Joao&minAge=10&maxAge=18&CPF=12345678900&email=joao.silva@example.com&Presence=100&Rank=WHITE&class={{classId}}
 
 ### Query students - by text only
-GET {{baseUrl}}/student?query=Silva
+GET http://127.0.0.1:3000/student?query=Silva
 
 ### Query students - by age range only
-GET {{baseUrl}}/student?minAge=8&maxAge=12
+GET http://127.0.0.1:3000/student

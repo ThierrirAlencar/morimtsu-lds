@@ -7,6 +7,7 @@ import { studentServices } from "src/core/services/students.service";
 import { baseError, entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
 import { CreateStudentDTO, QueryStudentFiltersDTO, UpdateStudentFormDTO, UpdateStudentPersonalDTO } from "../dto/student";
 import z from "zod";
+import { log } from "console";
 
 
 @ApiTags('students')
@@ -23,6 +24,7 @@ export class StudentController {
     @ApiResponse({ status: 405, description: "Student is below 18 and needs to inform a parent contact" })
     async create(@Body() body: CreateStudentDTO, @Res() res: Response) {
         try {
+            log("Creating student:", body);
             const student = await this.studentService.create(
                 {
                     name: body.name,
@@ -33,23 +35,23 @@ export class StudentController {
                     nickname: body.nickname
                 },
                 {   
-                    studentId:"000000", //this really does not need to exists
-                    Rank: body.rank,
+                    studentId:"000000",
+                    Rank: body.rank as Rank,
                     Comments: body.comments,
                     Presence: body.presence,
                     Rating: body.rating
                 }
             );
-
+            log("Student created successfully:", student);
             return res.status(201).json({
                 message: "Student created successfully",
                 data: student
             });
         } catch (error) {
-            if (error instanceof entityAlreadyExistsError) {
-                return res.status(409).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
-            return res.status(500).json({ message: "Internal server error" });
+            return res.status(500).json({ message: "Internal server error", error });
         }
     }
 

@@ -36,8 +36,9 @@ export class classController{
   }
 }
         `)})
-    @ApiResponse({status:404, description:"Usuário administrador ou professor nao foi encontrado"})
+    @ApiResponse({status:404, description:"Usuário administrador ou professor nao foi encontrado. Se não for fornecido o ID a classe será atribuída a um usuário ADMIN aleatório"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @ApiResponse({status:409, description:"Valor único violado. Provavelmente o nome da classe já existe"})
     @Post("/")
     async create(@Body() body:createClassDTO, @Res() res:Response) {
         const {name,description,coachId,iconURL,maxAge,minAge,endTime,startTime} = body

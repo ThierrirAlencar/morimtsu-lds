@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { log } from "console";
 import { Prisma, Rank, student, StudentClasses, StudentForm } from "generated/prisma";
 import { retry } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
@@ -75,10 +76,13 @@ export class studentServices{
             throw new entityAlreadyExistsError()
         }
 
+
+        log("Creating student with data:", data, "and formData:", formData);
         const _student = await this._prisma.student.create({
             data
         })
 
+        log("Student created in database:", _student);
         const _studenForm = await this._prisma.studentForm.create({
             data:{
                 Rank:formData.Rank,

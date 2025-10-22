@@ -19,7 +19,7 @@ export class StudentController {
 
     @Post("/")
     @ApiResponse({ status: 201, description: "Student created successfully" })
-    @ApiResponse({ status: 409, description: "Student already exists" })
+    @ApiResponse({ status: 409, description: "Já existe um estudante com este email ou CPF." })
     @ApiResponse({ status: 500, description: "Internal server error" })
     @ApiResponse({ status: 405, description: "Student is below 18 and needs to inform a parent contact" })
     async create(@Body() body: CreateStudentDTO, @Res() res: Response) {
@@ -40,7 +40,8 @@ export class StudentController {
                     Comments: body.comments,
                     Presence: body.presence,
                     Rating: body.rating
-                }
+                },
+                body.classId
             );
             log("Student created successfully:", student);
             return res.status(201).json({
@@ -66,8 +67,8 @@ export class StudentController {
                 data: student
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }
@@ -84,8 +85,8 @@ export class StudentController {
                 data: student
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }
@@ -106,8 +107,8 @@ export class StudentController {
                 data: form
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }
@@ -124,8 +125,8 @@ export class StudentController {
                 data: student
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }
@@ -151,7 +152,29 @@ export class StudentController {
     }
 
     @Get()
-    @ApiResponse({ status: 200, description: "Students filtered successfully" })
+    @ApiResponse({ status: 200, description: "Students filtered successfully", example:JSON.parse(`
+            {
+  "message": "Students filtered successfully",
+  "count": 1,
+  "data": [
+    {
+      "student": {
+        "id": "2127b2b9-e955-4f10-b7ae-996a37318008",
+        "nickname": "Joaozinho",
+        "email": "joao.silva@example.com",
+        "personal": {
+          "name": "João Silva",
+          "CPF": "12345678900",
+          "contact": "+5511999999999",
+          "birthDate": "1999-04-15T00:00:00.000Z"
+        },
+        "createdAt": "2025-10-22T13:42:38.625Z",
+        "form": null
+      }
+    }
+  ]
+}
+        `)})
     @ApiQuery({ name: 'query', required: false, type: String, description: 'Search in name, email or nickname' })
     @ApiQuery({ name: 'minAge', required: false, type: Number, description: 'Minimum age filter' })
     @ApiQuery({ name: 'maxAge', required: false, type: Number, description: 'Maximum age filter' })

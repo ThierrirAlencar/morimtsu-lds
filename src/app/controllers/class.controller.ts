@@ -21,20 +21,22 @@ export class classController{
 
 
     @ApiResponse({status:201, description:"class criada com sucesso",example:JSON.parse(`
-            {
-  "description": "Class created and add to any ADMIN user",
-  "_response": {
-    "_class": {
-      "id": "cmh0lx2fe0000ildk9cbn0s0p",
-      "name": "Test Class REST - without coach v1",
-      "description": "Classe criada pelo teste REST"
-    },
-    "_relation": {
-      "userId": "81b6ea92-734d-40d2-8f0d-7003e3546933",
-      "classId": "cmh0lx2fe0000ildk9cbn0s0p"
+    {
+    "status": 200,
+    "description": "Classes filtered with success",
+    "classes": [
+        {
+        "id": "cmh2dj2ze0009fa22yyybsh38",
+        "name": "ysad gysagvbdya",
+        "description": null,
+        "icon_url": "/src/assets/presets/capaturma3.png",
+        "startTime": null,
+        "endTime": null,
+        "maxAge": 0,
+        "minAge": 1
+        }
+    ]
     }
-  }
-}
         `)})
     @ApiResponse({status:404, description:"Usuário administrador ou professor nao foi encontrado. Se não for fornecido o ID a classe será atribuída a um usuário ADMIN aleatório"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})

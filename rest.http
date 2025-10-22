@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 ### Enviar código de recuperação
-PATCH http://127.0.0.1:3000/auth
+PATCH https://morimtsu-lds.onrender.com/auth
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ### 🔐 Login do usuário
-POST http://127.0.0.1:3000/user/login
+POST https://morimtsu-lds.onrender.com/user/login
 Content-Type: application/json
 
 {
@@ -61,22 +61,24 @@ POST http://127.0.0.1:3000/class
 Content-Type: application/json
 
 {
+  "iconURL":"askkahsjjaksjjskaskaj",
   "name": "Test Class REST - without coach v1",
   "description": "Classe criada pelo teste REST"
 }
 
 ### Create class (with coachId)
-POST http://127.0.0.1:3000/class
+POST https://morimtsu-lds.onrender.com/class
 Content-Type: application/json
 
 {
-  "name": "Test Class With Coach",
+  "name": "Test Class With Coach Sla",
   "description": "Classe com coach fornecido",
   "coachId": "00000000-0000-0000-0000-000000000000"
 }
 
 ### Get class by id
-GET http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
+GET https://morimtsu-lds.onrender.com/class/cmh0lx2fe0000ildk9cbn0s0p
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MWI2ZWE5Mi03MzRkLTQwZDItOGYwZC03MDAzZTM1NDY5MzMiLCJpYXQiOjE3NjExNDEzNDQsImV4cCI6MTc2MTc0NjE0NH0.nJMOFHu4hechTHrmyzXa8vvUMz9LOU8R9nSxPv02lHQ
 
 ### Update class
 PUT http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
@@ -90,4 +92,68 @@ Content-Type: application/json
 DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
 
 ### Get filtered classes (only query)
-GET http://localhost:3000/class?query=Test
+GET https://morimtsu-lds.onrender.com/class
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MWI2ZWE5Mi03MzRkLTQwZDItOGYwZC03MDAzZTM1NDY5MzMiLCJpYXQiOjE3NjExNDEzNDQsImV4cCI6MTc2MTc0NjE0NH0.nJMOFHu4hechTHrmyzXa8vvUMz9LOU8R9nSxPv02lHQ
+
+# REST tests for StudentController
+# Replace {{baseUrl}} with your server address (ex: http://localhost:3000)
+# Replace IDs ({{studentId}}, {{classId}}) with real values returned by create requests.
+
+### Create student
+POST http://127.0.0.1:3000/student
+Content-Type: application/json
+
+{
+  "name": "Pedro Felipe",
+  "email": "Pedro.Felipe@example.com",
+  "CPF": "12127818738273",
+  "contact": "+5511999999999",
+  "birthDate": "1999-04-15",
+  "nickname": "Pedrinho matador",
+  "rank": "BRANCA",
+  "comments": "Beginner",
+  "presence": 100,
+  "rating": 5,
+}
+
+### Get student by id
+GET {{baseUrl}}/student/{{studentId}}
+
+
+### Update student personal info
+PUT {{baseUrl}}/student/{{studentId}}/personal
+Content-Type: application/json
+
+{
+  "name": "João S. Updated",
+  "contact": "+5511988888888",
+  "nickname": "JoaoUpdated"
+}
+
+### Update student form
+PUT {{baseUrl}}/student/{{studentId}}/form
+Content-Type: application/json
+
+{
+  "Rank": "YELLOW",
+  "Comments": "Improved technique",
+  "Presence": 95,
+  "Rating": 4
+}
+
+### Delete student
+DELETE http://127.0.0.1:3000/student/{{studentId}}
+
+
+### Student joins a class
+POST http://127.0.0.1:3000/student/{{studentId}}/join/cmh2ds8qi000afa222rxz7aqq
+
+
+### Query students - full filter
+GET http://127.0.0.1:3000/student?query=Joao&minAge=10&maxAge=18&CPF=12345678900&email=joao.silva@example.com&Presence=100&Rank=WHITE&class={{classId}}
+
+### Query students - by text only
+GET http://127.0.0.1:3000/student?query=Silva
+
+### Query students - by age range only
+GET http://127.0.0.1:3000/student

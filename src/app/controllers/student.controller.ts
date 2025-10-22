@@ -19,7 +19,7 @@ export class StudentController {
 
     @Post("/")
     @ApiResponse({ status: 201, description: "Student created successfully" })
-    @ApiResponse({ status: 409, description: "Student already exists" })
+    @ApiResponse({ status: 409, description: "Já existe um estudante com este email ou CPF." })
     @ApiResponse({ status: 500, description: "Internal server error" })
     @ApiResponse({ status: 405, description: "Student is below 18 and needs to inform a parent contact" })
     async create(@Body() body: CreateStudentDTO, @Res() res: Response) {
@@ -66,8 +66,8 @@ export class StudentController {
                 data: student
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }
@@ -84,8 +84,8 @@ export class StudentController {
                 data: student
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }
@@ -106,8 +106,8 @@ export class StudentController {
                 data: form
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }
@@ -124,8 +124,8 @@ export class StudentController {
                 data: student
             });
         } catch (error) {
-            if (error instanceof entityDoesNotExists) {
-                return res.status(404).json(error);
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
             }
             return res.status(500).json({ message: "Internal server error" });
         }

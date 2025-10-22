@@ -4,8 +4,9 @@ import { mailService } from 'src/core/services/mail.service';
 import { entityDoesNotExists, InvalidInformationProvided } from 'src/infra/utils/errors';
 import { z } from 'zod';
 import { sendCodeDTO, updateUserPassword } from '../dto/auth';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags("auth")
 @Controller('auth')
 export class AuthController {
     constructor(private mailService:mailService){}
@@ -34,7 +35,6 @@ export class AuthController {
             })
         }
     }
-
 
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Put("")

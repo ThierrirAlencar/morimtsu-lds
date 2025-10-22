@@ -18,7 +18,7 @@ async function bootstrap() {
     .setDescription('')
     .setVersion('1.0')
     .addTag("user","rotas de criação e gerenciamento de usuários")
-    .addTag("Auth","Rotas de autenticação de usuários")
+    .addTag("auth","Rotas de autenticação de usuários")
     .addTag("class","rotas de criação e gerenciamento de turmas")
     .addTag("students","rotas de criação e gerenciamento de estudantes")
     .build();

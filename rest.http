@@ -77,7 +77,7 @@ Content-Type: application/json
 }
 
 ### Get class by id
-GET https://morimtsu-lds.onrender.com/class/cmh0lx2fe0000ildk9cbn0s0p
+GET https://morimtsu-lds.onrender.com/class/cmh2dj2ze0009fa22yyybsh38
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MWI2ZWE5Mi03MzRkLTQwZDItOGYwZC03MDAzZTM1NDY5MzMiLCJpYXQiOjE3NjExNDEzNDQsImV4cCI6MTc2MTc0NjE0NH0.nJMOFHu4hechTHrmyzXa8vvUMz9LOU8R9nSxPv02lHQ
 
 ### Update class
@@ -104,9 +104,9 @@ POST http://127.0.0.1:3000/student
 Content-Type: application/json
 
 {
-  "name": "Pedro Felipe",
-  "email": "Pedro.Felipe@example.com",
-  "CPF": "12127818738273",
+  "name": "Pedro Lucas",
+  "email": "Pedro.Lucas@example.com",
+  "CPF": "123343435465547656",
   "contact": "+5511999999999",
   "birthDate": "1999-04-15",
   "nickname": "Pedrinho matador",
@@ -114,10 +114,11 @@ Content-Type: application/json
   "comments": "Beginner",
   "presence": 100,
   "rating": 5,
+  "classId": "cmh2dj2ze0009fa22yyybsh38"
 }
 
 ### Get student by id
-GET {{baseUrl}}/student/{{studentId}}
+GET http://127.0.0.1:3000/student/0a34338b-c977-4ba8-9dee-c80d0cc4a931
 
 
 ### Update student personal info

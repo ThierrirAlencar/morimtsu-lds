@@ -72,10 +72,11 @@ export class CreateStudentDTO{
         rating?: number
 
         @ApiProperty({
-            description:"ID da turma que o estudante irá entrar ao ser criado",
-            nullable:true
+            description:"A lista de IDs das turmas que o estudante irá entrar ao ser criado",
+            nullable:true,
+            example:["classId1","classId2"]
         })
-        classId?:string
+        classId?:string[]
         
 }
 

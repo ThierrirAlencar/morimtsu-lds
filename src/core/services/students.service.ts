@@ -57,7 +57,7 @@ export class studentServices{
         return age >= requiredAge;
     }
 
-    async create(data:Prisma.studentCreateInput, formData:Prisma.StudentFormUncheckedCreateInput, classId?:string):Promise<genericStudentReturn>{
+    async create(data:Prisma.studentCreateInput, formData:Prisma.StudentFormUncheckedCreateInput, classId?:string[]):Promise<genericStudentReturn>{
         const theresAnyStudentWithTheSameUniqueValues = await this._prisma.student.findFirst({
             where: {
                 OR: [
@@ -92,10 +92,10 @@ export class studentServices{
                 Rating:formData.Rating,
             }
         })
-        if(classId){
+        for(let i=0;i<classId.length;i++){
             const doesTheClassExists = await this._prisma.class.findUnique({
                 where:{
-                    id:classId
+                    id:classId[i]
                 }
             })
             if(!doesTheClassExists){
@@ -104,7 +104,7 @@ export class studentServices{
 
             await this._prisma.studentClasses.create({
                 data:{
-                    classId,
+                    classId:classId[i],
                     studentId:_student.id
                 }
             })
@@ -191,24 +191,38 @@ export class studentServices{
             throw new entityDoesNotExists()
         }
 
-        const _studentForm = await this._prisma.studentForm.findUnique({
+        const {CPF,Contact,birthDate,createdAt,email,name,nickname,parentContact,parentName} = doesTheStudentExists
+        console.log("but got here")
+        const studentForm = await this._prisma.studentForm.findUnique({
             where:{
                 studentId:id
             }
         })
 
+        // const classes = await this._prisma.studentClasses.findMany({
+        //     where:{
+        //         studentId:id
+        //     }
+        // })
+
+        console.log(doesTheStudentExists)
         return{
             student:{
-                nickname:doesTheStudentExists.nickname,
-                email:doesTheStudentExists.email,
+                nickname:nickname,
+                email:email,
                 personal:{
-                    name:doesTheStudentExists.name,
-                    CPF:doesTheStudentExists.CPF,
-                    contact:doesTheStudentExists.Contact,
-                    birthDate:doesTheStudentExists.birthDate,
+                    name:name,
+                    CPF:CPF,
+                    contact:Contact,
+                    birthDate:birthDate,
+                    age: Math.floor((new Date().getTime() - new Date(birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365.25)),
                 },
-                createdAt:doesTheStudentExists.createdAt,
-                form:_studentForm
+                parents:{
+                    parentName:parentName,
+                    parentContact:parentContact
+                },
+                createdAt:createdAt,
+                form:studentForm,
 
             },
             
@@ -249,6 +263,47 @@ export class studentServices{
 
     }
 
+    async leaveClass(studentId:string,classId:string):Promise<Prisma.BatchPayload>{
+        const doesTheStudentExists = await this._prisma.student.findUnique({
+            where:{
+                id:studentId
+            }
+        })
+
+        if(!doesTheStudentExists){
+            throw new entityDoesNotExists()
+        }
+
+        const doesTheClassExists = await this._prisma.class.findUnique({
+            where:{
+                id:classId
+            }
+        })
+
+        if(!doesTheClassExists){
+            throw new entityDoesNotExists()
+        }
+
+
+        const relationshipExists = await this._prisma.studentClasses.findFirst({
+            where:{
+                classId,
+                studentId
+            }
+        })
+
+        if(!relationshipExists){
+            throw new entityDoesNotExists()
+        }
+
+        return await this._prisma.studentClasses.deleteMany({
+            where:{
+                classId,
+                studentId
+            }
+        })
+    }
+    
     async queryStudent(filters?: QueryStudentFilters): Promise<genericStudentReturn[]> {
         const now = new Date();
         

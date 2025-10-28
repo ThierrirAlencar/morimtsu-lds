@@ -115,6 +115,37 @@ export class StudentController {
     }
 
     @Get("/:id")
+    @ApiResponse({ status: 200, description: "Student found successfully" , example:JSON.parse(`
+            {
+                "message": "Student found successfully",
+                "data": {
+                    "student": {
+                    "nickname": "oknmokbpmk",
+                    "email": "g4@gmail.com",
+                    "personal": {
+                        "name": "sadgfyuasduyf",
+                        "CPF": "1435146546",
+                        "contact": "123324214",
+                        "birthDate": "2000-12-11T00:00:00.000Z",
+                        "age": 24
+                    },
+                    "parents": {
+                        "parentName": null,
+                        "parentContact": null
+                    },
+                    "createdAt": "2025-10-22T14:23:02.156Z",
+                    "form": {
+                        "id": "cmh232643000bez2ml4zl79t8",
+                        "Rating": 1,
+                        "Presence": 10,
+                        "Comments": "",
+                        "Rank": "CINZA",
+                        "studentId": "0a34338b-c977-4ba8-9dee-c80d0cc4a931"
+                    }
+                    }
+                }
+            }
+    `)})
     @ApiResponse({ status: 200, description: "Student found successfully" })
     @ApiResponse({ status: 404, description: "Student not found" })
     async getOne(@Param("id") id: string, @Res() res: Response) {
@@ -128,7 +159,7 @@ export class StudentController {
             if (error instanceof baseError) {
                 return res.status(error.http_status).json(error);
             }
-            return res.status(500).json({ message: "Internal server error" });
+            return res.status(500).json({ message: "Internal server error",error });
         }
     }
 
@@ -141,6 +172,25 @@ export class StudentController {
             const relation = await this.studentService.joinClass(id, classId);
             return res.status(200).json({
                 message: "Student joined class successfully",
+                data: relation
+            });
+        } catch (error) {
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
+            }
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
+    @Delete("/:id/leave/:classId")
+    @ApiResponse({ status: 200, description: "Student left class successfully" })
+    @ApiResponse({ status: 404, description: "Student or class not found or student is not even assigned to this class"  })
+    @ApiResponse({ status: 405, description: "Student is too young or old to join this class" })
+    async LeaveClass(@Param("id") id: string, @Param("classId") classId: string, @Res() res: Response) {
+        try {
+            const relation = await this.studentService.leaveClass(id, classId);
+            return res.status(200).json({
+                message: "Student left class successfully",
                 data: relation
             });
         } catch (error) {

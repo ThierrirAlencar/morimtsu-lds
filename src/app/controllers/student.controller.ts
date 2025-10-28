@@ -151,6 +151,25 @@ export class StudentController {
         }
     }
 
+    @Delete("/:id/leave/:classId")
+    @ApiResponse({ status: 200, description: "Student Leaved class successfully" })
+    @ApiResponse({ status: 404, description: "Student or class not found or student is not even assigned to this class"  })
+    @ApiResponse({ status: 405, description: "Student is too young or old to join this class" })
+    async LeaveClass(@Param("id") id: string, @Param("classId") classId: string, @Res() res: Response) {
+        try {
+            const relation = await this.studentService.leaveClass(id, classId);
+            return res.status(200).json({
+                message: "Student left class successfully",
+                data: relation
+            });
+        } catch (error) {
+            if (error instanceof baseError) {
+                return res.status(error.http_status).json(error);
+            }
+            return res.status(500).json({ message: "Internal server error" });
+        }
+    }
+
     @Get()
     @ApiResponse({ status: 200, description: "Students filtered successfully", example:JSON.parse(`
             {

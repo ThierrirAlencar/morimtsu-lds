@@ -249,6 +249,47 @@ export class studentServices{
 
     }
 
+    async leaveClass(studentId:string,classId:string):Promise<Prisma.BatchPayload>{
+        const doesTheStudentExists = await this._prisma.student.findUnique({
+            where:{
+                id:studentId
+            }
+        })
+
+        if(!doesTheStudentExists){
+            throw new entityDoesNotExists()
+        }
+
+        const doesTheClassExists = await this._prisma.class.findUnique({
+            where:{
+                id:classId
+            }
+        })
+
+        if(!doesTheClassExists){
+            throw new entityDoesNotExists()
+        }
+
+
+        const relationshipExists = await this._prisma.studentClasses.findFirst({
+            where:{
+                classId,
+                studentId
+            }
+        })
+
+        if(!relationshipExists){
+            throw new entityDoesNotExists()
+        }
+
+        return await this._prisma.studentClasses.deleteMany({
+            where:{
+                classId,
+                studentId
+            }
+        })
+    }
+    
     async queryStudent(filters?: QueryStudentFilters): Promise<genericStudentReturn[]> {
         const now = new Date();
         

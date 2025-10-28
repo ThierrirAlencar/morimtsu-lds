@@ -121,15 +121,33 @@ export class classController{
 
     // GET /class/:id
     @ApiResponse({status:200, description:"class retornada com sucesso",example:JSON.parse(`
-        {
+{
   "status": 200,
   "description": "Class fetched with success",
   "class": {
-    "id": "cmh0lx2fe0000ildk9cbn0s0p",
-    "name": "Test Class REST - without coach v1",
-    "description": "Descrição atualizada"
+    "id": "cmh2dj2ze0009fa22yyybsh38",
+    "name": "ysad gysagvbdya",
+    "description": null,
+    "icon_url": "/src/assets/presets/capaturma3.png",
+    "startTime": null,
+    "endTime": null,
+    "maxAge": 0,
+    "minAge": 1
   },
-  "students": [],
+  "students": [
+    {
+      "id": "8c3498c9-1e3d-4e12-9253-9ccdb679708d",
+      "name": "Pedro Lucas",
+      "nickname": "Pedrinho matador",
+      "Contact": "+5511999999999",
+      "birthDate": "1999-04-15T00:00:00.000Z",
+      "email": "Pedro.Lucas@example.com",
+      "CPF": "123343435465547656",
+      "parentName": null,
+      "parentContact": null,
+      "createdAt": "2025-10-22T19:42:10.374Z"
+    }
+  ],
   "coachs": [
     {
       "id": "81b6ea92-734d-40d2-8f0d-7003e3546933",

@@ -191,24 +191,38 @@ export class studentServices{
             throw new entityDoesNotExists()
         }
 
-        const _studentForm = await this._prisma.studentForm.findUnique({
+        const {CPF,Contact,birthDate,createdAt,email,name,nickname,parentContact,parentName} = doesTheStudentExists
+        console.log("but got here")
+        const studentForm = await this._prisma.studentForm.findUnique({
             where:{
                 studentId:id
             }
         })
 
+        // const classes = await this._prisma.studentClasses.findMany({
+        //     where:{
+        //         studentId:id
+        //     }
+        // })
+
+        console.log(doesTheStudentExists)
         return{
             student:{
-                nickname:doesTheStudentExists.nickname,
-                email:doesTheStudentExists.email,
+                nickname:nickname,
+                email:email,
                 personal:{
-                    name:doesTheStudentExists.name,
-                    CPF:doesTheStudentExists.CPF,
-                    contact:doesTheStudentExists.Contact,
-                    birthDate:doesTheStudentExists.birthDate,
+                    name:name,
+                    CPF:CPF,
+                    contact:Contact,
+                    birthDate:birthDate,
+                    age: Math.floor((new Date().getTime() - new Date(birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365.25)),
                 },
-                createdAt:doesTheStudentExists.createdAt,
-                form:_studentForm
+                parents:{
+                    parentName:parentName,
+                    parentContact:parentContact
+                },
+                createdAt:createdAt,
+                form:studentForm,
 
             },
             

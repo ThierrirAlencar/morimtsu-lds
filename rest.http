@@ -118,7 +118,7 @@ Content-Type: application/json
 }
 
 ### Get student by id
-GET {{baseUrl}}/student/{{studentId}}
+GET http://127.0.0.1:3000/student/0a34338b-c977-4ba8-9dee-c80d0cc4a931
 
 
 ### Update student personal info

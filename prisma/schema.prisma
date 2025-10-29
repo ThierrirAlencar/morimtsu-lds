@@ -14,6 +14,12 @@ enum Role {
   ADMIN
 }
 
+enum Gender {
+  male 
+  female
+  other
+}
+
 enum Rank {
   BRANCA
   CINZA_BRANCA
@@ -79,6 +85,7 @@ model student {
   nickname String?
   Contact String 
   birthDate DateTime
+  gender Gender 
 
   //Prime keys
   email String @unique

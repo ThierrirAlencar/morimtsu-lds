@@ -46,6 +46,7 @@ export class classController{
         const {name,description,coachId,iconURL,maxAge,minAge,endTime,startTime} = body
     
         try{
+            console.log("Creating class with coachs", coachId);
             const _response = await this._classService.create({
                 name,description,icon_url:iconURL,maxAge,minAge,
                 endTime:timeStringToDate(endTime),

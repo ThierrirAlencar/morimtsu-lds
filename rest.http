@@ -2,10 +2,10 @@ POST http://127.0.0.1:3000/user
 Content-Type: application/json
 
 {
-    "name":"ts",
-    "email":"e@gmail.com",
+    "name":"Saulo Morimitsu",
+    "email":"admin@gmail.com",
     "password":"admin123",
-    "role":"USER"
+    "role":"ADMIN"
 }
 
 ### Enviar código de recuperação
@@ -27,31 +27,30 @@ Content-Type: application/json
 }
 
 ### 🔐 Login do usuário
-POST https://morimtsu-lds.onrender.com/user/login
+POST http://127.0.0.1:3000/user/login
 Content-Type: application/json
 
 {
-  "Email": "s@gmail.com",
+  "Email": "admin@gmail.com",
   "Password": "admin123"
 }
 
-### ⚙️ Atualizar dados do usuário (PUT /user/:id)
-PUT http://127.0.0.1:3000/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c
-Authorization: Bearer {{token}}
+### ⚙️ Atualizar dados do usuário (PUT /user)
+PUT http://127.0.0.1:3000/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3M2I5NjIxNy0wYWQ3LTQ3ZTMtYjI3ZC1jOTk4YTI0NWEwOTIiLCJpYXQiOjE3NjE3NDM3OTIsImV4cCI6MTc2MjM0ODU5Mn0.nZ2k0W6aoGO0f_fuU5CsGQngzcfbbrrD82Hbk-xuJgs
 Content-Type: application/json
 
 {
-  "name": "Novo Nome de Usuário",
+  "name": "Saulo De Lima Bezerra"
 }
 
 ### 🗑️ Excluir usuário (DELETE /user/:id)
 DELETE http://127.0.0.1:3000/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c
-Authorization: Bearer {{token}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1ZC1iYzdmLTQxOTAtOGI5Yi0xYTkzZDAzZjM0NzAiLCJpYXQiOjE3NjE3NDMyMzQsImV4cCI6MTc2MjM0ODAzNH0.PsnEqsDYp3U4zxHSvkGLzHNMAJgoZA1qoccncddXmB0
 
 ### 👤 Obter perfil do usuário (GET /user/:id/profile)
-GET http://127.0.0.1:3000/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c/profile
-Authorization: Bearer {{token}}
-
+GET http://127.0.0.1:3000/user/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1ZC1iYzdmLTQxOTAtOGI5Yi0xYTkzZDAzZjM0NzAiLCJpYXQiOjE3NjE3NDMyMzQsImV4cCI6MTc2MjM0ODAzNH0.PsnEqsDYp3U4zxHSvkGLzHNMAJgoZA1qoccncddXmB0
 # REST tests for classController
 # Substitua {{baseUrl}} pelo endereço da sua API (ex: http://localhost:3000)
 # Após criar a class, copie o id retornado e substitua {{classId}} nos requests seguintes.
@@ -67,13 +66,18 @@ Content-Type: application/json
 }
 
 ### Create class (with coachId)
-POST https://morimtsu-lds.onrender.com/class
+POST http://127.0.0.1:3000/class
 Content-Type: application/json
 
 {
-  "name": "Test Class With Coach Sla",
-  "description": "Classe com coach fornecido",
-  "coachId": "00000000-0000-0000-0000-000000000000"
+  "name": "Turma de Isaque",
+  "description": "Turma de Jiu-Jitsu para crianças",
+  "coachId": [],
+  "iconURL": "https://example.com/icon.png",
+  "maxAge": 12,
+  "minAge": 6,
+  "endTime": "18:00",
+  "startTime": "17:00"
 }
 
 ### Get class by id
@@ -92,8 +96,8 @@ Content-Type: application/json
 DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
 
 ### Get filtered classes (only query)
-GET https://morimtsu-lds.onrender.com/class
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MWI2ZWE5Mi03MzRkLTQwZDItOGYwZC03MDAzZTM1NDY5MzMiLCJpYXQiOjE3NjExNDEzNDQsImV4cCI6MTc2MTc0NjE0NH0.nJMOFHu4hechTHrmyzXa8vvUMz9LOU8R9nSxPv02lHQ
+GET http://127.0.0.1:3000/class
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3M2I5NjIxNy0wYWQ3LTQ3ZTMtYjI3ZC1jOTk4YTI0NWEwOTIiLCJpYXQiOjE3NjE3NjI4MTgsImV4cCI6MTc2MjM2NzYxOH0.Y5dSK1N7X1pMnX6Fkv0SzQeo1SilSme1u_VFLzdOKEg
 
 # REST tests for StudentController
 # Replace {{baseUrl}} with your server address (ex: http://localhost:3000)
@@ -104,16 +108,17 @@ POST http://127.0.0.1:3000/student
 Content-Type: application/json
 
 {
-  "name": "Pedro Lucas",
-  "email": "Pedro.Lucas@example.com",
-  "CPF": "123343435465547656",
-  "contact": "+5511999999999",
-  "birthDate": "1999-04-15",
-  "nickname": "Pedrinho matador",
+  "name": "Isaque",
+  "email": "LucasPeter@example.com",
+  "CPF": "1233434352234547656",
+  "contact": "+5511991212499999",
+  "birthDate": "2007-04-15",
+  "nickname": "Lukinhas chifre seco",
   "rank": "BRANCA",
-  "comments": "Beginner",
-  "presence": 100,
-  "rating": 5,
+  "comments": "Braço enfaixado",
+  "presence": 89,
+  "rating": 2,
+  "gender":"male",
   "classId": "cmh2dj2ze0009fa22yyybsh38"
 }
 

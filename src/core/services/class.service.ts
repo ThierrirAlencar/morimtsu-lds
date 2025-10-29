@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { log } from "console";
 import { Class, Prisma, student, User } from "generated/prisma";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
@@ -16,20 +17,19 @@ export class classService{
 
     }
 
-    //Creates a class and automatically assigns it to the ADMIN user
-    async create(data:Prisma.ClassUncheckedCreateInput,userId:string | null){
+    async create(data:Prisma.ClassUncheckedCreateInput,userIds?:string[]){
         const {name,description,maxAge,minAge,icon_url} = data
+        console.log("CLASS SERVICE - CREATE METHOD CALLED");
 
-        //Automaticaly assigns it to the admin user
-        const adminOrCoach = userId ?await this.__prisma.user.findUnique({
-            where:{
-                id:userId
-            }
-        }) : await this.__prisma.user.findFirst({
+        const admin = await this.__prisma.user.findFirst({
             where:{
                 role:"ADMIN"
             }
-        })  
+        })
+        if(!admin){
+            // não há admin no sistema
+            throw new entityDoesNotExists()
+        }
 
         const doesTheClassWithTheSameNameExists = await this.__prisma.class.findUnique({
             where:{
@@ -37,19 +37,10 @@ export class classService{
             }
         })
 
+        console.log("Checking class name existence:", doesTheClassWithTheSameNameExists);
+
         if(doesTheClassWithTheSameNameExists){
             throw new entityAlreadyExistsError()
-        }
-
-
-        const doesTheUserExists = await this.__prisma.user.findUnique({
-            where:{
-                id:adminOrCoach.id
-            }
-        })
-
-        if(!doesTheUserExists){
-            throw new entityDoesNotExists()
         }
 
         const _class = await this.__prisma.class.create({
@@ -59,16 +50,52 @@ export class classService{
                 maxAge,minAge,icon_url
             }
         })
+        log("CLASS CREATED:",_class)
 
-        const _relation = await this.__prisma.userClasses.create({
-            data:{
-                classId:_class.id,userId:adminOrCoach.id
+        const coaches = Array.isArray(userIds) ? userIds.filter(Boolean) : []
+
+        const uniqueCoachIds = Array.from(new Set(coaches))
+
+        for(const coachId of uniqueCoachIds){
+            const doesTheUserExists = await this.__prisma.user.findUnique({
+                where:{
+                    id: coachId
+                }
+            })
+            if(!doesTheUserExists){
+                throw new entityDoesNotExists()
             }
-        })
+
+            await this.__prisma.userClasses.create({
+                data:{
+                    classId:_class.id, userId: coachId
+                },
+                select:{ 
+                    userId:false,classId:true
+                }
+            })
+        }
+
+        if(!uniqueCoachIds.includes(admin.id)){
+            await this.__prisma.userClasses.create({
+                data:{
+                    classId:_class.id,userId:admin.id
+                },
+                select:{
+                    userId:false,classId:true
+                }
+            })
+        }
+
+        const _relations = await this.__prisma.userClasses.findMany({
+            where:{
+                classId:_class.id
+            }
+        }) 
 
         return{
             _class,
-            _relation
+            _relations
         }
     }
 

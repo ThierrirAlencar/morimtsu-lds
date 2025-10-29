@@ -9,12 +9,14 @@ import z, { any, email } from "zod";
 import { createUserDTO, LoginDTO, updateUserDTO } from "../dto/user";
 import { ApiResponse } from "@nestjs/swagger";
 import {User} from "generated/prisma"
+import { mailService } from "src/core/services/mail.service";
 
 @Controller("user")
 export class userController{
     constructor(
         private userService:UserService,
-        private authService:AuthService
+        private authService:AuthService,
+        private mailService:mailService
     ){}
     
     @ApiResponse({ status: 201, description: 'Usuário criado com sucesso',example:
@@ -29,6 +31,7 @@ export class userController{
     })
     @ApiResponse({status:409, description:"Já existe um usuário com o nome ou email utilizado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @ApiResponse({status:504, description:"Erro no envio do email. Isso nao quer dizer que o usuário não foi criado com sucesso, mas que não foi possível enviar o email de boas vindas, cheque a validade do email."})
     @Post("/")
     async post(@Body() body:createUserDTO, @Res() res:Response){
         const {email,name,password,role} = z.object({
@@ -43,14 +46,15 @@ export class userController{
             const _user = await this.userService.create({
                 email,name,password,role
             })
-            console.log("Q")
+            const _mail = await this.mailService.sendWelcomeEmail(name,email)
             res.send({
                 status:201, 
                 description:"User created with success",
                 body:{
                     name,email,role
                 },
-                _user
+                _user,
+                _mail
             })
         }catch(err){
             if(err instanceof entityAlreadyExistsError){

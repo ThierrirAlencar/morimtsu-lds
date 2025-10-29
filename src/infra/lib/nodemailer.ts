@@ -7,7 +7,8 @@ import { createTransport } from "nodemailer";
  * @argument to - Email que irá receber a mensagem (alvo do email)
 */
 export interface EmailType{
-    text: string
+    text?: string
+    html?: string
     to: string 
     subject:string
 }
@@ -61,10 +62,11 @@ const transport = createTransport({
  * ```
  */
 export async function SendEmail(email:EmailType) {
-    const {subject,text,to} = email
+    const {subject,text,to,html} = email
     const emailSent = await transport.sendMail({
         text,
         subject,
+        html,
         to,
         from:process.env.ADMIN_EMAIL
     })

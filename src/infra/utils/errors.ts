@@ -39,3 +39,9 @@ export class prohibitedAction extends baseError{
     description = "Tried to execute a prohibited action."
     public http_status: number = 405;
 }
+
+export class FSMTPError extends baseError{
+    code=7;
+    description = "An non letal error ocurred while trying to send an email."
+    public http_status: number = 504;
+}

@@ -32,7 +32,10 @@ export class StudentController {
                     CPF: body.CPF,
                     Contact: body.contact,
                     birthDate: new Date(body.birthDate),
-                    nickname: body.nickname
+                    nickname: body.nickname,
+                    gender: body.gender,
+                    parentContact: body.parentsContact,
+                    parentName: body.parentName
                 },
                 {   
                     studentId:"000000",

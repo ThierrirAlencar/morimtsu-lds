@@ -2,10 +2,10 @@ POST http://127.0.0.1:3000/user
 Content-Type: application/json
 
 {
-    "name":"ts",
-    "email":"e@gmail.com",
+    "name":"Saulo Morimitsu",
+    "email":"admin@gmail.com",
     "password":"admin123",
-    "role":"USER"
+    "role":"ADMIN"
 }
 
 ### Enviar código de recuperação
@@ -27,31 +27,30 @@ Content-Type: application/json
 }
 
 ### 🔐 Login do usuário
-POST https://morimtsu-lds.onrender.com/user/login
+POST http://127.0.0.1:3000/user/login
 Content-Type: application/json
 
 {
-  "Email": "s@gmail.com",
+  "Email": "admin@gmail.com",
   "Password": "admin123"
 }
 
-### ⚙️ Atualizar dados do usuário (PUT /user/:id)
-PUT http://127.0.0.1:3000/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c
-Authorization: Bearer {{token}}
+### ⚙️ Atualizar dados do usuário (PUT /user)
+PUT http://127.0.0.1:3000/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1ZC1iYzdmLTQxOTAtOGI5Yi0xYTkzZDAzZjM0NzAiLCJpYXQiOjE3NjE3NDMyMzQsImV4cCI6MTc2MjM0ODAzNH0.PsnEqsDYp3U4zxHSvkGLzHNMAJgoZA1qoccncddXmB0
 Content-Type: application/json
 
 {
-  "name": "Novo Nome de Usuário",
+  "name": "Saulo De Lima Bezerra"
 }
 
 ### 🗑️ Excluir usuário (DELETE /user/:id)
 DELETE http://127.0.0.1:3000/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c
-Authorization: Bearer {{token}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1ZC1iYzdmLTQxOTAtOGI5Yi0xYTkzZDAzZjM0NzAiLCJpYXQiOjE3NjE3NDMyMzQsImV4cCI6MTc2MjM0ODAzNH0.PsnEqsDYp3U4zxHSvkGLzHNMAJgoZA1qoccncddXmB0
 
 ### 👤 Obter perfil do usuário (GET /user/:id/profile)
-GET http://127.0.0.1:3000/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c/profile
-Authorization: Bearer {{token}}
-
+GET http://127.0.0.1:3000/user/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1ZC1iYzdmLTQxOTAtOGI5Yi0xYTkzZDAzZjM0NzAiLCJpYXQiOjE3NjE3NDMyMzQsImV4cCI6MTc2MjM0ODAzNH0.PsnEqsDYp3U4zxHSvkGLzHNMAJgoZA1qoccncddXmB0
 # REST tests for classController
 # Substitua {{baseUrl}} pelo endereço da sua API (ex: http://localhost:3000)
 # Após criar a class, copie o id retornado e substitua {{classId}} nos requests seguintes.
@@ -114,6 +113,7 @@ Content-Type: application/json
   "comments": "Beginner",
   "presence": 100,
   "rating": 5,
+  "gender":"male",
   "classId": "cmh2dj2ze0009fa22yyybsh38"
 }
 

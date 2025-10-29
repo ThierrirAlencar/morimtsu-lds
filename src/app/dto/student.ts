@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { Rank } from "generated/prisma"
+import { Gender, Rank } from "generated/prisma"
 
 
 
@@ -78,6 +78,12 @@ export class CreateStudentDTO{
         })
         classId?:string[]
         
+        @ApiProperty({
+            description:"O gênero do aluno",
+            enum:Gender,
+            examples:["male", "female", "other"]
+        })
+        gender:Gender
 }
 
 export class UpdateStudentFormDTO{
@@ -136,6 +142,27 @@ export class UpdateStudentPersonalDTO{
             nullable:true
         })
         nickname?: string
+
+        @ApiProperty({
+            description:"O gênero do aluno",
+            enum:Gender,
+            examples:["male", "female", "other"],
+            nullable:true
+        })
+        gender?:Gender
+
+        @ApiProperty({
+            description:"O telefone de contato do responsável legal do estudante estudante(Obrigatório se for menor de idade)",
+            nullable:true
+        })
+        parentsContact?: string
+
+        @ApiProperty({
+            description:"O nome do responsável legal do estudante (Obrigatório se for menor de idade)",
+            nullable:true
+        })
+        parentName?: string
+
 }
 
 

@@ -63,6 +63,8 @@ export class UserService {
     var _password = String(password);
     if(password){
       _password = await hash(String(password),9)
+    }else{
+      _password = doesTheUserExists.password;
     }
 
     const _user = await this.__prisma.user.update({

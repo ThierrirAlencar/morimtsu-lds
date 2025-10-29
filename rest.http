@@ -37,7 +37,7 @@ Content-Type: application/json
 
 ### ⚙️ Atualizar dados do usuário (PUT /user)
 PUT http://127.0.0.1:3000/user
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1ZC1iYzdmLTQxOTAtOGI5Yi0xYTkzZDAzZjM0NzAiLCJpYXQiOjE3NjE3NDMyMzQsImV4cCI6MTc2MjM0ODAzNH0.PsnEqsDYp3U4zxHSvkGLzHNMAJgoZA1qoccncddXmB0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3M2I5NjIxNy0wYWQ3LTQ3ZTMtYjI3ZC1jOTk4YTI0NWEwOTIiLCJpYXQiOjE3NjE3NDM3OTIsImV4cCI6MTc2MjM0ODU5Mn0.nZ2k0W6aoGO0f_fuU5CsGQngzcfbbrrD82Hbk-xuJgs
 Content-Type: application/json
 
 {

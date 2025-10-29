@@ -66,13 +66,18 @@ Content-Type: application/json
 }
 
 ### Create class (with coachId)
-POST https://morimtsu-lds.onrender.com/class
+POST http://127.0.0.1:3000/class
 Content-Type: application/json
 
 {
-  "name": "Test Class With Coach Sla",
-  "description": "Classe com coach fornecido",
-  "coachId": "00000000-0000-0000-0000-000000000000"
+  "name": "Turma de Isaque",
+  "description": "Turma de Jiu-Jitsu para crianças",
+  "coachId": [],
+  "iconURL": "https://example.com/icon.png",
+  "maxAge": 12,
+  "minAge": 6,
+  "endTime": "18:00",
+  "startTime": "17:00"
 }
 
 ### Get class by id
@@ -91,8 +96,8 @@ Content-Type: application/json
 DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
 
 ### Get filtered classes (only query)
-GET https://morimtsu-lds.onrender.com/class
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MWI2ZWE5Mi03MzRkLTQwZDItOGYwZC03MDAzZTM1NDY5MzMiLCJpYXQiOjE3NjExNDEzNDQsImV4cCI6MTc2MTc0NjE0NH0.nJMOFHu4hechTHrmyzXa8vvUMz9LOU8R9nSxPv02lHQ
+GET http://127.0.0.1:3000/class
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3M2I5NjIxNy0wYWQ3LTQ3ZTMtYjI3ZC1jOTk4YTI0NWEwOTIiLCJpYXQiOjE3NjE3NjI4MTgsImV4cCI6MTc2MjM2NzYxOH0.Y5dSK1N7X1pMnX6Fkv0SzQeo1SilSme1u_VFLzdOKEg
 
 # REST tests for StudentController
 # Replace {{baseUrl}} with your server address (ex: http://localhost:3000)
@@ -103,16 +108,16 @@ POST http://127.0.0.1:3000/student
 Content-Type: application/json
 
 {
-  "name": "Pedro Lucas",
-  "email": "Pedro.Lucas@example.com",
-  "CPF": "123343435465547656",
-  "contact": "+5511999999999",
-  "birthDate": "1999-04-15",
-  "nickname": "Pedrinho matador",
+  "name": "Isaque",
+  "email": "LucasPeter@example.com",
+  "CPF": "1233434352234547656",
+  "contact": "+5511991212499999",
+  "birthDate": "2007-04-15",
+  "nickname": "Lukinhas chifre seco",
   "rank": "BRANCA",
-  "comments": "Beginner",
-  "presence": 100,
-  "rating": 5,
+  "comments": "Braço enfaixado",
+  "presence": 89,
+  "rating": 2,
   "gender":"male",
   "classId": "cmh2dj2ze0009fa22yyybsh38"
 }

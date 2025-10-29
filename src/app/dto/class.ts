@@ -9,7 +9,6 @@ export class createClassDTO{
     name: string
 
 
-    
     @IsString()
     @Matches(/^([0-1]\d|2[0-3]):([0-5]\d)$/, {
         message: "O horário de início deve estar no formato HH:mm",
@@ -44,10 +43,12 @@ export class createClassDTO{
     description:string | null
 
     @ApiProperty({
-        description:"Id de um professor. Por padrão o usuário ADMIN será adicionado se este campo estiver em branco",
-        nullable:true
+        description:"Id de uma lista de professores. Por padrão o usuário ADMIN será adicionado se este campo estiver em branco",
+        nullable:true,
+        isArray:true,
+        example: ["cmh0lx2fe0000ildk9cbn0s0p"]
     })
-    coachId:string | null
+    coachId?:string[]
 
     @ApiProperty({
         description:"A idade máxima de um aluno da turma",

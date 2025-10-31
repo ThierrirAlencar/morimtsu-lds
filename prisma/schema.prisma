@@ -86,7 +86,7 @@ model student {
   Contact String 
   birthDate DateTime
   gender Gender 
-
+  
   //Prime keys
   email String @unique
   CPF String @unique

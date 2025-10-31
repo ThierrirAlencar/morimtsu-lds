@@ -108,22 +108,22 @@ POST http://127.0.0.1:3000/student
 Content-Type: application/json
 
 {
-  "name": "Isaque",
-  "email": "LucasPeter@example.com",
-  "CPF": "1233434352234547656",
-  "contact": "+5511991212499999",
-  "birthDate": "2007-04-15",
-  "nickname": "Lukinhas chifre seco",
+  "name": "Xirlei",
+  "email": "Xirlei@example.com",
+  "CPF": "1",
+  "contact": "+1",
+  "birthDate": "2001-05-20",
+  "nickname": "Xirlei do Grau",
   "rank": "BRANCA",
-  "comments": "Braço enfaixado",
+  "comments": "Mulher",
   "presence": 89,
   "rating": 2,
-  "gender":"male",
-  "classId": "cmh2dj2ze0009fa22yyybsh38"
+  "gender":"female",
+  "classId": ["cmhcdqnxl0000ilv8zj32ekta"]
 }
 
 ### Get student by id
-GET http://127.0.0.1:3000/student/0a34338b-c977-4ba8-9dee-c80d0cc4a931
+GET http://127.0.0.1:3000/student/b633ed3e-06d2-41e0-a6d0-d2f1f48b0116
 
 
 ### Update student personal info

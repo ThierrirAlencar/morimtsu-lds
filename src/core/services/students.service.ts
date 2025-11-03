@@ -399,7 +399,7 @@ export class studentServices{
 
 
         
-
+        
         // Map to return format
         return filteredStudents.map(student => ({
             student: {
@@ -411,7 +411,11 @@ export class studentServices{
                     CPF: student.CPF,
                     contact: student.Contact,
                     birthDate: student.birthDate,
-                    gender: student.gender
+                    gender: student.gender,
+                    rank: student.formData?.Rank,
+                    comments: student.formData?.Comments,
+                    presence: student.formData?.Presence,
+                    rating: student.formData?.Rating,
                 },
                 createdAt: student.createdAt,
                 form: student.formData

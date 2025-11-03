@@ -7,7 +7,7 @@ import { entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, tr
 import { AuthService } from "src/infra/validators/auth.service";
 import z, { any, email } from "zod";
 import { createUserDTO, LoginDTO, updateUserDTO } from "../dto/user";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiHeader, ApiParam, ApiResponse } from "@nestjs/swagger";
 import {User} from "generated/prisma"
 import { mailService } from "src/core/services/mail.service";
 
@@ -109,6 +109,7 @@ export class userController{
     @ApiResponse({status:200, description:"usuário deletado com sucesso"})
     @ApiResponse({status:404, description:"Usuário não encontrado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @ApiHeader({name:"Authorization", description:"Bearer token de autenticação"})
     @UseGuards(AuthGuard("jwt"))
     @Delete("/")
     async remove(@Req() req: AuthRequest, @Res() res: Response){
@@ -142,6 +143,7 @@ export class userController{
     }})
     @ApiResponse({status:404, description:"Usuário não encontrado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @ApiHeader({name:"Authorization", description:"Bearer token de autenticação"})
     @UseGuards(AuthGuard("jwt"))
     @Get("/profile")
     async profile(@Req() req: AuthRequest, @Res() res: Response){

@@ -219,23 +219,79 @@ export class StudentController {
 
     @Get()
     @ApiResponse({ status: 200, description: "Students filtered successfully", example:JSON.parse(`
-            {
+
+{
   "message": "Students filtered successfully",
-  "count": 1,
+  "count": 3,
   "data": [
     {
       "student": {
-        "id": "2127b2b9-e955-4f10-b7ae-996a37318008",
-        "nickname": "Joaozinho",
-        "email": "joao.silva@example.com",
+        "id": "6411223c-a1ab-4adc-9624-d7a8a89a8f19",
+        "nickname": "Julinha do Grau",
+        "email": "AnaJulia@example.com",
         "personal": {
-          "name": "João Silva",
-          "CPF": "12345678900",
-          "contact": "+5511999999999",
-          "birthDate": "1999-04-15T00:00:00.000Z"
+          "name": "Ana Júlia",
+          "CPF": "123343439121838234547656",
+          "contact": "+55119912119299999",
+          "birthDate": "2000-05-20T00:00:00.000Z",
+          "gender": "female",
+          "rank": "BRANCA",
+          "comments": "Mulher",
+          "presence": 89,
+          "rating": 2
         },
-        "createdAt": "2025-10-22T13:42:38.625Z",
+        "createdAt": "2025-10-29T19:44:30.414Z",
+        "form": {
+          "id": "cmhcemjvb0001ilv8fvvdbws6",
+          "Rating": 2,
+          "Presence": 89,
+          "Comments": "Mulher",
+          "Rank": "BRANCA",
+          "studentId": "6411223c-a1ab-4adc-9624-d7a8a89a8f19"
+        }
+      }
+    },
+    {
+      "student": {
+        "id": "9a9d3bc6-0400-4176-9fb3-cee20dfbbe77",
+        "nickname": "nao",
+        "email": "annajuliasousa644@gmail.com",
+        "personal": {
+          "name": "Anna as",
+          "CPF": "09976754454",
+          "contact": "88992564083",
+          "birthDate": "2000-03-21T00:00:00.000Z",
+          "gender": "female"
+        },
+        "createdAt": "2025-10-30T19:55:03.947Z",
         "form": null
+      }
+    },
+    {
+      "student": {
+        "id": "bbd9c409-1ac4-4d2d-999a-240f9a6308f7",
+        "nickname": "ju",
+        "email": "annajs@gmail.com",
+        "personal": {
+          "name": "ANNA JULIA DE SOUSA FELIX",
+          "CPF": "9094837474",
+          "contact": "8893746589",
+          "birthDate": "2008-04-21T00:00:00.000Z",
+          "gender": "female",
+          "rank": "AMARELA",
+          "comments": "",
+          "presence": 9,
+          "rating": 2
+        },
+        "createdAt": "2025-10-30T20:09:01.408Z",
+        "form": {
+          "id": "cmhduxxd30006d222pmjxaczp",
+          "Rating": 2,
+          "Presence": 9,
+          "Comments": "",
+          "Rank": "AMARELA",
+          "studentId": "bbd9c409-1ac4-4d2d-999a-240f9a6308f7"
+        }
       }
     }
   ]

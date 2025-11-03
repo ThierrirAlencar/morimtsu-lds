@@ -227,14 +227,14 @@ export class studentServices{
             }
         })
 
-        studentClasses.forEach(async(studentClass)=>{
+        for(let i=0;i<studentClasses.length;i++){
             const classInfo = await this._prisma.class.findUnique({
                 where:{
-                    id:studentClass.classId
+                    id:studentClasses[i].classId
                 }
             })
             __classes.push(classInfo)
-        })
+        }
 
         console.log(doesTheStudentExists)
         return{

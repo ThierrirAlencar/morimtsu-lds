@@ -123,31 +123,44 @@ export class StudentController {
                 "message": "Student found successfully",
                 "data": {
                     "student": {
-                    "nickname": "oknmokbpmk",
-                    "email": "g4@gmail.com",
+                    "nickname": "Julinha do Grau",
+                    "email": "AnaJulia@example.com",
                     "personal": {
-                        "name": "sadgfyuasduyf",
-                        "CPF": "1435146546",
-                        "contact": "123324214",
-                        "birthDate": "2000-12-11T00:00:00.000Z",
-                        "age": 24
+                        "name": "Ana Júlia",
+                        "CPF": "123343439121838234547656",
+                        "contact": "+55119912119299999",
+                        "birthDate": "2000-05-20T00:00:00.000Z",
+                        "gender": "female",
+                        "age": 25
                     },
                     "parents": {
                         "parentName": null,
                         "parentContact": null
                     },
-                    "createdAt": "2025-10-22T14:23:02.156Z",
+                    "classes": [
+                        {
+                        "id": "cmhcdqnxl0000ilv8zj32ekta",
+                        "name": "Test Class With Coach Sla",
+                        "description": "Classe com coach fornecido",
+                        "icon_url": "https://example.com/icon.png",
+                        "startTime": null,
+                        "endTime": null,
+                        "maxAge": 18,
+                        "minAge": 10
+                        }
+                    ],
+                    "createdAt": "2025-10-29T19:44:30.414Z",
                     "form": {
-                        "id": "cmh232643000bez2ml4zl79t8",
-                        "Rating": 1,
-                        "Presence": 10,
-                        "Comments": "",
-                        "Rank": "CINZA",
-                        "studentId": "0a34338b-c977-4ba8-9dee-c80d0cc4a931"
+                        "id": "cmhcemjvb0001ilv8fvvdbws6",
+                        "Rating": 2,
+                        "Presence": 89,
+                        "Comments": "Mulher",
+                        "Rank": "BRANCA",
+                        "studentId": "6411223c-a1ab-4adc-9624-d7a8a89a8f19"
                     }
                     }
                 }
-            }
+                }
     `)})
     @ApiResponse({ status: 200, description: "Student found successfully" })
     @ApiResponse({ status: 404, description: "Student not found" })

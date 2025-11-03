@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { log } from "console";
-import { Prisma, Rank, student, StudentClasses, StudentForm } from "generated/prisma";
+import { Class, Gender, Prisma, Rank, student, StudentClasses, StudentForm } from "generated/prisma";
 import { retry } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityAlreadyExistsError, entityDoesNotExists, prohibitedAction } from "src/infra/utils/errors";
@@ -17,6 +17,23 @@ interface QueryStudentFilters {
     class?:string //the class id from studentClasses relationship 
 }
 
+interface genericPrivateStudentReturn{
+    student:{
+            nickname:string,
+            email:string,
+            personal:{
+                name:string,
+                CPF:string,
+                contact:string,
+                birthDate:Date,
+                gender:Gender
+            },
+            createdAt:Date,
+            form:StudentForm
+            classes:Class[]
+        }
+}
+
 interface genericStudentReturn{
     student:{
             nickname:string,
@@ -26,13 +43,12 @@ interface genericStudentReturn{
                 CPF:string,
                 contact:string,
                 birthDate:Date,
+                gender:Gender
             },
             createdAt:Date,
             form:StudentForm
-
         }
 }
-
 @Injectable()
 export class studentServices{
     constructor(
@@ -57,7 +73,7 @@ export class studentServices{
         return age >= requiredAge;
     }
 
-    async create(data:Prisma.studentCreateInput, formData:Prisma.StudentFormUncheckedCreateInput, classId?:string[]):Promise<genericStudentReturn>{
+    async create(data:Prisma.studentCreateInput, formData:Prisma.StudentFormUncheckedCreateInput, classId?:string[]):Promise<genericPrivateStudentReturn>{
         const theresAnyStudentWithTheSameUniqueValues = await this._prisma.student.findFirst({
             where: {
                 OR: [
@@ -92,6 +108,7 @@ export class studentServices{
                 Rating:formData.Rating,
             }
         })
+        var __classes:Class[] = []
         for(let i=0;i<classId.length;i++){
             const doesTheClassExists = await this._prisma.class.findUnique({
                 where:{
@@ -101,27 +118,31 @@ export class studentServices{
             if(!doesTheClassExists){
                 throw new entityDoesNotExists()
             }
-
             await this._prisma.studentClasses.create({
-                data:{
-                    classId:classId[i],
-                    studentId:_student.id
-                }
+                    data:{
+                        classId:classId[i],
+                        studentId:_student.id
+                    }
             })
+
+             __classes.push(doesTheClassExists)     
         }
+
+        
         return{
             student:{
                 nickname:_student.nickname,
                 email:_student.email,
                 personal:{
+                    gender:_student.gender,
                     name:_student.name,
                     CPF:_student.CPF,
                     contact:_student.Contact,
                     birthDate:_student.birthDate,
                 },
                 createdAt:_student.createdAt,
-                form:_studenForm
-
+                form:_studenForm,
+                classes:__classes
             }
         }
     }
@@ -199,11 +220,21 @@ export class studentServices{
             }
         })
 
-        // const classes = await this._prisma.studentClasses.findMany({
-        //     where:{
-        //         studentId:id
-        //     }
-        // })
+        const __classes:Class[] = []
+        const studentClasses = await this._prisma.studentClasses.findMany({
+            where:{
+                studentId:id
+            }
+        })
+
+        for(let i=0;i<studentClasses.length;i++){
+            const classInfo = await this._prisma.class.findUnique({
+                where:{
+                    id:studentClasses[i].classId
+                }
+            })
+            __classes.push(classInfo)
+        }
 
         console.log(doesTheStudentExists)
         return{
@@ -215,12 +246,14 @@ export class studentServices{
                     CPF:CPF,
                     contact:Contact,
                     birthDate:birthDate,
+                    gender:doesTheStudentExists.gender,
                     age: Math.floor((new Date().getTime() - new Date(birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365.25)),
                 },
                 parents:{
                     parentName:parentName,
                     parentContact:parentContact
                 },
+                classes:__classes, //TODO: implementar retorno de classes
                 createdAt:createdAt,
                 form:studentForm,
 
@@ -364,6 +397,9 @@ export class studentServices{
             );
         }
 
+
+        
+
         // Map to return format
         return filteredStudents.map(student => ({
             student: {
@@ -375,6 +411,7 @@ export class studentServices{
                     CPF: student.CPF,
                     contact: student.Contact,
                     birthDate: student.birthDate,
+                    gender: student.gender
                 },
                 createdAt: student.createdAt,
                 form: student.formData

@@ -108,16 +108,16 @@ POST http://127.0.0.1:3000/student
 Content-Type: application/json
 
 {
-  "name": "Xirlei",
-  "email": "Xirlei@example.com",
-  "CPF": "1",
-  "contact": "+1",
+  "name": "Celina",
+  "email": "Celina@example.com",
+  "CPF": "23455",
+  "contact": "+2123423",
   "birthDate": "2001-05-20",
-  "nickname": "Xirlei do Grau",
-  "rank": "BRANCA",
+  "nickname": "Celina do Brasil",
+  "rank": "AMARELA",
   "comments": "Mulher",
-  "presence": 89,
-  "rating": 2,
+  "presence": 23,
+  "rating": 1,
   "gender":"female",
   "classId": ["cmhcdqnxl0000ilv8zj32ekta"]
 }
@@ -158,7 +158,7 @@ POST http://127.0.0.1:3000/student/{{studentId}}/join/cmh2ds8qi000afa222rxz7aqq
 GET http://127.0.0.1:3000/student?query=Joao&minAge=10&maxAge=18&CPF=12345678900&email=joao.silva@example.com&Presence=100&Rank=WHITE&class={{classId}}
 
 ### Query students - by text only
-GET http://127.0.0.1:3000/student?query=Silva
+GET http://127.0.0.1:3000/student?query=Julia
 
 ### Query students - by age range only
 GET http://127.0.0.1:3000/student

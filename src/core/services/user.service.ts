@@ -3,7 +3,7 @@ import { compare, hash } from 'bcryptjs';
 import { log } from 'console';
 import { Prisma, Role } from 'generated/prisma';
 import { PrismaService } from 'src/infra/database/prisma.service';
-import { entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, triedToUpdateForbidenValue } from 'src/infra/utils/errors';
+import { entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, notEnoughPermissions, triedToUpdateForbidenValue } from 'src/infra/utils/errors';
 import { string } from 'zod';
 import { _includes } from 'zod/v4/core';
 
@@ -148,5 +148,51 @@ export class UserService {
         return{
             userId:doesTheUserExists.id
         }
+  }
+
+  async getAllUsers(id:string){
+    const doesTheUserExists = await this.__prisma.user.findUnique({
+      where:{
+        id
+      }
+    })
+
+    if(!doesTheUserExists){
+      throw new entityDoesNotExists()
     }
+
+    if(doesTheUserExists.role !== "ADMIN"){
+      throw new notEnoughPermissions()
+    }
+
+    const _users = await this.__prisma.user.findMany({
+      where:{
+        role:'USER'
+      }
+    })
+    
+    return{
+      users:_users.map(async user => {
+        const formData = await this.__prisma.studentForm.findUnique({
+          where:{
+            userId:user.id
+          }
+        })
+        let __studentForm = null;
+        if(formData){ 
+           __studentForm = await this.__prisma.studentForm.findUnique({
+            where:{
+              id:formData.studentId
+            }
+          })
+        }
+        return{
+          user,
+          formData,
+          studentProfile: __studentForm 
+        }
+      })
+    }
+  }
+
 }

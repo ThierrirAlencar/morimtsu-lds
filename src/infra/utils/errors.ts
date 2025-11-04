@@ -36,8 +36,12 @@ export class InvalidPasswordError extends baseError{
 
 export class prohibitedAction extends baseError{
     code=6;
-    description = "Tried to execute a prohibited action."
     public http_status: number = 405;
+
+    constructor(public action:string){
+        super();
+        this.description = "Tried to execute a prohibited action:"+action
+    }
 }
 
 export class FSMTPError extends baseError{

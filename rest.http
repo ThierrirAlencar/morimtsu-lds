@@ -62,7 +62,11 @@ Content-Type: application/json
 {
   "iconURL":"askkahsjjaksjjskaskaj",
   "name": "Test Class REST - without coach v1",
-  "description": "Classe criada pelo teste REST"
+  "description": "Classe criada pelo teste REST",
+  "maxAge": 12,
+  "minAge": 6,
+  "endTime": "18:00",
+  "startTime": "17:00"
 }
 
 ### Create class (with coachId)
@@ -108,18 +112,18 @@ POST http://127.0.0.1:3000/student
 Content-Type: application/json
 
 {
-  "name": "Celina",
-  "email": "Celina@example.com",
-  "CPF": "23455",
-  "contact": "+2123423",
+  "name": "julia",
+  "email": "julia@example.com",
+  "CPF": "234567",
+  "contact": "+2345434",
   "birthDate": "2001-05-20",
-  "nickname": "Celina do Brasil",
+  "nickname": "julia do Ceara",
   "rank": "AMARELA",
   "comments": "Mulher",
   "presence": 23,
   "rating": 1,
   "gender":"female",
-  "classId": ["cmhcdqnxl0000ilv8zj32ekta"]
+  "classId": ["cmhkniubx0000il9w54y6t8ee"]
 }
 
 ### Get student by id
@@ -158,12 +162,22 @@ POST http://127.0.0.1:3000/student/{{studentId}}/join/cmh2ds8qi000afa222rxz7aqq
 GET http://127.0.0.1:3000/student?query=Joao&minAge=10&maxAge=18&CPF=12345678900&email=joao.silva@example.com&Presence=100&Rank=WHITE&class={{classId}}
 
 ### Query students - by text only
-GET http://127.0.0.1:3000/student?query=Julia
+GET http://127.0.0.1:3000/student?query=julia
 
 ### Query students - by age range only
 GET http://127.0.0.1:3000/student
 
 
 ### Query all teachers 
-http://127.0.0.1:3000/user/all
+GET http://127.0.0.1:3000/user/all
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjIyNjMxNTAsImV4cCI6MTc2Mjg2Nzk1MH0.b3vf2MH82S4DyXH1O7cG_7PbbbMp8KTR13TsP19Sk-k
+
+### Promover estudante
+
+PATCH http://127.0.0.1:3000/student/promote?studentId=bea9ab40-ef43-4fb6-9394-e9e846a7ae88 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjIyNjMxNTAsImV4cCI6MTc2Mjg2Nzk1MH0.b3vf2MH82S4DyXH1O7cG_7PbbbMp8KTR13TsP19Sk-k
+Content-Type: application/json
+
+{
+  "password":"admin123"
+}

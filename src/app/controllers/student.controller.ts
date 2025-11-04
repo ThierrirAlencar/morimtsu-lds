@@ -1,13 +1,15 @@
 
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from "@nestjs/common";
-import { ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { Prisma, Rank } from "generated/prisma";
 import { studentServices } from "src/core/services/students.service";
 import { baseError, entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
-import { CreateStudentDTO, QueryStudentFiltersDTO, UpdateStudentFormDTO, UpdateStudentPersonalDTO } from "../dto/student";
+import { CreateStudentDTO, promoteStudentDTO, QueryStudentFiltersDTO, UpdateStudentFormDTO, UpdateStudentPersonalDTO } from "../dto/student";
 import z from "zod";
 import { log } from "console";
+import { AuthGuard } from "@nestjs/passport";
+import { AuthRequest } from "src/infra/interfaces/AuthRequest";
 
 
 @ApiTags('students')
@@ -42,8 +44,7 @@ export class StudentController {
                     Rank: body.rank as Rank,
                     Comments: body.comments,
                     Presence: body.presence,
-                    Rating: body.rating,
-                    userId: "000000", // Temporary userId, adjust as necessary (when updating the student to coach, update this value to the user id)
+                    Rating: body.rating, 
                     Allergies:body.allergies,
                     Health_issues:body.health_issue,
                     IFCE_student_registration:body.ifce_registration,
@@ -335,6 +336,42 @@ export class StudentController {
                 message: "Internal server error",
                 error: error.message 
             });
+        }
+    }
+
+    @UseGuards(AuthGuard("jwt"))
+    @ApiParam({name:"studentId", description:"Id do estudante a ser promovido"})
+    @ApiResponse({status:200,description:"promovido com sucesso"})
+    @ApiResponse({status:401, description:"Ação não autorizada, observe o log da resposta para mais detalhes"})
+    @ApiResponse({status:404, description:"Entidade não encontrada"})
+    @Patch("/promote")
+    async promote(@Req() req: AuthRequest, @Res() res: Response, @Query("studentId") studentId:string, @Body() body:  promoteStudentDTO ){
+        const {password} = z.object({
+            password:z.string()
+        }).parse(body)
+
+        const {id} = z.object({
+            id:z.string()
+        }).parse(req.user)
+
+
+        try{
+            const _service = await this.studentService.promoteStudentToCoach(studentId, body.password, id)
+            
+            res.status(201).send({
+                statusCode:201, 
+                description:"Estudante promovido com sucesso!",
+                body:_service
+            })
+        }catch(err){
+            if(err instanceof baseError){
+                res.status(err.http_status).send(err)
+            }else{
+                res.status(500).send({
+                    description:"Erro desconhecido",
+                    error:err
+                })
+            }
         }
     }
 }

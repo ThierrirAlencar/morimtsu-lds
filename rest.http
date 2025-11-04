@@ -2,10 +2,10 @@ POST http://127.0.0.1:3000/user
 Content-Type: application/json
 
 {
-    "name":"Saulo Morimitsu",
-    "email":"admin@gmail.com",
+    "name":"Cabralzão da Massa",
+    "email":"Cabral@gmail.com",
     "password":"admin123",
-    "role":"ADMIN"
+    "role":"USER"
 }
 
 ### Enviar código de recuperação
@@ -162,3 +162,8 @@ GET http://127.0.0.1:3000/student?query=Julia
 
 ### Query students - by age range only
 GET http://127.0.0.1:3000/student
+
+
+### Query all teachers 
+http://127.0.0.1:3000/user/all
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjIyNjMxNTAsImV4cCI6MTc2Mjg2Nzk1MH0.b3vf2MH82S4DyXH1O7cG_7PbbbMp8KTR13TsP19Sk-k

@@ -84,7 +84,35 @@ export class CreateStudentDTO{
             examples:["male", "female", "other"]
         })
         gender:Gender
-}
+
+        @ApiProperty({
+            description:"A matricula do alun no IFCE (se for aluno da instituição)",
+            examples:["202384384938493"],
+            nullable:true
+        })
+        ifce_registration?: string
+
+        @ApiProperty({
+            description:"Descrição de alguma condição de saúde do aluno",
+            examples:["Diabético, Epilético"],
+            nullable:true
+        })
+        health_issue?: string
+
+        @ApiProperty({
+            description:"Alergias que o aluno possuí",
+            examples:["Amendoim, Lactose"],
+            nullable:true
+        })
+        allergies?: string
+
+        @ApiProperty({
+            description:"Medicamentos que o aluno faz uso regularmente",
+            examples:["Insulina, Ritalina"],
+            nullable:true
+        })
+        medicament_usage?: string
+    }
 
 export class UpdateStudentFormDTO{
         @ApiProperty({

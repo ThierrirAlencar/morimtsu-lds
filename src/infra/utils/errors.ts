@@ -45,3 +45,9 @@ export class FSMTPError extends baseError{
     description = "An non letal error ocurred while trying to send an email."
     public http_status: number = 504;
 }
+
+export class notEnoughPermissions extends baseError{
+    code=8;
+    description = "The user does not have enough permissions to execute this action."
+    public http_status: number = 403;
+}

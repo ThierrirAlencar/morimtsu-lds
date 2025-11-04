@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { Gender, Rank } from "generated/prisma"
+import { string } from "zod"
 
 
 
@@ -244,4 +245,13 @@ export class QueryStudentFiltersDTO{
         nullable:true
     })
     Presence?: number
+}
+
+export class promoteStudentDTO{
+
+    @ApiProperty({
+        description:" A nova senha do novo usuário adicionado",
+        nullable:false
+    })
+    password:string
 }

@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { log } from "console";
+import { hash } from "bcrypt";
 import { Class, Gender, Prisma, Rank, student, StudentClasses, StudentForm } from "generated/prisma";
 import { retry } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
-import { entityAlreadyExistsError, entityDoesNotExists, prohibitedAction } from "src/infra/utils/errors";
+import { entityAlreadyExistsError, entityDoesNotExists, notEnoughPermissions, prohibitedAction } from "src/infra/utils/errors";
 import { string } from "zod";
 
 interface QueryStudentFilters {
@@ -85,7 +86,7 @@ export class studentServices{
         
         //Retorna um erro se as informações do responsável nao forem informadas
         if(!this.validateStudentAge(new Date(data.birthDate),18) && !data.parentContact){
-            throw new prohibitedAction()
+            throw new prohibitedAction("A idade do estudante deve estar no período aceito pela turma")
         }
 
         if(theresAnyStudentWithTheSameUniqueValues){
@@ -290,7 +291,7 @@ export class studentServices{
         }
 
         if(!this.validateStudentAge(doesTheStudentExists.birthDate,doesTheClassExists.minAge)){
-            throw new prohibitedAction()
+            throw new prohibitedAction("O aluno só pode entrar em turmas configuradas para a sua faixa de idade")
         }
         return await this._prisma.studentClasses.create({
             data:{
@@ -426,5 +427,69 @@ export class studentServices{
                 form: student.formData
             }
         }));
-}
+    }
+
+    async promoteStudentToCoach(studentId:string, password:string, promoterId:string){
+
+        const doesTheAdminExists = await this._prisma.user.findUnique({
+            where:{
+                id:promoterId
+            }
+        })
+
+        if(!doesTheAdminExists || doesTheAdminExists.role !== "ADMIN"){
+            throw new notEnoughPermissions()
+        }
+
+        const doesTheStudentExists = await this._prisma.student.findUnique({
+            where:{
+                id:studentId
+            }
+        })
+
+        if(!doesTheStudentExists){
+            throw new entityDoesNotExists()
+        }
+
+        const formData = await this._prisma.studentForm.findUnique({
+            where:{
+                studentId:studentId
+            }
+        })
+
+        if(!formData){
+            throw new prohibitedAction("Student does not have a valid student form")
+        }
+
+
+        const __password = await hash(password,9)
+        const __coachUser = await this._prisma.user.create({
+            data:{
+                email:doesTheStudentExists.email,
+                name:doesTheStudentExists.name,
+                password:__password,
+                role:"USER",
+            }
+        })
+
+        if(!__coachUser){
+            throw new prohibitedAction("Could not promote the student to coach")
+        }
+
+        const __updateFormData = await this._prisma.studentForm.update({
+            where:{
+                studentId,
+            },
+            data:{
+                userId:__coachUser.id
+            }
+        })
+
+        return{
+            new_user:__coachUser,
+            student_form:__updateFormData,
+            student:doesTheStudentExists
+        }
+    }
+
 }

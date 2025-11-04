@@ -17,86 +17,70 @@ export class classService{
 
     }
 
-    async create(data:Prisma.ClassUncheckedCreateInput,userIds?:string[]){
-        const {name,description,maxAge,minAge,icon_url} = data
-        console.log("CLASS SERVICE - CREATE METHOD CALLED");
+    async create(data: Prisma.ClassUncheckedCreateInput, userIds?: string[]) {
+    // Use transaction to ensure data consistency
+        return await this.__prisma.$transaction(async (tx) => {
+            const { name, description, maxAge, minAge, icon_url, startTime, endTime } = data;
 
-        const admin = await this.__prisma.user.findFirst({
-            where:{
-                role:"ADMIN"
+            // 1. Validate admin existence
+            const admin = await tx.user.findFirst({
+                where: { role: "ADMIN" }
+            });
+            if (!admin) {
+                throw new entityDoesNotExists();
             }
-        })
-        if(!admin){
-            // não há admin no sistema
-            throw new entityDoesNotExists()
-        }
 
-        const doesTheClassWithTheSameNameExists = await this.__prisma.class.findUnique({
-            where:{
-                name
+            // 2. Check for duplicate class name
+            const existingClass = await tx.class.findUnique({
+                where: { name }
+            });
+            if (existingClass) {
+                throw new entityAlreadyExistsError();
             }
-        })
 
-        console.log("Checking class name existence:", doesTheClassWithTheSameNameExists);
-
-        if(doesTheClassWithTheSameNameExists){
-            throw new entityAlreadyExistsError()
-        }
-
-        const _class = await this.__prisma.class.create({
-            data:{
-                name, 
-                description,
-                maxAge,minAge,icon_url
-            }
-        })
-        log("CLASS CREATED:",_class)
-
-        const coaches = Array.isArray(userIds) ? userIds.filter(Boolean) : []
-
-        const uniqueCoachIds = Array.from(new Set(coaches))
-
-        for(const coachId of uniqueCoachIds){
-            const doesTheUserExists = await this.__prisma.user.findUnique({
-                where:{
-                    id: coachId
+            // 3. Create the class with all schema-defined fields
+            const _class = await tx.class.create({
+                data: {
+                    name,
+                    description,
+                    maxAge: maxAge || 99,
+                    minAge: minAge || 0,
+                    icon_url,
+                    startTime: startTime ? new Date(startTime) : null,
+                    endTime: endTime ? new Date(endTime) : null
                 }
-            })
-            if(!doesTheUserExists){
-                throw new entityDoesNotExists()
+            });
+
+            // 4. Process coach assignments
+            const uniqueCoachIds = new Set(userIds?.filter(Boolean) || []);
+            if (!uniqueCoachIds.has(admin.id)) {
+                uniqueCoachIds.add(admin.id);
             }
 
-            await this.__prisma.userClasses.create({
-                data:{
-                    classId:_class.id, userId: coachId
-                },
-                select:{ 
-                    userId:false,classId:true
-                }
-            })
-        }
+            // 5. Create coach relationships
+            const coachRelations = await Promise.all(
+                Array.from(uniqueCoachIds).map(async (coachId) => {
+                    const coach = await tx.user.findUnique({
+                        where: { id: coachId }
+                    });
+                    if (!coach) {
+                        throw new entityDoesNotExists();
+                    }
 
-        if(!uniqueCoachIds.includes(admin.id)){
-            await this.__prisma.userClasses.create({
-                data:{
-                    classId:_class.id,userId:admin.id
-                },
-                select:{
-                    userId:false,classId:true
-                }
-            })
-        }
+                    return tx.userClasses.create({
+                        data: {
+                            classId: _class.id,
+                            userId: coachId
+                        }
+                    });
+                })
+            );
 
-        const _relations = await this.__prisma.userClasses.findMany({
-            where:{
-                classId:_class.id
-            }
-        }) 
-
-        return{
-            _class,
-            _relations
-        }
+            return {
+                class: _class,
+                coaches: coachRelations
+            };
+        });
     }
 
     async update(data:Prisma.ClassUpdateInput,id:string){

@@ -55,6 +55,8 @@ model User {
   
   //Foreign keys
   users UserClasses[]
+
+  studentData StudentForm?
 }
 
 model Class {
@@ -112,10 +114,17 @@ model StudentForm{
   Presence Int @default(0)
   Comments String?
   Rank Rank @default(BRANCA)
+  IFCE_student_registration String?
+  Health_issues String?
+  Medication_usage String?
+  Allergies String?
 
   //Foreign Keys
   student student @relation(fields: [studentId], references: [id])
   studentId String @unique
+
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique
 }
 
 
@@ -138,3 +147,4 @@ model StudentClasses {
 
   @@id([studentId, classId])
 }
+

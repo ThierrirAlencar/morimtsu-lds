@@ -26,7 +26,7 @@ interface genericPrivateStudentReturn{
                 CPF:string,
                 contact:string,
                 birthDate:Date,
-                gender:Gender
+                gender:Gender,
             },
             createdAt:Date,
             form:StudentForm
@@ -106,6 +106,11 @@ export class studentServices{
                 Presence:formData.Presence,
                 studentId:_student.id,
                 Rating:formData.Rating,
+                Allergies:formData.Allergies,
+                Health_issues:formData.Health_issues,
+                IFCE_student_registration:formData.IFCE_student_registration,
+                Medication_usage:formData.Medication_usage,
+                userId:formData.userId
             }
         })
         var __classes:Class[] = []

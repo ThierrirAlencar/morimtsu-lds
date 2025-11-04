@@ -42,7 +42,12 @@ export class StudentController {
                     Rank: body.rank as Rank,
                     Comments: body.comments,
                     Presence: body.presence,
-                    Rating: body.rating
+                    Rating: body.rating,
+                    userId: "000000", // Temporary userId, adjust as necessary (when updating the student to coach, update this value to the user id)
+                    Allergies:body.allergies,
+                    Health_issues:body.health_issue,
+                    IFCE_student_registration:body.ifce_registration,
+                    Medication_usage:body.medicament_usage
                 },
                 body.classId
             );

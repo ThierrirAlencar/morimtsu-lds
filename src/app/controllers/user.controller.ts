@@ -210,7 +210,24 @@ export class userController{
       }
     }
 
-    @ApiResponse({status:200, description:"Lista de usuários retornada com sucesso"})
+    @ApiResponse({status:200, description:"Lista de usuários retornada com sucesso", example:JSON.parse(`
+            {
+  "status": 200,
+  "description": "All users fetched with success",
+  "body": {
+    "users": [
+      {
+        "id": "76755a02-3c0f-41ad-b86f-6636c036b5a9",
+        "password": "$2b$09$etjr9n0lgpMfKYk7G4E6XOnSjAsMVn9Cy8EJCmj1VYt/WW8yWVJOy",
+        "role": "USER",
+        "name": "Cabralzão da Massa",
+        "email": "Cabral@gmail.com",
+        "studentData": null
+      }
+    ]
+  }
+}
+        `)})
     @ApiResponse({status:403, description:"Usuário não tem permissão para executar essa ação"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @ApiHeader({name:"Authorization", description:"Bearer token de autenticação"})

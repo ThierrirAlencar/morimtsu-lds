@@ -165,34 +165,20 @@ export class UserService {
       throw new notEnoughPermissions()
     }
 
-    const _users = await this.__prisma.user.findMany({
-      where:{
-        role:'USER'
-      }
-    })
-    
-    return{
-      users:_users.map(async user => {
-        const formData = await this.__prisma.studentForm.findUnique({
-          where:{
-            userId:user.id
-          }
-        })
-        let __studentForm = null;
-        if(formData){ 
-           __studentForm = await this.__prisma.studentForm.findUnique({
-            where:{
-              id:formData.studentId
+    const users = await this.__prisma.user.findMany({
+        where: {
+            role: 'USER'
+        },
+        include: {
+            studentData: {
+                include: {
+                    student: true
+                }
             }
-          })
         }
-        return{
-          user,
-          formData,
-          studentProfile: __studentForm 
-        }
-      })
-    }
+    });
+    
+    return{users}
   }
 
 }

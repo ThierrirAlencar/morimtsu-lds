@@ -2,10 +2,10 @@ POST http://127.0.0.1:3000/user
 Content-Type: application/json
 
 {
-    "name":"Saulo Morimitsu",
-    "email":"admin@gmail.com",
+    "name":"Cabralzão da Massa",
+    "email":"Cabral@gmail.com",
     "password":"admin123",
-    "role":"ADMIN"
+    "role":"USER"
 }
 
 ### Enviar código de recuperação

@@ -61,12 +61,13 @@ Content-Type: application/json
 
 {
   "iconURL":"askkahsjjaksjjskaskaj",
-  "name": "Test Class REST - without coach v1",
+  "name": "Test Class REST - without coach v2",
   "description": "Classe criada pelo teste REST",
   "maxAge": 12,
   "minAge": 6,
   "endTime": "18:00",
-  "startTime": "17:00"
+  "startTime": "17:00",
+  "choachId":[]
 }
 
 ### Create class (with coachId)
@@ -74,7 +75,7 @@ POST http://127.0.0.1:3000/class
 Content-Type: application/json
 
 {
-  "name": "Turma de Isaque",
+  "name": "Turma de Saulo",
   "description": "Turma de Jiu-Jitsu para crianças",
   "coachId": [],
   "iconURL": "https://example.com/icon.png",

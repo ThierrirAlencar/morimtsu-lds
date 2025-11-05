@@ -205,8 +205,8 @@ export class classController{
     async getMany(@Query() query: QueryClassParams, @Req() req:AuthRequest, @Res() res:Response) {
         const filters = z.object({
             query: z.string().optional().default(""),
-            minAge: z.number().min(0).optional(),
-            maxAge: z.number().min(0).optional()
+            minAge: z.coerce.number().min(0).optional(),
+            maxAge: z.coerce.number().min(0).optional()
         }).parse(query);
 
 

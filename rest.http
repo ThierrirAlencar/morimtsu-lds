@@ -100,30 +100,30 @@ Content-Type: application/json
 DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
 
 ### Get filtered classes (only query)
-GET http://127.0.0.1:3000/class
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3M2I5NjIxNy0wYWQ3LTQ3ZTMtYjI3ZC1jOTk4YTI0NWEwOTIiLCJpYXQiOjE3NjE3NjI4MTgsImV4cCI6MTc2MjM2NzYxOH0.Y5dSK1N7X1pMnX6Fkv0SzQeo1SilSme1u_VFLzdOKEg
+GET http://127.0.0.1:3000/class?name=Turma
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjIzNTA5MDgsImV4cCI6MTc2Mjk1NTcwOH0.1ilrtneDF6m1FSJaQ8-jvgnPmZiHdATA0zV0PtNo5x0
 
 # REST tests for StudentController
 # Replace {{baseUrl}} with your server address (ex: http://localhost:3000)
 # Replace IDs ({{studentId}}, {{classId}}) with real values returned by create requests.
 
 ### Create student
-POST http://127.0.0.1:3000/student
+POST https://morimtsu-lds.onrender.com/student
 Content-Type: application/json
 
 {
-  "name": "julia",
-  "email": "julia@example.com",
-  "CPF": "234567",
-  "contact": "+2345434",
-  "birthDate": "2001-05-20",
+  "name": "julia3",
+  "email": "56@example.com",
+  "CPF": "456521",
+  "contact": "+2345677",
+  "birthDate": "2007-05-20",
   "nickname": "julia do Ceara",
   "rank": "AMARELA",
   "comments": "Mulher",
   "presence": 23,
   "rating": 1,
   "gender":"female",
-  "classId": ["cmhkniubx0000il9w54y6t8ee"]
+  "classId": ["cmhm1891c0001ck2l8hz740l3"]
 }
 
 ### Get student by id

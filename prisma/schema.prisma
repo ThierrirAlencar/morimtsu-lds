@@ -55,7 +55,7 @@ model User {
   
   //Foreign keys
   users UserClasses[]
-
+  frequency frequency[]
   studentData StudentForm?
 }
 
@@ -133,6 +133,9 @@ model frequency{
   id String @id @default(cuid())
   
   Date DateTime @default(now())
+
+  coach_id String
+  Coach User @relation(fields: [coach_id], references: [id])
 
   student_id String
   Student student @relation(fields: [student_id], references: [id])

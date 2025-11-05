@@ -77,6 +77,7 @@ model Class {
   //Foreign keys
   classes UserClasses[]
   students StudentClasses[]
+  frequency frequency[]
 } 
 
 model student {
@@ -104,6 +105,7 @@ model student {
   //Relations
   classes StudentClasses[]
   formData StudentForm?
+  frequency frequency[]
 }
 
 model StudentForm{
@@ -127,6 +129,29 @@ model StudentForm{
   userId String? @unique
 }
 
+model frequency{
+  id String @id @default(cuid())
+  
+  Date DateTime @default(now())
+
+  student_id String
+  Student student @relation(fields: [student_id], references: [id])
+
+  class_id String
+  Class Class @relation(fields: [class_id], references: [id])
+  @@map("Frequency")
+}
+
+model promotion_config{
+  id String @id @default(cuid())
+
+  name String @unique
+
+  module String @default("app")
+  ref_rank Rank
+
+  needed_frequency Int @default(1)
+}
 
 //Relational classes (FK Classes to many to many relations)
 

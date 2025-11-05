@@ -71,15 +71,14 @@ Content-Type: application/json
 }
 
 ### Create class (with coachId)
-POST http://127.0.0.1:3000/class
+POST https://morimtsu-lds.onrender.com/class
 Content-Type: application/json
 
 {
-  "name": "Turma de Saulo",
+  "name": "Turma de Celiane",
   "description": "Turma de Jiu-Jitsu para crianças",
   "coachId": [],
   "iconURL": "https://example.com/icon.png",
-  "maxAge": 12,
   "minAge": 6,
   "endTime": "18:00",
   "startTime": "17:00"

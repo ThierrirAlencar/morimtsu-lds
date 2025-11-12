@@ -189,7 +189,7 @@ export class userController{
         
         const response = await this.userService.login(Email, Password);
         
-        const token = await this.authService.generateToken({id:response.userId});
+        const token = await this.authService.generateToken({id:response.userId, role:response.role});
 
         res.status(200).send({
           statusCode: 200,

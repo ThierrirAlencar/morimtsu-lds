@@ -146,7 +146,8 @@ export class UserService {
         }
         
         return{
-            userId:doesTheUserExists.id
+            userId:doesTheUserExists.id,
+            role:doesTheUserExists.role
         }
   }
 

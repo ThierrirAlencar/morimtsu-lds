@@ -87,7 +87,7 @@ export class CreateStudentDTO{
         gender:Gender
 
         @ApiProperty({
-            description:"A matricula do alun no IFCE (se for aluno da instituição)",
+            description:"A matricula do aluno no IFCE (se for aluno da instituição)",
             examples:["202384384938493"],
             nullable:true
         })

@@ -54,7 +54,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1Z
 
 ### 👤 Obter perfil do usuário (GET /user/:id/profile)
 GET http://127.0.0.1:3000/user/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1ZC1iYzdmLTQxOTAtOGI5Yi0xYTkzZDAzZjM0NzAiLCJpYXQiOjE3NjE3NDMyMzQsImV4cCI6MTc2MjM0ODAzNH0.PsnEqsDYp3U4zxHSvkGLzHNMAJgoZA1qoccncddXmB0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjI5NTc1ODgsImV4cCI6MTc2MzU2MjM4OH0.GiFZ-3wLauFtglM0qUbMxNcmHqgsjfv9dmnVHeebun4
 # REST tests for classController
 # Substitua {{baseUrl}} pelo endereço da sua API (ex: http://localhost:3000)
 # Após criar a class, copie o id retornado e substitua {{classId}} nos requests seguintes.
@@ -131,7 +131,7 @@ Content-Type: application/json
 }
 
 ### Get student by id
-GET http://127.0.0.1:3000/student/6411223c-a1ab-4adc-9624-d7a8a89a8f19
+GET http://127.0.0.1:3000/student/bea9ab40-ef43-4fb6-9394-e9e846a7ae88
 
 ### Update student personal info
 PUT {{baseUrl}}/student/{{studentId}}/personal

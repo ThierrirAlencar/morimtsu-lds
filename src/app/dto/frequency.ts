@@ -35,3 +35,32 @@ export class queryDeleteFrequencyDTO{
     id:string
 }
 
+export class queryGetManyFrequencyDTO{
+    @ApiProperty({
+        name:"classId",
+        description:"Id da turma",
+        nullable:true
+    })
+    classId?: string
+
+    @ApiProperty({
+        name:"studentId",
+        description:"Id do estudante",
+        nullable:true
+    })
+    studentId?:string
+
+    @ApiProperty({
+        name:"date",
+        description:"Data que se deseja conferir",
+        nullable:true,
+    })
+    date?:Date
+
+    @ApiProperty({
+        name:"coachId",
+        description:"Id do professor que realizou a frequência",
+        nullable:true
+    })  
+    coachId?:string
+}

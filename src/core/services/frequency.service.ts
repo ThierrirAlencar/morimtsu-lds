@@ -3,13 +3,18 @@ import { frequency, Prisma } from "generated/prisma";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityDoesNotExists } from "src/infra/utils/errors";
 
-
+interface frequencyFilters{
+    classId?:string
+    studentId?:string
+    date?:Date
+    coachId?:string
+}
 @Injectable()
 export class frequencyService{
     constructor(private _prisma:PrismaService){}
 
     async create(data:Prisma.frequencyUncheckedCreateInput){
-        const {class_id,student_id,Date,id,coach_id} = data
+        const {class_id,student_id,Date,coach_id} = data
     
         const doesTheCoachExists= await this._prisma.user.findUnique({
             where:{
@@ -32,27 +37,30 @@ export class frequencyService{
 
         const __frequency = await this._prisma.frequency.create({
             data:{
-                class_id,coach_id,student_id
+                class_id,coach_id,student_id,Date
             }
         })
-
-        const {Presence} = await this._prisma.studentForm.findUnique({
+        console.log("Frequência criada, atualizando aluno")
+        const studentForm = await this._prisma.studentForm.findUnique({
             where:{
                 studentId:doesTheStudentExists.id
             }
         })
-        //update student 
-        const __form = await this._prisma.studentForm.update({
-            where:{
-                studentId: doesTheStudentExists.id,
-            },
-            select:{
-                
-            },
-            data:{
-                Presence: Presence+1
-            }
-        })
+        if(studentForm){
+            //update student 
+            const __form = await this._prisma.studentForm.update({
+                where:{
+                    studentId: doesTheStudentExists.id,
+                },
+                select:{
+                    
+                },
+                data:{
+                    Presence: studentForm.Presence+1
+                }
+            })
+        }
+
         return{
             frequency:{
                 name:doesTheStudentExists.name,
@@ -113,5 +121,46 @@ export class frequencyService{
                 id
             }
         })
+    }
+
+    async filterFrequencyByQuery(filters:frequencyFilters){
+        const frequencies = await this._prisma.frequency.findMany({
+        where: {
+            AND: [
+                // Filter by classId if provided
+                filters.classId ? { class_id: filters.classId } : {},
+                
+                // Filter by studentId if provided
+                filters.studentId ? { student_id: filters.studentId } : {},
+                
+                // Filter by coachId if provided
+                filters.coachId ? { coach_id: filters.coachId } : {},
+                
+                // Filter by date if provided
+                filters.date ? {
+                    Date: {
+                        gte: new Date(filters.date.getFullYear(), filters.date.getMonth(), filters.date.getDate()),
+                        lt: new Date(filters.date.getFullYear(), filters.date.getMonth(), filters.date.getDate() + 1)
+                    }
+                } : {}
+            ]
+        },
+        include: {
+            Student: true,
+            Class: true,
+            Coach: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true
+                }
+            }
+        },
+        orderBy: {
+            Date: 'desc'
+        }
+    });
+
+    return frequencies;
     }
 }

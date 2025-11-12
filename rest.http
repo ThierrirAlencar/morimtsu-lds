@@ -1,3 +1,7 @@
+@baseUrl = http://127.0.0.1:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjI5NTU2MTMsImV4cCI6MTc2MzU2MDQxM30.f9JnVKYNHhMtc2Dw_k8eI7_IYyHohWYqh1Wnm7wg7xs
+
+
 POST http://127.0.0.1:3000/user 
 Content-Type: application/json
 
@@ -101,7 +105,7 @@ DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
 
 ### Get filtered classes (only query)
 GET http://127.0.0.1:3000/class?name=Turma
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjIzNTA5MDgsImV4cCI6MTc2Mjk1NTcwOH0.1ilrtneDF6m1FSJaQ8-jvgnPmZiHdATA0zV0PtNo5x0
+Authorization: Bearer {{token}}
 
 # REST tests for StudentController
 # Replace {{baseUrl}} with your server address (ex: http://localhost:3000)
@@ -181,3 +185,32 @@ Content-Type: application/json
 {
   "password":"admin123"
 }
+
+#######################################
+### 1️⃣ CRIAR UMA FREQUÊNCIA
+#######################################
+POST {{baseUrl}}/frequency
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "classId": "cmhkniubx0000il9w54y6t8ee",
+  "studentId": "e95b7c4f-65da-49af-9910-bdb5c7441743"
+}
+
+
+#######################################
+### 2️⃣ DELETAR UMA FREQUÊNCIA POR ID
+#######################################
+DELETE {{baseUrl}}/?id=frequency_abc123
+Accept: application/json
+
+
+#######################################
+### 3️⃣ LISTAR / FILTRAR FREQUÊNCIAS
+#######################################
+GET {{baseUrl}}/frequency
+Authorization: Bearer {{token}}
+
+
+

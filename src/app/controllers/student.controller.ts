@@ -125,48 +125,54 @@ export class StudentController {
 
     @Get("/:id")
     @ApiResponse({ status: 200, description: "Student found successfully" , example:JSON.parse(`
-            {
-                "message": "Student found successfully",
-                "data": {
-                    "student": {
-                    "nickname": "Julinha do Grau",
-                    "email": "AnaJulia@example.com",
-                    "personal": {
-                        "name": "Ana Júlia",
-                        "CPF": "123343439121838234547656",
-                        "contact": "+55119912119299999",
-                        "birthDate": "2000-05-20T00:00:00.000Z",
-                        "gender": "female",
-                        "age": 25
-                    },
-                    "parents": {
-                        "parentName": null,
-                        "parentContact": null
-                    },
-                    "classes": [
-                        {
-                        "id": "cmhcdqnxl0000ilv8zj32ekta",
-                        "name": "Test Class With Coach Sla",
-                        "description": "Classe com coach fornecido",
-                        "icon_url": "https://example.com/icon.png",
-                        "startTime": null,
-                        "endTime": null,
-                        "maxAge": 18,
-                        "minAge": 10
-                        }
-                    ],
-                    "createdAt": "2025-10-29T19:44:30.414Z",
-                    "form": {
-                        "id": "cmhcemjvb0001ilv8fvvdbws6",
-                        "Rating": 2,
-                        "Presence": 89,
-                        "Comments": "Mulher",
-                        "Rank": "BRANCA",
-                        "studentId": "6411223c-a1ab-4adc-9624-d7a8a89a8f19"
-                    }
-                    }
-                }
-                }
+            
+{
+  "message": "Student found successfully",
+  "data": {
+    "student": {
+      "nickname": "julia do Ceara",
+      "email": "julia@example.com",
+      "personal": {
+        "name": "julia",
+        "CPF": "234567",
+        "contact": "+2345434",
+        "birthDate": "2001-05-20T00:00:00.000Z",
+        "gender": "female",
+        "age": 24
+      },
+      "parents": {
+        "parentName": null,
+        "parentContact": null
+      },
+      "classes": [
+        {
+          "id": "cmhkniubx0000il9w54y6t8ee",
+          "name": "Test Class REST - without coach v1",
+          "description": "Classe criada pelo teste REST",
+          "icon_url": "askkahsjjaksjjskaskaj",
+          "startTime": "1970-01-01T20:00:00.000Z",
+          "endTime": "1970-01-01T21:00:00.000Z",
+          "maxAge": 12,
+          "minAge": 6
+        }
+      ],
+      "createdAt": "2025-11-04T14:21:56.204Z",
+      "form": {
+        "id": "cmhknqu0z0001ilew88reri0l",
+        "Rating": 1,
+        "Presence": 23,
+        "Comments": "Mulher",
+        "Rank": "AMARELA",
+        "IFCE_student_registration": null,
+        "Health_issues": null,
+        "Medication_usage": null,
+        "Allergies": null,
+        "studentId": "bea9ab40-ef43-4fb6-9394-e9e846a7ae88",
+        "userId": "e96c22da-1acd-408f-8500-bdba8c84d9b1"
+      }
+    }
+  }
+}
     `)})
     @ApiResponse({ status: 200, description: "Student found successfully" })
     @ApiResponse({ status: 404, description: "Student not found" })

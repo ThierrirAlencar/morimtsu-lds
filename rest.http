@@ -131,7 +131,7 @@ Content-Type: application/json
 }
 
 ### Get student by id
-GET http://127.0.0.1:3000/student/6411223c-a1ab-4adc-9624-d7a8a89a8f19
+GET http://127.0.0.1:3000/student/bea9ab40-ef43-4fb6-9394-e9e846a7ae88
 
 ### Update student personal info
 PUT {{baseUrl}}/student/{{studentId}}/personal

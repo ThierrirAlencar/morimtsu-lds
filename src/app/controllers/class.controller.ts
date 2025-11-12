@@ -21,22 +21,25 @@ export class classController{
 
 
     @ApiResponse({status:201, description:"class criada com sucesso",example:JSON.parse(`
-    {
-    "status": 200,
-    "description": "Classes filtered with success",
-    "classes": [
-        {
-        "id": "cmh2dj2ze0009fa22yyybsh38",
-        "name": "ysad gysagvbdya",
-        "description": null,
-        "icon_url": "/src/assets/presets/capaturma3.png",
-        "startTime": null,
-        "endTime": null,
-        "maxAge": 0,
-        "minAge": 1
-        }
-    ]
-    }
+            {
+            "description": "Class created and add to any ADMIN user",
+            "_response": {
+                "assigned_admin": {
+                "name": "admin",
+                "email": "admin@gmail.com"
+                },
+                "class": {
+                "id": "cmhm17rw60000ck2l639gnmui",
+                "name": "Turma de Vitoria",
+                "description": "Turma de Jiu-Jitsu para crianças",
+                "icon_url": "https://example.com/icon.png",
+                "startTime": "1970-01-01T17:00:00.000Z",
+                "endTime": "1970-01-01T18:00:00.000Z",
+                "maxAge": 12,
+                "minAge": 6
+                }
+            }
+            }
         `)})
     @ApiResponse({status:404, description:"Usuário administrador ou professor nao foi encontrado. Se não for fornecido o ID a classe será atribuída a um usuário ADMIN aleatório"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
@@ -68,15 +71,15 @@ export class classController{
 
     // PUT /class/:id
     @ApiResponse({status:201, description:"class atualizada com sucesso",example:JSON.parse(`
-            {
-  "status": 200,
-  "description": "Class updated with success",
-  "_class": {
-    "id": "cmh0lx2fe0000ildk9cbn0s0p",
-    "name": "Test Class REST - without coach v1",
-    "description": "Descrição atualizada"
-  }
-}
+                    {
+        "status": 200,
+        "description": "Class updated with success",
+        "_class": {
+            "id": "cmh0lx2fe0000ildk9cbn0s0p",
+            "name": "Test Class REST - without coach v1",
+            "description": "Descrição atualizada"
+        }
+        }
         `)})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @Put("/:id")
@@ -202,8 +205,8 @@ export class classController{
     async getMany(@Query() query: QueryClassParams, @Req() req:AuthRequest, @Res() res:Response) {
         const filters = z.object({
             query: z.string().optional().default(""),
-            minAge: z.number().min(0).optional(),
-            maxAge: z.number().min(0).optional()
+            minAge: z.coerce.number().min(0).optional(),
+            maxAge: z.coerce.number().min(0).optional()
         }).parse(query);
 
 

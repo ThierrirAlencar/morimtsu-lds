@@ -1,3 +1,7 @@
+@baseUrl = http://127.0.0.1:3000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjI5NTU2MTMsImV4cCI6MTc2MzU2MDQxM30.f9JnVKYNHhMtc2Dw_k8eI7_IYyHohWYqh1Wnm7wg7xs
+
+
 POST http://127.0.0.1:3000/user 
 Content-Type: application/json
 
@@ -71,15 +75,14 @@ Content-Type: application/json
 }
 
 ### Create class (with coachId)
-POST http://127.0.0.1:3000/class
+POST https://morimtsu-lds.onrender.com/class
 Content-Type: application/json
 
 {
-  "name": "Turma de Saulo",
+  "name": "Turma de Celiane",
   "description": "Turma de Jiu-Jitsu para crianças",
   "coachId": [],
   "iconURL": "https://example.com/icon.png",
-  "maxAge": 12,
   "minAge": 6,
   "endTime": "18:00",
   "startTime": "17:00"
@@ -101,30 +104,30 @@ Content-Type: application/json
 DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
 
 ### Get filtered classes (only query)
-GET http://127.0.0.1:3000/class
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3M2I5NjIxNy0wYWQ3LTQ3ZTMtYjI3ZC1jOTk4YTI0NWEwOTIiLCJpYXQiOjE3NjE3NjI4MTgsImV4cCI6MTc2MjM2NzYxOH0.Y5dSK1N7X1pMnX6Fkv0SzQeo1SilSme1u_VFLzdOKEg
+GET http://127.0.0.1:3000/class?name=Turma
+Authorization: Bearer {{token}}
 
 # REST tests for StudentController
 # Replace {{baseUrl}} with your server address (ex: http://localhost:3000)
 # Replace IDs ({{studentId}}, {{classId}}) with real values returned by create requests.
 
 ### Create student
-POST http://127.0.0.1:3000/student
+POST https://morimtsu-lds.onrender.com/student
 Content-Type: application/json
 
 {
-  "name": "julia",
-  "email": "julia@example.com",
-  "CPF": "234567",
-  "contact": "+2345434",
-  "birthDate": "2001-05-20",
+  "name": "julia3",
+  "email": "56@example.com",
+  "CPF": "456521",
+  "contact": "+2345677",
+  "birthDate": "2007-05-20",
   "nickname": "julia do Ceara",
   "rank": "AMARELA",
   "comments": "Mulher",
   "presence": 23,
   "rating": 1,
   "gender":"female",
-  "classId": ["cmhkniubx0000il9w54y6t8ee"]
+  "classId": ["cmhm1891c0001ck2l8hz740l3"]
 }
 
 ### Get student by id
@@ -182,3 +185,32 @@ Content-Type: application/json
 {
   "password":"admin123"
 }
+
+#######################################
+### 1️⃣ CRIAR UMA FREQUÊNCIA
+#######################################
+POST {{baseUrl}}/frequency
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "classId": "cmhkniubx0000il9w54y6t8ee",
+  "studentId": "e95b7c4f-65da-49af-9910-bdb5c7441743"
+}
+
+
+#######################################
+### 2️⃣ DELETAR UMA FREQUÊNCIA POR ID
+#######################################
+DELETE {{baseUrl}}/?id=frequency_abc123
+Accept: application/json
+
+
+#######################################
+### 3️⃣ LISTAR / FILTRAR FREQUÊNCIAS
+#######################################
+GET {{baseUrl}}/frequency
+Authorization: Bearer {{token}}
+
+
+

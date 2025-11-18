@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { frequency, Prisma } from "generated/prisma";
+import { error } from "console";
+import { frequency, Prisma, student } from "generated/prisma";
+import { throwError } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
-import { entityDoesNotExists } from "src/infra/utils/errors";
+import { entityDoesNotExists, valueNotProvided } from "src/infra/utils/errors";
+import { string, stringFormat } from "zod";
 
 interface frequencyFilters{
     classId?:string
@@ -9,12 +12,18 @@ interface frequencyFilters{
     date?:Date
     coachId?:string
 }
+interface createFrequency{
+    class_id:string
+    coach_id:string
+    studentsIDs:string[],
+    date?:Date
+}
 @Injectable()
 export class frequencyService{
     constructor(private _prisma:PrismaService){}
 
-    async create(data:Prisma.frequencyUncheckedCreateInput){
-        const {class_id,student_id,Date,coach_id} = data
+    async create(data:createFrequency){
+        const {class_id,studentsIDs,date,coach_id} = data
     
         const doesTheCoachExists= await this._prisma.user.findUnique({
             where:{
@@ -26,45 +35,81 @@ export class frequencyService{
                 id:class_id
             }
         })
-        const doesTheStudentExists = await this._prisma.student.findUnique({
-            where:{
-                id:student_id
-            }
-        })
-        if(!doesTheCoachExists || !doesTheClassExists || !doesTheStudentExists){
+
+        if(!doesTheCoachExists || !doesTheClassExists){
             throw new entityDoesNotExists()
         }
+        if(!studentsIDs){
+            throw new valueNotProvided()
+        }
+        const existingStudents = await this._prisma.student.findMany({
+            where: {
+                id: {
+                    in:studentsIDs
+                }
+            }
+        });
 
-        const __frequency = await this._prisma.frequency.create({
-            data:{
-                class_id,coach_id,student_id,Date
-            }
-        })
-        console.log("Frequência criada, atualizando aluno")
-        const studentForm = await this._prisma.studentForm.findUnique({
-            where:{
-                studentId:doesTheStudentExists.id
-            }
-        })
-        if(studentForm){
-            //update student 
-            const __form = await this._prisma.studentForm.update({
+        console.log(existingStudents)
+        // // Opcional: Checar se algum aluno não foi encontrado
+        // if (existingStudents.length != studentsIDs.length) {
+        //     throw new entityDoesNotExists()
+        // }
+        console.log("Existing students exists on lenght")
+        // 2. Preparar as Promises de criação de frequência e atualização de formulário
+        const operations = existingStudents.map(async (_student_exists) => {
+            // a) Cria a frequência
+            const createdFrequency = this._prisma.frequency.create({
+                data: {
+                    class_id,
+                    coach_id,
+                    student_id: _student_exists.id,
+                    Date: date 
+                }
+            });
+
+            // b) Calcula o novo total de presenças (Esta consulta AINDA é problemática, veja o Ponto 3)
+            // Para simplificar, vamos mover o cálculo da presença para DEPOIS do Promise.all de criação
+            
+            return createdFrequency;
+        });
+
+        // 3. Executa a criação de todas as frequências em paralelo
+        const createdFrequencies = await Promise.all(operations);
+
+        // 4. (Opcional) Executa as atualizações de formulário (agora que as novas presenças foram criadas)
+        const updateOperations = createdFrequencies.map(async (freq) => {
+            // Agora o cálculo está correto: conta a nova frequência
+            const totalPresences = await this._prisma.frequency.count({
+                where: {
+                    student_id: freq.student_id
+                }
+            });
+            const _theres_a_form = await this._prisma.studentForm.findUnique({
                 where:{
-                    studentId: doesTheStudentExists.id,
-                },
-                select:{
-                    
-                },
-                data:{
-                    Presence: studentForm.Presence+1
+                    studentId:freq.student_id
                 }
             })
-        }
+            if(_theres_a_form){
+                // Atualiza o formulário
+                return this._prisma.studentForm.update({
+                    where: {
+                        studentId: freq.student_id
+                    },
+                    data: {
+                        Presence: totalPresences
+                    }
+                });
+            }
+        });
 
-        return{
-            frequency:{
-                name:doesTheStudentExists.name,
-                date:__frequency.Date
+        await Promise.all(updateOperations);
+
+        // Retorno (ajustado para createdFrequencies)
+        return {
+            frequency: {
+                names: existingStudents.map(e => e.name),
+                date: createdFrequencies.map(e => e.Date)
             }
         }
     }

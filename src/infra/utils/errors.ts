@@ -55,3 +55,9 @@ export class notEnoughPermissions extends baseError{
     description = "The user does not have enough permissions to execute this action."
     public http_status: number = 403;
 }
+
+export class valueNotProvided extends baseError{
+    code=9;
+    description = "A required value was not provided";
+    public http_status: number = 401
+}

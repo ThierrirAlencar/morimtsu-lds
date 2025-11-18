@@ -18,17 +18,18 @@ export class frequencyController{
     @ApiResponse({status:201, description:"Criado com sucesso"})
     @ApiResponse({status:404,description:"Alguma das entidades nao foi encontrada, forneça o token, o id da turma e o id do estudante corretamente e verifique sua existencia"})
     @ApiResponse({status:500, description:"Erro desconhecido reportar a desenvolvedores."})
+    @ApiResponse({status:401, description:"O valor de studentIDs foi indefinido ou nulo"})
     @UseGuards(AuthGuard("jwt"))
     @ApiHeader({name:"Autorization", description:"O token jwt do usuário"})
     @Post("/")
     async post(@Req() req:AuthRequest, @Res() res:Response, @Body() Body:createFrequencyDTO){
-        const {classId:class_id,studentId:student_id,Date} = Body;
+        const {classId:class_id,studentIDs:studentsIDs,Date} = Body;
         const {id:coach_id} = z.object({
             id:z.string().uuid()
         }).parse(req.user)
         try{
             const __service = await this.service.create({
-                class_id,coach_id,student_id
+                class_id,coach_id,studentsIDs
             })
 
             res.status(201).send({

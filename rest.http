@@ -195,7 +195,7 @@ Authorization: Bearer {{token}}
 
 {
   "classId": "cmhkniubx0000il9w54y6t8ee",
-  "studentId": "e95b7c4f-65da-49af-9910-bdb5c7441743"
+  "studentIDs": ["e95b7c4f-65da-49af-9910-bdb5c7441743"]
 }
 
 

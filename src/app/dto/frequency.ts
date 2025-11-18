@@ -19,11 +19,12 @@ export class createFrequencyDTO{
     Date?: String
 
     @ApiProperty({
-        name:"studentId",
-        description:"O id do estudante",
+        name:"studentIDs",
+        description:"A lista de IDs dos estudantes",
+        isArray:true,
         nullable:false
     })
-    studentId:string
+    studentIDs:string[]
 
 }
 

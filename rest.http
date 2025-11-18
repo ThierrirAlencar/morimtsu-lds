@@ -174,12 +174,12 @@ GET http://127.0.0.1:3000/student
 
 ### Query all teachers 
 GET http://127.0.0.1:3000/user/all
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjIyNjMxNTAsImV4cCI6MTc2Mjg2Nzk1MH0.b3vf2MH82S4DyXH1O7cG_7PbbbMp8KTR13TsP19Sk-k
+Authorization: Bearer {{token}}
 
 ### Promover estudante
 
-PATCH http://127.0.0.1:3000/student/promote?studentId=bea9ab40-ef43-4fb6-9394-e9e846a7ae88 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjIyNjMxNTAsImV4cCI6MTc2Mjg2Nzk1MH0.b3vf2MH82S4DyXH1O7cG_7PbbbMp8KTR13TsP19Sk-k
+PATCH http://127.0.0.1:3000/student/promote?studentId=bea9ab40-ef43-4fb6-9394-e9e846a7ae88
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {

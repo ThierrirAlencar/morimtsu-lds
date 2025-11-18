@@ -4,6 +4,7 @@ import { Class, Prisma, student, User } from "generated/prisma";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
 import { timeStringToDate } from "src/infra/utils/toDateTimeString";
+import { frequencyService } from "./frequency.service";
 
 interface classFilters{
     query:string
@@ -13,7 +14,8 @@ interface classFilters{
 @Injectable()
 export class classService{
     constructor(
-        private __prisma:PrismaService
+        private __prisma:PrismaService,
+        private __frequency:frequencyService
     ){
 
     }
@@ -99,6 +101,16 @@ export class classService{
             classId:id
         }
        })
+       const _frequency = await this.__prisma.frequency.findMany({
+        where:{
+            class_id:id
+        }
+       })
+
+       //Delete all frequencies
+       await Promise.all(_frequency.map(e=>{
+            this.__frequency.delete(e.id);
+       }))
 
        const _class = await this.__prisma.class.delete({
         where:{

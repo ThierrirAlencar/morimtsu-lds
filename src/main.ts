@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: '*', // ou especificamente: origin: 'http://192.168.0.7:8082'
+    origin: '*', 
     methods: 'GET,POST,PUT,DELETE,PATCH',
     credentials: true,
   });
@@ -18,10 +18,12 @@ async function bootstrap() {
     .setDescription('')
     .setVersion('1.0')
     .addTag("user","rotas de criação e gerenciamento de usuários")
-    .addTag("auth","Rotas de autenticação de usuários")
+    .addTag("auth","rotas de autenticação de usuários")
     .addTag("class","rotas de criação e gerenciamento de turmas")
     .addTag("students","rotas de criação e gerenciamento de estudantes")
+    .addTag("frequency","rotas para criação e gerenciamente da frequencia dos alunos")
     .build();
+    
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
 

@@ -460,13 +460,24 @@ export class studentServices{
         if(!formData){
             throw new prohibitedAction("Student does not have a valid student form")
         }
+        
+        const {email,name} = doesTheStudentExists
+        const _theresAlreadyAnUserWithThisUserName = await this._prisma.user.findUnique({
+            where:{
+                name
+            }
+        })
 
+        if(_theresAlreadyAnUserWithThisUserName){
+            throw new entityAlreadyExistsError()
+        }
 
         const __password = await hash(password,9)
+
         const __coachUser = await this._prisma.user.create({
             data:{
-                email:doesTheStudentExists.email,
-                name:doesTheStudentExists.name,
+                email:email,
+                name:name,
                 password:__password,
                 role:"USER",
             }

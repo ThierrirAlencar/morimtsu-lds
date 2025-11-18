@@ -9,7 +9,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: '*', // ou especificamente: origin: 'http://192.168.0.7:8082'
-    methods: 'GET,POST,PUT,DELETE',
+    methods: 'GET,POST,PUT,DELETE,PATCH',
     credentials: true,
   });
 

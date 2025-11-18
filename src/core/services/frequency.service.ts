@@ -160,7 +160,26 @@ export class frequencyService{
         if(!frequency){
             throw new entityDoesNotExists()
         }
+        //subtract
+        const {Presence:s_presence, } = await this._prisma.studentForm.findUnique({
+            where:{
+                id:frequency.student_id
+            },
+            select:{
+                Presence:true
+            }
+        })
 
+        const _updatedForm = await this._prisma.studentForm.update({
+            where:{
+                id:frequency.student_id
+            },
+            data:{
+                Presence:s_presence-1
+            }
+        })
+
+        
         return await this._prisma.frequency.delete({
             where:{
                 id

@@ -173,7 +173,7 @@ GET http://127.0.0.1:3000/student
 
 
 ### Query all teachers 
-GET http://127.0.0.1:3000/user/all
+GET http://127.0.0.1:3000/user/all?role=ADMIN
 Authorization: Bearer {{token}}
 
 ### Promover estudante

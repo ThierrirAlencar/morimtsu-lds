@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Response } from "express";
 import { UserService } from "src/core/services/user.service";
@@ -7,7 +7,7 @@ import { baseError, entityAlreadyExistsError, entityDoesNotExists, InvalidPasswo
 import { AuthService } from "src/infra/validators/auth.service";
 import z, { any, email } from "zod";
 import { createUserDTO, LoginDTO, updateUserDTO } from "../dto/user";
-import { ApiHeader, ApiParam, ApiResponse } from "@nestjs/swagger";
+import { ApiHeader, ApiParam, ApiQuery, ApiResponse } from "@nestjs/swagger";
 import {User} from "generated/prisma"
 import { mailService } from "src/core/services/mail.service";
 
@@ -231,15 +231,18 @@ export class userController{
     @ApiResponse({status:403, description:"Usuário não tem permissão para executar essa ação"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @ApiHeader({name:"Authorization", description:"Bearer token de autenticação"})
+    @ApiQuery({name:"role", required:false, description:"Filtrar usuários por papel"})
     @UseGuards(AuthGuard("jwt"))
     @Get("/all")
-    async getAllUser(@Req() req: AuthRequest, @Res() res: Response){
+    async getAllUser(@Req() req: AuthRequest, @Res() res: Response, @Query("role") role?:string){
         const {id} = z.object({
             id:z.string().uuid()
         }).parse(req.user)
 
+        const _role = z.enum(["ADMIN","USER"]).optional().parse(role)
+
         try{
-            const __service = await this.userService.getAllUsers(id);
+            const __service = await this.userService.getAllUsers(id, _role);
 
             res.send({
                 status:200,

@@ -151,10 +151,10 @@ export class UserService {
         }
   }
 
-  async getAllUsers(id:string){
+  async getAllUsers(id:string, role?:Role){
     const doesTheUserExists = await this.__prisma.user.findUnique({
       where:{
-        id
+        id,
       }
     })
 
@@ -168,7 +168,8 @@ export class UserService {
 
     const users = await this.__prisma.user.findMany({
         where: {
-            role: 'USER'
+            role: role ? role : undefined
+        
         },
         include: {
             studentData: {

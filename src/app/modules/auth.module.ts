@@ -6,13 +6,14 @@ import { AuthService } from 'src/infra/validators/auth.service';
 import { JwtStrategy } from 'src/infra/validators/jwt.strategy';
 import { AuthController } from '../controllers/auth.controller';
 import { mailService } from 'src/core/services/mail.service';
+import { JWT_SECRET } from 'src/infra/lib/env';
 
 
 @Module({
     imports:[
         PassportModule,
         JwtModule.register({
-              secret: process.env.JWT_SECRET,
+              secret: JWT_SECRET,
               signOptions: { expiresIn: '30d' },
         }),
     ],

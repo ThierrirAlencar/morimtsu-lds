@@ -1,10 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HOST, PORT } from './infra/lib/env';
 
 async function bootstrap() {
-  const PORT = process.env.PORT ?? 3000;
-  const HOST = process.env.HOST ?? "0.0.0.0"
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
@@ -26,7 +25,6 @@ async function bootstrap() {
     
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);
-
 
   await app.listen(PORT,HOST,()=>{
       console.log(`Server running in: http://${HOST}:${PORT}`)

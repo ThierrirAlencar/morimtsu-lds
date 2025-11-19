@@ -33,3 +33,8 @@ export class LoginDTO{
     @ApiProperty({})
     Password:string
 }
+
+export class QueryAllUsersDTO{
+    @ApiProperty({enum:["ADMIN","USER"], required:false, description:"Se fornecido, filtra os usuários por esse papel"})
+    role?: Role
+}

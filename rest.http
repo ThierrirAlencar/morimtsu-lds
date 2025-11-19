@@ -89,8 +89,8 @@ Content-Type: application/json
 }
 
 ### Get class by id
-GET https://morimtsu-lds.onrender.com/class/cmh2dj2ze0009fa22yyybsh38
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MWI2ZWE5Mi03MzRkLTQwZDItOGYwZC03MDAzZTM1NDY5MzMiLCJpYXQiOjE3NjExNDEzNDQsImV4cCI6MTc2MTc0NjE0NH0.nJMOFHu4hechTHrmyzXa8vvUMz9LOU8R9nSxPv02lHQ
+GET {{baseUrl}}/class/cmhy5tyxt0001if22bm42s0fb
+Authorization: Bearer {{token}}
 
 ### Update class
 PUT http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
@@ -101,7 +101,7 @@ Content-Type: application/json
 }
 
 ### Delete class
-DELETE http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
+DELETE http://127.0.0.1:3000/class/cmhkniubx0000il9w54y6t8ee
 
 ### Get filtered classes (only query)
 GET http://127.0.0.1:3000/class?name=Turma

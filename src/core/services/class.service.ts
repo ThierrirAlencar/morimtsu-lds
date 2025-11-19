@@ -96,32 +96,54 @@ export class classService{
     }
 
     async delete(id:string){
-       const _studentClasses = await this.__prisma.studentClasses.deleteMany({
-        where:{
-            classId:id
-        }
-       })
-       const _frequency = await this.__prisma.frequency.findMany({
-        where:{
-            class_id:id
-        }
-       })
+         // 1. Find all frequencies for this class
+        const frequencies = await this.__prisma.frequency.findMany({
+                where: {
+                    class_id: id
+                }
+         });
 
-       //Delete all frequencies
-       await Promise.all(_frequency.map(e=>{
-            this.__frequency.delete(e.id);
-       }))
+        // 2. Delete all frequencies and update student presence
+        for (const frequency of frequencies) {
+                const studentForm = await this.__prisma.studentForm.findUnique({
+                    where: { studentId: frequency.student_id },
+                    select: { Presence: true }
+                });
 
-       const _class = await this.__prisma.class.delete({
-        where:{
-            id
-        }
-       })
+                if (studentForm) {
+                    await this.__prisma.studentForm.update({
+                        where: { studentId: frequency.student_id },
+                        data: {
+                            Presence: Math.max(0, studentForm.Presence - 1)
+                        }
+                    });
+                }
 
-       return{
-        _class,
-        _studentClasses
-       }
+                await this.__prisma.frequency.delete({
+                    where: { id: frequency.id }
+                });
+            }
+
+            // 3. Delete all StudentClasses relationships
+            await this.__prisma.studentClasses.deleteMany({
+                where: { classId: id }
+            });
+
+            // 4. Delete all UserClasses relationships
+            await this.__prisma.userClasses.deleteMany({
+                where: { classId: id }
+            });
+
+            
+            const _class = await this.__prisma.class.delete({
+                where: { id }
+            });
+
+        return {
+            message: "Class deleted successfully",
+            class: _class,
+            frequenciesDeleted: frequencies.length
+        };
     }
 
     async getOne(id:string){

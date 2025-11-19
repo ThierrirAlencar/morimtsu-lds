@@ -129,39 +129,140 @@ export class classController{
   "status": 200,
   "description": "Class fetched with success",
   "class": {
-    "id": "cmh2dj2ze0009fa22yyybsh38",
-    "name": "ysad gysagvbdya",
+    "id": "cmhy5tyxt0001if22bm42s0fb",
+    "name": "Turma 4",
     "description": null,
-    "icon_url": "/src/assets/presets/capaturma3.png",
-    "startTime": null,
-    "endTime": null,
-    "maxAge": 0,
-    "minAge": 1
+    "icon_url": "/src/assets/presets/capaturma8.png",
+    "startTime": "1970-01-01T00:00:00.000Z",
+    "endTime": "1970-01-01T00:00:00.000Z",
+    "maxAge": 120,
+    "minAge": 10
   },
   "students": [
     {
-      "id": "8c3498c9-1e3d-4e12-9253-9ccdb679708d",
-      "name": "Pedro Lucas",
-      "nickname": "Pedrinho matador",
-      "Contact": "+5511999999999",
-      "birthDate": "1999-04-15T00:00:00.000Z",
-      "email": "Pedro.Lucas@example.com",
-      "CPF": "123343435465547656",
-      "parentName": null,
-      "parentContact": null,
-      "createdAt": "2025-10-22T19:42:10.374Z"
+      "personal": {
+        "id": "7b672b8e-d683-4b2d-b3bd-1c76d33fbb7f",
+        "name": "Pedro Guilherme",
+        "nickname": "Guy",
+        "Contact": "43246523164521364",
+        "birthDate": "2001-01-21T00:00:00.000Z",
+        "gender": "male",
+        "email": "guy123@gmail.com",
+        "CPF": "5623456872734658",
+        "parentName": "",
+        "parentContact": "",
+        "createdAt": "2025-11-05T13:14:26.058Z"
+      },
+      "form": {
+        "id": "cmhm0rvfa0001aq22vbd703mu",
+        "Rating": 1,
+        "Presence": 6,
+        "Comments": "Aluno excelente. Só é um pouco impaciente.",
+        "Rank": "ROXA",
+        "IFCE_student_registration": null,
+        "Health_issues": null,
+        "Medication_usage": null,
+        "Allergies": null,
+        "studentId": "7b672b8e-d683-4b2d-b3bd-1c76d33fbb7f",
+        "userId": "ce506827-1b35-4632-9a6a-c1a01a43b576"
+      }
+    },
+    {
+      "personal": {
+        "id": "0573e283-b6f0-4088-8f41-f7d184de9e4b",
+        "name": "Raimundo José de Matos",
+        "nickname": "",
+        "Contact": "6542676537653767435",
+        "birthDate": "2015-11-12T00:00:00.000Z",
+        "gender": "female",
+        "email": "Raimundo1@gmail.com",
+        "CPF": "8965438735435",
+        "parentName": "Olivia",
+        "parentContact": "452564561532451234",
+        "createdAt": "2025-11-05T14:05:54.070Z"
+      },
+      "form": {
+        "id": "cmhm2m23v000jck2lmwedb5fz",
+        "Rating": 1,
+        "Presence": 6,
+        "Comments": "",
+        "Rank": "CINZA",
+        "IFCE_student_registration": null,
+        "Health_issues": null,
+        "Medication_usage": null,
+        "Allergies": null,
+        "studentId": "0573e283-b6f0-4088-8f41-f7d184de9e4b",
+        "userId": null
+      }
+    },
+    {
+      "personal": {
+        "id": "45d1b87e-913c-4d72-a045-edaf04a4b8ef",
+        "name": "Raimundo",
+        "nickname": "Rai",
+        "Contact": "342341241434324",
+        "birthDate": "2001-11-10T00:00:00.000Z",
+        "gender": "female",
+        "email": "rai123@gmail.com",
+        "CPF": "54154313124324214234124",
+        "parentName": "",
+        "parentContact": "",
+        "createdAt": "2025-11-05T14:03:36.289Z"
+      },
+      "form": {
+        "id": "cmhm2j3sy000fck2lhte8lk9x",
+        "Rating": 1,
+        "Presence": 6,
+        "Comments": "",
+        "Rank": "VERMELHA",
+        "IFCE_student_registration": null,
+        "Health_issues": null,
+        "Medication_usage": null,
+        "Allergies": null,
+        "studentId": "45d1b87e-913c-4d72-a045-edaf04a4b8ef",
+        "userId": "90edb66e-fde3-46e8-a201-975e4acc75c5"
+      }
+    },
+    {
+      "personal": {
+        "id": "18717f01-55ec-4cbf-ab37-f08fabb4b83c",
+        "name": "julia3",
+        "nickname": "julia do Ceara",
+        "Contact": "+2345677",
+        "birthDate": "2007-05-20T00:00:00.000Z",
+        "gender": "female",
+        "email": "56@example.com",
+        "CPF": "456521",
+        "parentName": null,
+        "parentContact": null,
+        "createdAt": "2025-11-05T13:58:13.119Z"
+      },
+      "form": {
+        "id": "cmhm2c6gc000dck2l6v11l8dz",
+        "Rating": 1,
+        "Presence": 6,
+        "Comments": "Mulher",
+        "Rank": "AMARELA",
+        "IFCE_student_registration": null,
+        "Health_issues": null,
+        "Medication_usage": null,
+        "Allergies": null,
+        "studentId": "18717f01-55ec-4cbf-ab37-f08fabb4b83c",
+        "userId": null
+      }
     }
   ],
   "coachs": [
     {
-      "id": "81b6ea92-734d-40d2-8f0d-7003e3546933",
-      "password": "$2b$09$zu1y9GFGpj2tNtIfWyIahOdCCi6ZsbiUc8WyiSl78sLFm0ufrH3wG",
+      "id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
+      "password": "$2y$09$LWRKIL4eJguDe5EqmgD5GO5tRVMjCxm7e7t9nuEA3rL5EWJ9nVGSe",
       "role": "ADMIN",
-      "name": "ts",
-      "email": "s@gmail.com"
+      "name": "Saulo",
+      "email": "admin@gmail.com"
     }
   ]
 }
+
             `)})
     @ApiResponse({status:404, description:"Classe não encontrada"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
@@ -198,7 +299,6 @@ export class classController{
             ]
         }
     `)})
-    
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
     @Get("/")

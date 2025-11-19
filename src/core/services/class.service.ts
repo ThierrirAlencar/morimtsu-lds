@@ -171,7 +171,18 @@ export class classService{
         }
         return {
             class:_class,
-            students:_classStudentsList,
+            students:await Promise.all(_classStudentsList.map(async e=>{
+                    let student_form = await this.__prisma.studentForm.findUnique({
+                        where:{
+                            studentId:e.id,
+                        }
+                    })
+
+                    return{
+                        personal: e,
+                        form: student_form
+                    }
+                })),
             coachs:_classCoachsList
         }
     }

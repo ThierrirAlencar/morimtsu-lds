@@ -262,4 +262,30 @@ export class classService{
 
         return _classList;
    }
+
+   async assignCoachsToClass(classId:string, coachId:string){
+        const doesTheClassExists = await this.__prisma.class.findUnique({
+            where:{
+                id:classId
+            }
+        })
+        const doesTheUserExists = await this.__prisma.user.findUnique({
+            where:{
+                id:coachId
+            }
+        })
+        
+        if(!doesTheClassExists || !doesTheUserExists){
+            throw new entityDoesNotExists()
+        }
+
+        const _relation = await this.__prisma.userClasses.create({
+            data:{
+                classId,
+                userId:coachId
+            }
+        })
+        return _relation
+
+   }
 }

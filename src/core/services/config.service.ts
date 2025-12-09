@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma, Rank } from "generated/prisma";
 import { PrismaService } from "src/infra/database/prisma.service";
+import { entityDoesNotExists } from "src/infra/utils/errors";
 
 @Injectable()
 export class ConfigService{
@@ -50,6 +51,11 @@ export class ConfigService{
         });
     }
     async deleteConfigById(id:string){
+        const existingConfig = await this.getConfigById(id);
+
+        if(!existingConfig){
+            throw new entityDoesNotExists();
+        }
         return this._prisma.promotion_config.delete({
             where:{
                 id:id
@@ -58,6 +64,12 @@ export class ConfigService{
     }
 
     async deleteConfigByRank(ref_rank:Rank){
+        const existingConfig = await this.getConfigByRank(ref_rank);
+
+        if(!existingConfig){
+            throw new entityDoesNotExists();
+        }
+
         return this._prisma.promotion_config.deleteMany({
             where:{
                 ref_rank:ref_rank
@@ -66,6 +78,11 @@ export class ConfigService{
     }
 
     async updateConfigById(id:string,data:Partial<Prisma.promotion_configUpdateInput>){
+        const existingConfig = await this.getConfigById(id);
+
+        if(!existingConfig){
+            throw new entityDoesNotExists();
+        }
         return this._prisma.promotion_config.update({
             where:{
                 id:id

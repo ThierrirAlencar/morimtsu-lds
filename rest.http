@@ -1,8 +1,8 @@
-@baseUrl = http://127.0.0.1:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJpYXQiOjE3NjI5NTU2MTMsImV4cCI6MTc2MzU2MDQxM30.f9JnVKYNHhMtc2Dw_k8eI7_IYyHohWYqh1Wnm7wg7xs
+@baseUrl = http://127.0.0.1:5676
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjUyODYxNTUsImV4cCI6MTc2NTg5MDk1NX0.ssoA__XDY5kK3EUrjtUZUz1emPGjqKsKxxM1EeYIUhM
 
 
-POST http://127.0.0.1:3000/user 
+POST {{baseUrl}}/user 
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ### Atualizar senha do usuário
-PUT http://127.0.0.1:3000/auth
+PUT {{baseUrl}}/auth
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### 🔐 Login do usuário
-POST http://127.0.0.1:3000/user/login
+POST {{baseUrl}}/user/login
 Content-Type: application/json
 
 {
@@ -40,7 +40,7 @@ Content-Type: application/json
 }
 
 ### ⚙️ Atualizar dados do usuário (PUT /user)
-PUT http://127.0.0.1:3000/user
+PUT {{baseUrl}}/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3M2I5NjIxNy0wYWQ3LTQ3ZTMtYjI3ZC1jOTk4YTI0NWEwOTIiLCJpYXQiOjE3NjE3NDM3OTIsImV4cCI6MTc2MjM0ODU5Mn0.nZ2k0W6aoGO0f_fuU5CsGQngzcfbbrrD82Hbk-xuJgs
 Content-Type: application/json
 
@@ -49,18 +49,18 @@ Content-Type: application/json
 }
 
 ### 🗑️ Excluir usuário (DELETE /user/:id)
-DELETE http://127.0.0.1:3000/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c
+DELETE {{baseUrl}}/user/1f1a2b3c-4d5e-6f7a-8b9c-0d1e2f3a4b5c
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMzg4YmM1ZC1iYzdmLTQxOTAtOGI5Yi0xYTkzZDAzZjM0NzAiLCJpYXQiOjE3NjE3NDMyMzQsImV4cCI6MTc2MjM0ODAzNH0.PsnEqsDYp3U4zxHSvkGLzHNMAJgoZA1qoccncddXmB0
 
 ### 👤 Obter perfil do usuário (GET /user/:id/profile)
-GET http://127.0.0.1:3000/user/profile
+GET {{baseUrl}}/user/profile
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjI5NTc1ODgsImV4cCI6MTc2MzU2MjM4OH0.GiFZ-3wLauFtglM0qUbMxNcmHqgsjfv9dmnVHeebun4
 # REST tests for classController
 # Substitua {{baseUrl}} pelo endereço da sua API (ex: http://localhost:3000)
 # Após criar a class, copie o id retornado e substitua {{classId}} nos requests seguintes.
 
 ### Create class (without coachId)
-POST http://127.0.0.1:3000/class
+POST {{baseUrl}}/class
 Content-Type: application/json
 
 {
@@ -93,7 +93,7 @@ GET {{baseUrl}}/class/cmhy5tyxt0001if22bm42s0fb
 Authorization: Bearer {{token}}
 
 ### Update class
-PUT http://127.0.0.1:3000/class/cmh0lx2fe0000ildk9cbn0s0p
+PUT {{baseUrl}}/class/cmh0lx2fe0000ildk9cbn0s0p
 Content-Type: application/json
 
 {
@@ -101,10 +101,10 @@ Content-Type: application/json
 }
 
 ### Delete class
-DELETE http://127.0.0.1:3000/class/cmhkniubx0000il9w54y6t8ee
+DELETE {{baseUrl}}/class/cmhkniubx0000il9w54y6t8ee
 
 ### Get filtered classes (only query)
-GET http://127.0.0.1:3000/class?name=Turma
+GET {{baseUrl}}/class?name=Turma
 Authorization: Bearer {{token}}
 
 # REST tests for StudentController
@@ -127,11 +127,11 @@ Content-Type: application/json
   "presence": 23,
   "rating": 1,
   "gender":"female",
-  "classId": ["cmhm1891c0001ck2l8hz740l3"]
+  "classId": []
 }
 
 ### Get student by id
-GET http://127.0.0.1:3000/student/bea9ab40-ef43-4fb6-9394-e9e846a7ae88
+GET {{baseUrl}}/student/bea9ab40-ef43-4fb6-9394-e9e846a7ae88
 
 ### Update student personal info
 PUT {{baseUrl}}/student/{{studentId}}/personal
@@ -155,30 +155,30 @@ Content-Type: application/json
 }
 
 ### Delete student
-DELETE http://127.0.0.1:3000/student/{{studentId}}
+DELETE {{baseUrl}}/student/{{studentId}}
 
 
 ### Student joins a class
-POST http://127.0.0.1:3000/student/{{studentId}}/join/cmh2ds8qi000afa222rxz7aqq
+POST {{baseUrl}}/student/{{studentId}}/join/cmh2ds8qi000afa222rxz7aqq
 
 
 ### Query students - full filter
-GET http://127.0.0.1:3000/student?query=Joao&minAge=10&maxAge=18&CPF=12345678900&email=joao.silva@example.com&Presence=100&Rank=WHITE&class={{classId}}
+GET {{baseUrl}}/student?query=Joao&minAge=10&maxAge=18&CPF=12345678900&email=joao.silva@example.com&Presence=100&Rank=WHITE&class={{classId}}
 
 ### Query students - by text only
-GET http://127.0.0.1:3000/student?query=julia
+GET {{baseUrl}}/student?query=julia
 
 ### Query students - by age range only
-GET http://127.0.0.1:3000/student
+GET {{baseUrl}}/student
 
 
 ### Query all teachers 
-GET http://127.0.0.1:3000/user/all?role=ADMIN
+GET {{baseUrl}}/user/all?role=ADMIN
 Authorization: Bearer {{token}}
 
 ### Promover estudante
 
-PATCH http://127.0.0.1:3000/student/promote?studentId=bea9ab40-ef43-4fb6-9394-e9e846a7ae88
+PATCH {{baseUrl}}/student/promote?studentId=bea9ab40-ef43-4fb6-9394-e9e846a7ae88
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -210,6 +210,65 @@ Accept: application/json
 ### 3️⃣ LISTAR / FILTRAR FREQUÊNCIAS
 #######################################
 GET {{baseUrl}}/frequency
+Authorization: Bearer {{token}}
+
+
+#######################################
+### ⚙️ CONFIG ENDPOINTS
+#######################################
+
+### 1️⃣ CRIAR UMA CONFIGURAÇÃO DE PROMOÇÃO
+POST {{baseUrl}}/config
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Promoção para Faixa Branca",
+  "ref_rank": "BRANCA",
+  "module": "rank",
+  "needed_frequency": 80
+}
+
+### 2️⃣ CRIAR OUTRA CONFIGURAÇÃO
+POST {{baseUrl}}/config
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Promoção para Faixa Cinza",
+  "ref_rank": "CINZA",
+  "module": 2,
+  "needed_frequency": 85
+}
+
+### 3️⃣ OBTER CONFIGURAÇÃO POR ID
+GET {{baseUrl}}/config/{{configId}}
+Authorization: Bearer {{token}}
+
+### 4️⃣ OBTER CONFIGURAÇÃO POR RANK
+GET {{baseUrl}}/config/rank/BRANCA
+Authorization: Bearer {{token}}
+
+### 5️⃣ LISTAR TODAS AS CONFIGURAÇÕES
+GET {{baseUrl}}/config
+Authorization: Bearer {{token}}
+
+### 6️⃣ ATUALIZAR CONFIGURAÇÃO
+PUT {{baseUrl}}/config/{{configId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Promoção para Faixa Branca - Atualizado",
+  "needed_frequency": 90
+}
+
+### 7️⃣ DELETAR CONFIGURAÇÃO POR ID
+DELETE {{baseUrl}}/config/{{configId}}
+Authorization: Bearer {{token}}
+
+### 8️⃣ DELETAR CONFIGURAÇÃO POR RANK
+DELETE {{baseUrl}}/config/rank/CINZA
 Authorization: Bearer {{token}}
 
 

@@ -21,6 +21,16 @@ async function bootstrap() {
     .addTag("class","rotas de criação e gerenciamento de turmas")
     .addTag("students","rotas de criação e gerenciamento de estudantes")
     .addTag("frequency","rotas para criação e gerenciamente da frequencia dos alunos")
+    .addTag("config","rotas para criação e gerenciamento das configurações de promoção")
+    .addBearerAuth(
+      {
+        description:"JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+        name:"Authorization",
+        in:"header",
+        type: 'http',
+        scheme: 'bearer',
+      }
+    )
     .build();
     
   const documentFactory = () => SwaggerModule.createDocument(app, config);

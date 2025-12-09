@@ -380,4 +380,32 @@ export class StudentController {
             }
         }
     }
+
+    @UseGuards(AuthGuard("jwt"))
+    @ApiParam({name:"studentId", description:"Id do estudante a ser promovido de rank"})
+    @ApiResponse({status:200,description:"Rank promovido com sucesso"})
+    @ApiResponse({status:404, description:"Entidade não encontrada"})
+    @Patch("/promote/rank")
+    async promoteRank(@Req() req: AuthRequest, @Res() res: Response, @Query("studentId") studentId: string, @Body() body: { newRank: string }){
+        const { newRank } = z.object({ newRank: z.string() }).parse(body)
+
+        try{
+            const promotedRank = await this.studentService.promoteStudentRank(studentId, newRank as Rank)
+
+            res.status(200).send({
+                statusCode:200,
+                description: "Estudante promovido de rank com sucesso",
+                newRank: promotedRank
+            })
+        }catch(err){
+            if(err instanceof baseError){
+                res.status(err.http_status).send(err)
+            }else{
+                res.status(500).send({
+                    description: "Erro desconhecido",
+                    error: err
+                })
+            }
+        }
+    }
 }

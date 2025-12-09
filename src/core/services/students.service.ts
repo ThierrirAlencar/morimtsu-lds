@@ -503,4 +503,46 @@ export class studentServices{
         }
     }
 
+    async promoteStudentRank(studentId:string, newRank:Rank):Promise<Rank>{
+        const doesTheStudentExists = await this._prisma.student.findUnique({
+            where:{
+                id:studentId
+            }
+        })
+
+        if(!doesTheStudentExists){
+            throw new entityDoesNotExists()
+        }
+        const {Presence, Rank} = await this._prisma.studentForm.findUnique({
+            where:{
+                studentId
+            }
+        })
+
+        const config = await this._prisma.promotion_config.findFirst({
+            where:{
+                ref_rank:newRank
+            }
+        })
+
+        if(!config){
+            throw new prohibitedAction("Não existe uma configuração de promoção para o novo rank informado")
+        }
+
+        if(Presence < config.needed_frequency){
+            throw new prohibitedAction("O estudante não possui a frequência necessária para ser promovido a esse rank")
+        }
+
+        const studentForm = await this._prisma.studentForm.update({
+            where:{
+                studentId
+            },
+            data:{
+                Rank:newRank
+            }
+        })
+
+        return studentForm.Rank; 
+    }
+
 }

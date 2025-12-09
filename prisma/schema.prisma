@@ -39,6 +39,10 @@ enum Rank {
   MARROM
   PRETA
   VERMELHA
+
+  // Non Colorfull RANKS
+  KIDS
+  JUVENIL
 }
 
 

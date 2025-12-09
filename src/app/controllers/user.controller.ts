@@ -258,4 +258,51 @@ export class userController{
         }
     }
 
+    @ApiResponse({status:200, description:"Notificações retornadas com sucesso", example:JSON.parse(`
+            {
+  "status": 200,
+  "description": "Notifications fetched with success",
+  "body": [
+    {
+      "date": "2025-12-09T10:30:00.000Z",
+      "kind": "BIRTHDATE",
+      "message": "Um aluno da sua turma faz aniversário em breve: João Silva no dia 14/12/2025",
+      "read": false
+    },
+    {
+      "date": "2025-12-09T10:30:00.000Z",
+      "kind": "BIRTHDATE",
+      "message": "Um aluno da sua turma faz aniversário em breve: Maria Santos no dia 15/12/2025",
+      "read": false
+    }
+  ]
+}
+        `)})
+    @ApiResponse({status:404, description:"Usuário não encontrado"})
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @ApiHeader({name:"Authorization", description:"Bearer token de autenticação"})
+    @UseGuards(AuthGuard("jwt"))
+    @Get("/notifications")
+    async getNotifications(@Req() req: AuthRequest, @Res() res: Response){
+        const {id} = z.object({
+            id:z.string().uuid()
+        }).parse(req.user)
+
+        try{
+            const notifications = await this.userService.getNotifications(id);
+
+            res.send({
+                status:200,
+                description:"Notifications fetched with success",
+                body:notifications
+            })
+        }catch(err){
+            if(err instanceof baseError){
+                res.status(err.http_status).send(err)
+            }else{
+                res.status(500).send({ description: "erro desconhecido", error:err})
+            }
+        }
+    }
+
 }

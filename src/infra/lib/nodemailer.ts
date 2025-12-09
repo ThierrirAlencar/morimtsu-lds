@@ -41,6 +41,7 @@ const transport = createTransport({
  * @param email.subject - O assunto do e-mail.
  * @param email.text - O conteúdo do e-mail no formato de texto simples.
  * @param email.to - O endereço de e-mail do destinatário.
+ * @param email.html - O conteúdo do e-mail no formato HTML (opcional).
  * 
  * @returns Uma promessa que resolve para o resultado do envio do e-mail.
  *          O resultado contém informações sobre o e-mail enviado, como identificador e status.

@@ -3,7 +3,18 @@ import { compare, hash } from 'bcryptjs';
 import { log } from 'console';
 import { Prisma, Role } from 'generated/prisma';
 import { PrismaService } from 'src/infra/database/prisma.service';
-import { entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, notEnoughPermissions, triedToUpdateForbidenValue } from 'src/infra/utils/errors';
+import {
+  notification,
+  notification_kind,
+} from 'src/infra/interfaces/notification';
+import {
+  entityAlreadyExistsError,
+  entityDoesNotExists,
+  InvalidPasswordError,
+  notEnoughPermissions,
+  triedToUpdateForbidenValue,
+} from 'src/infra/utils/errors';
+import { NotificationChecker } from 'src/infra/utils/notifications';
 import { string } from 'zod';
 import { _includes } from 'zod/v4/core';
 
@@ -11,177 +22,219 @@ interface safe_user {
   name: string;
   email: string;
 }
-interface full_user{
-  name:string,
-  role:Role,
-  email:string
+interface full_user {
+  name: string;
+  role: Role;
+  email: string;
 }
 
 @Injectable()
 export class UserService {
   constructor(private __prisma: PrismaService) {}
 
-  async create(data:Prisma.UserCreateInput): Promise<safe_user> {
-    const {email,name,password,role} = data
-    const doesAnyUserWithTheSameEmailAdressExists = await this.__prisma.user.findUnique({
-      where:{
-        email:data.email
-      }
-    })
-    if(doesAnyUserWithTheSameEmailAdressExists){
+  async create(data: Prisma.UserCreateInput): Promise<safe_user> {
+    const { email, name, password, role } = data;
+    const doesAnyUserWithTheSameEmailAdressExists =
+      await this.__prisma.user.findUnique({
+        where: {
+          email: data.email,
+        },
+      });
+    if (doesAnyUserWithTheSameEmailAdressExists) {
       throw new entityAlreadyExistsError();
     }
-    const doesAnyUserWithTheSameNameExists = await this.__prisma.user.findUnique({
-      where:{
-        name:data.name
-      }
-    })
-    if(doesAnyUserWithTheSameNameExists){
+    const doesAnyUserWithTheSameNameExists =
+      await this.__prisma.user.findUnique({
+        where: {
+          name: data.name,
+        },
+      });
+    if (doesAnyUserWithTheSameNameExists) {
       throw new entityAlreadyExistsError();
     }
-    const _password = await hash(password,9);
-    const _user = await this.__prisma.user.create({data:{email,name,password:_password,role:role || "USER"}});
-    
+    const _password = await hash(password, 9);
+    const _user = await this.__prisma.user.create({
+      data: { email, name, password: _password, role: role || 'USER' },
+    });
+
     return {
-      email:_user.email,
-      name:_user.name,
-    }
+      email: _user.email,
+      name: _user.name,
+    };
   }
 
-  async update(id:string,data:Prisma.UserUpdateInput):Promise<safe_user>{
-    const {email,password,name,role} = data
-    
+  async update(id: string, data: Prisma.UserUpdateInput): Promise<safe_user> {
+    const { email, password, name, role } = data;
+
     const doesTheUserExists = await this.__prisma.user.findUnique({
-      where:{
-        id
-      }
-    })
-    if(!doesTheUserExists){
-      throw new entityDoesNotExists()
+      where: {
+        id,
+      },
+    });
+    if (!doesTheUserExists) {
+      throw new entityDoesNotExists();
     }
-    if(email){throw new triedToUpdateForbidenValue()}
+    if (email) {
+      throw new triedToUpdateForbidenValue();
+    }
     var _password = String(password);
-    if(password){
-      _password = await hash(String(password),9)
-    }else{
+    if (password) {
+      _password = await hash(String(password), 9);
+    } else {
       _password = doesTheUserExists.password;
     }
 
     const _user = await this.__prisma.user.update({
-      data:{
-        password:_password,
+      data: {
+        password: _password,
         name,
-        role
+        role,
       },
-      where:{
-        id
-      }
-    })
+      where: {
+        id,
+      },
+    });
 
-    return{
-      email:_user.email,
-      name:_user.name
-    }
+    return {
+      email: _user.email,
+      name: _user.name,
+    };
   }
 
-  async delete(id:string):Promise<safe_user>{
+  async delete(id: string): Promise<safe_user> {
     const doesTheUserExists = await this.__prisma.user.findUnique({
-      where:{
-        id
-      }
-    })
-    if(!doesTheUserExists){
-      throw new entityDoesNotExists()
+      where: {
+        id,
+      },
+    });
+    if (!doesTheUserExists) {
+      throw new entityDoesNotExists();
     }
 
     const _user = await this.__prisma.user.delete({
-      where:{
-        id
-      }
-    })
-    return{
-      email:_user.email,
-      name:_user.name
-    }
+      where: {
+        id,
+      },
+    });
+    return {
+      email: _user.email,
+      name: _user.name,
+    };
   }
 
-  async getProfile(id:string):Promise<full_user>{
+  async getProfile(id: string): Promise<full_user> {
     const doesTheUserExists = await this.__prisma.user.findUnique({
-      where:{
-        id
-      }
-    })
-    if(!doesTheUserExists){
-      throw new entityDoesNotExists()
+      where: {
+        id,
+      },
+    });
+    if (!doesTheUserExists) {
+      throw new entityDoesNotExists();
     }
 
     const _user = await this.__prisma.user.findUnique({
-      where:{
-        id
-      }
-    })
-
-
-    return{
-      role:_user.role,
-      email:_user.email,
-      name:_user.name
-    }
-  }
-
-  async login(email:string, password:string){
-        const doesTheUserExists = await this.__prisma.user.findUnique({
-            where:{
-                email
-            }
-        })
-        if(!doesTheUserExists){
-            throw new entityDoesNotExists()
-        }
-        
-        const doesThePasswordMatch = await compare(password,doesTheUserExists.password)
-
-        if(!doesThePasswordMatch){
-            throw new InvalidPasswordError()
-        }
-        
-        return{
-            userId:doesTheUserExists.id,
-            role:doesTheUserExists.role
-        }
-  }
-
-  async getAllUsers(id:string, role?:Role){
-    const doesTheUserExists = await this.__prisma.user.findUnique({
-      where:{
+      where: {
         id,
-      }
-    })
+      },
+    });
 
-    if(!doesTheUserExists){
-      throw new entityDoesNotExists()
+    return {
+      role: _user.role,
+      email: _user.email,
+      name: _user.name,
+    };
+  }
+
+  async login(email: string, password: string) {
+    const doesTheUserExists = await this.__prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (!doesTheUserExists) {
+      throw new entityDoesNotExists();
     }
 
-    if(doesTheUserExists.role !== "ADMIN"){
-      throw new notEnoughPermissions()
+    const doesThePasswordMatch = await compare(
+      password,
+      doesTheUserExists.password,
+    );
+
+    if (!doesThePasswordMatch) {
+      throw new InvalidPasswordError();
+    }
+
+    return {
+      userId: doesTheUserExists.id,
+      role: doesTheUserExists.role,
+    };
+  }
+
+  async getAllUsers(id: string, role?: Role) {
+    const doesTheUserExists = await this.__prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!doesTheUserExists) {
+      throw new entityDoesNotExists();
+    }
+
+    if (doesTheUserExists.role !== 'ADMIN') {
+      throw new notEnoughPermissions();
     }
 
     const users = await this.__prisma.user.findMany({
-        where: {
-            role: role ? role : undefined
-        
+      where: {
+        role: role ? role : undefined,
+      },
+      include: {
+        studentData: {
+          include: {
+            student: true,
+          },
         },
-        include: {
-            studentData: {
-                include: {
-                    student: true
-                }
-            }
-        }
+      },
     });
-    
-    return{users}
+
+    return { users };
   }
 
+  async getNotifications(userId: string): Promise<notification[]> {
+    const doesTheUserExists = await this.__prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
 
+    if (!doesTheUserExists) {
+      throw new entityDoesNotExists();
+    }
+
+    const classes = await this.__prisma.userClasses.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    var BirthdayNotifications: notification[] = await Promise.all(
+      classes.map(async (userClass) => {
+        const _notificator = new NotificationChecker(this.__prisma);
+        const classNotifications = await _notificator.checkBirthDatesOfClass(
+          userClass.classId,
+        );
+        return classNotifications.map((notif): notification => {
+          return {
+            date: new Date(),
+            kind: notification_kind.BIRTHDATE,
+            message: `Um aluno da sua turma faz aniversário em breve: ${notif.studentName} no dia ${notif.birthDate.toLocaleDateString()}`,
+            read: false,
+          };
+        });
+      }),
+    ).then((arr) => arr.flat());
+
+    return BirthdayNotifications;
+  }
 }

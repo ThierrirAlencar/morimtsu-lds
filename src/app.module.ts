@@ -6,9 +6,10 @@ import { baseController } from './app/base.controller';
 import { classModule } from './app/modules/class.module';
 import { studentModule } from './app/modules/student.module';
 import { frequencyModule } from './app/modules/frequency.module';
+import { ConfigModule } from './app/modules/config.module';
 
 @Module({
-  imports: [UserModule,AuthModule,classModule,studentModule, frequencyModule],
+  imports: [UserModule,AuthModule,classModule,studentModule, frequencyModule, ConfigModule],
   controllers: [baseController],
   providers: [PrismaService],
 })

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { log } from "console";
-import { Class, Prisma, student, User } from "generated/prisma";
+import { Class, Prisma, student, User } from "@prisma/client";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
 import { timeStringToDate } from "src/infra/utils/toDateTimeString";

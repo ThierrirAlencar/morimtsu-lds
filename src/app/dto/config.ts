@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsEnum, IsNumber, IsOptional } from 'class-validator';
-import { Rank } from 'generated/prisma';
+import { Rank } from '@prisma/client';
 
 export class createConfigDTO {
   @ApiProperty({

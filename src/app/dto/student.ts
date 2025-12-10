@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { Gender, Rank } from "generated/prisma"
+import { Gender, Rank } from "@prisma/client"
 import { string } from "zod"
 
 

@@ -2,7 +2,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
-import { Prisma, Rank } from "generated/prisma";
+import { Prisma, Rank } from "@prisma/client";
 import { studentServices } from "src/core/services/students.service";
 import { baseError, entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
 import { CreateStudentDTO, promoteStudentDTO, QueryStudentFiltersDTO, UpdateStudentFormDTO, UpdateStudentPersonalDTO } from "../dto/student";

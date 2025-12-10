@@ -22,6 +22,7 @@ async function bootstrap() {
     .addTag("students","rotas de criação e gerenciamento de estudantes")
     .addTag("frequency","rotas para criação e gerenciamente da frequencia dos alunos")
     .addTag("config","rotas para criação e gerenciamento das configurações de promoção")
+    .addTag("events","rotas para gerenciamento de eventos")
     .addBearerAuth(
       {
         description:"JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",

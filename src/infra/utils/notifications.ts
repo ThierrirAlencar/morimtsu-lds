@@ -1,4 +1,4 @@
-import { student } from "generated/prisma";
+import { student } from "@prisma/client";
 import { PrismaService } from "../database/prisma.service";
 import { notification } from "../interfaces/notification";
 

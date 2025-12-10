@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { log } from "console";
 import { hash } from "bcrypt";
-import { Class, Gender, Prisma, Rank, student, StudentClasses, StudentForm } from "generated/prisma";
+import { Class, Gender, Prisma, Rank, student, StudentClasses, StudentForm } from "@prisma/client";
 import { retry } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityAlreadyExistsError, entityDoesNotExists, notEnoughPermissions, prohibitedAction } from "src/infra/utils/errors";

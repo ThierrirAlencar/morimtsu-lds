@@ -1,5 +1,5 @@
 import { UUID } from "crypto";
-import { Prisma, User } from "generated/prisma";
+import { Prisma, User } from "@prisma/client";
 import { safe_user } from "src/infra/interfaces/user";
 import { ZodEmail } from "zod";
 

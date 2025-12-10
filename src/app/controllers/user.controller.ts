@@ -8,7 +8,7 @@ import { AuthService } from "src/infra/validators/auth.service";
 import z, { any, email } from "zod";
 import { createUserDTO, LoginDTO, QueryUser, updateUserDTO } from "../dto/user";
 import { ApiHeader, ApiParam, ApiQuery, ApiResponse } from "@nestjs/swagger";
-import {User} from "generated/prisma"
+import {User} from "@prisma/client";
 import { mailService } from "src/core/services/mail.service";
 
 @Controller("user")

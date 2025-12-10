@@ -15,7 +15,7 @@ import { baseError, entityDoesNotExists } from 'src/infra/utils/errors';
 import { createConfigDTO, updateConfigDTO } from '../dto/config';
 import { ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { Rank } from 'generated/prisma';
+import { Rank } from '@prisma/client';
 
 @Controller('config')
 export class ConfigController {

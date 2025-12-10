@@ -7,9 +7,10 @@ import { classModule } from './app/modules/class.module';
 import { studentModule } from './app/modules/student.module';
 import { frequencyModule } from './app/modules/frequency.module';
 import { ConfigModule } from './app/modules/config.module';
+import { EventModule } from './app/modules/event.module';
 
 @Module({
-  imports: [UserModule,AuthModule,classModule,studentModule, frequencyModule, ConfigModule],
+  imports: [UserModule,AuthModule,classModule,studentModule, frequencyModule, ConfigModule, EventModule],
   controllers: [baseController],
   providers: [PrismaService],
 })

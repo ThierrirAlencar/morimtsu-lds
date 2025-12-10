@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { events, Prisma, PrismaClient } from "@prisma/client";
+import { PrismaService } from "src/infra/database/prisma.service";
 import { entityDoesNotExists } from "src/infra/utils/errors";
 
 @Injectable()
 export class EventsService{
     
     constructor(
-        private _prisma:PrismaClient
+        private _prisma:PrismaService
     ){}
 
     async create(data:Prisma.eventsUncheckedCreateInput):Promise<events>{

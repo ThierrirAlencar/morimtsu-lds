@@ -86,11 +86,16 @@ export class frequencyController {
     status: 500,
     description: 'Erro desconhecido reportar a desenvolvedores.',
   })
-  @ApiQuery({ name: 'Id', description: 'o id da classe' })
   @Delete('/')
   async delete(@Query() query: queryDeleteFrequencyDTO, @Res() res: Response) {
+    const { id } = z
+      .object({
+        id: z.string().uuid(),
+      })
+      .parse(query);
+    
     try {
-      const __service = await this.service.delete(query.id);
+      const __service = await this.service.delete(id);
 
       res.status(200).send({
         description: 'Deletado com sucesso',
@@ -353,7 +358,7 @@ export class frequencyController {
     const date = new Date(str_date);
 
     try {
-      
+
       const updatedFrequency = await this.service.update(id, date);
 
       res.status(200).send({

@@ -18,11 +18,13 @@ import {
   createFrequencyDTO,
   queryDeleteFrequencyDTO,
   queryGetManyFrequencyDTO,
+  updateFrequencyDTO,
 } from '../dto/frequency';
 import z from 'zod';
 import { baseError, entityDoesNotExists } from 'src/infra/utils/errors';
 import { ApiHeader, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { frequencyListResponseJSON } from 'src/infra/utils/jsons/frequency/json';
 
 @Controller('frequency')
 export class frequencyController {
@@ -85,11 +87,16 @@ export class frequencyController {
     status: 500,
     description: 'Erro desconhecido reportar a desenvolvedores.',
   })
-  @ApiQuery({ name: 'Id', description: 'o id da classe' })
   @Delete('/')
   async delete(@Query() query: queryDeleteFrequencyDTO, @Res() res: Response) {
+    const { id } = z
+      .object({
+        id: z.string().uuid(),
+      })
+      .parse(query);
+    
     try {
-      const __service = await this.service.delete(query.id);
+      const __service = await this.service.delete(id);
 
       res.status(200).send({
         description: 'Deletado com sucesso',
@@ -111,118 +118,7 @@ export class frequencyController {
   @ApiResponse({
     status: 200,
     description: 'Informações retornadas com sucesso',
-    example: JSON.parse(`
-            {
-  "description": "Query feita com sucesso!!",
-  "body": [
-    {
-      "id": "cmhw2hexa0001il64lyr9hpx6",
-      "Date": "2025-11-12T13:59:59.182Z",
-      "coach_id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-      "student_id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-      "class_id": "cmhkniubx0000il9w54y6t8ee",
-      "Student": {
-        "id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-        "name": "LORRANNY",
-        "nickname": "Lorr",
-        "Contact": "00000000",
-        "birthDate": "2025-11-04T13:44:41.400Z",
-        "gender": "male",
-        "email": "lorrannyyasmin6@gmail.com",
-        "CPF": "00000000-00",
-        "parentName": "Marcos",
-        "parentContact": "00000000",
-        "createdAt": "2025-11-04T13:45:50.377Z"
-      },
-      "Class": {
-        "id": "cmhkniubx0000il9w54y6t8ee",
-        "name": "Test Class REST - without coach v1",
-        "description": "Classe criada pelo teste REST",
-        "icon_url": "askkahsjjaksjjskaskaj",
-        "startTime": "1970-01-01T20:00:00.000Z",
-        "endTime": "1970-01-01T21:00:00.000Z",
-        "maxAge": 12,
-        "minAge": 6
-      },
-      "Coach": {
-        "id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-        "name": "Saulo",
-        "email": "admin@gmail.com"
-      }
-    },
-    {
-      "id": "cmhw2fxi30001ilb4st8tf7ck",
-      "Date": "2025-11-12T13:58:49.948Z",
-      "coach_id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-      "student_id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-      "class_id": "cmhkniubx0000il9w54y6t8ee",
-      "Student": {
-        "id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-        "name": "LORRANNY",
-        "nickname": "Lorr",
-        "Contact": "00000000",
-        "birthDate": "2025-11-04T13:44:41.400Z",
-        "gender": "male",
-        "email": "lorrannyyasmin6@gmail.com",
-        "CPF": "00000000-00",
-        "parentName": "Marcos",
-        "parentContact": "00000000",
-        "createdAt": "2025-11-04T13:45:50.377Z"
-      },
-      "Class": {
-        "id": "cmhkniubx0000il9w54y6t8ee",
-        "name": "Test Class REST - without coach v1",
-        "description": "Classe criada pelo teste REST",
-        "icon_url": "askkahsjjaksjjskaskaj",
-        "startTime": "1970-01-01T20:00:00.000Z",
-        "endTime": "1970-01-01T21:00:00.000Z",
-        "maxAge": 12,
-        "minAge": 6
-      },
-      "Coach": {
-        "id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-        "name": "Saulo",
-        "email": "admin@gmail.com"
-      }
-    },
-    {
-      "id": "cmhw2diss0001ilp8bpbscwtu",
-      "Date": "2025-11-12T13:56:57.562Z",
-      "coach_id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-      "student_id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-      "class_id": "cmhkniubx0000il9w54y6t8ee",
-      "Student": {
-        "id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-        "name": "LORRANNY",
-        "nickname": "Lorr",
-        "Contact": "00000000",
-        "birthDate": "2025-11-04T13:44:41.400Z",
-        "gender": "male",
-        "email": "lorrannyyasmin6@gmail.com",
-        "CPF": "00000000-00",
-        "parentName": "Marcos",
-        "parentContact": "00000000",
-        "createdAt": "2025-11-04T13:45:50.377Z"
-      },
-      "Class": {
-        "id": "cmhkniubx0000il9w54y6t8ee",
-        "name": "Test Class REST - without coach v1",
-        "description": "Classe criada pelo teste REST",
-        "icon_url": "askkahsjjaksjjskaskaj",
-        "startTime": "1970-01-01T20:00:00.000Z",
-        "endTime": "1970-01-01T21:00:00.000Z",
-        "maxAge": 12,
-        "minAge": 6
-      },
-      "Coach": {
-        "id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-        "name": "Saulo",
-        "email": "admin@gmail.com"
-      }
-    }
-  ]
-}
-        `),
+    example: frequencyListResponseJSON,
   })
   @ApiResponse({
     status: 404,
@@ -252,7 +148,7 @@ export class frequencyController {
         id: z.string().uuid().optional(),
       })
       .parse(req.user);
-      
+
     const date = str_date ? new Date(str_date) : undefined;
 
     try {
@@ -342,11 +238,18 @@ export class frequencyController {
   @Put('/:id')
   async update(
     @Param('id') id: string,
-    @Body() body: { date: Date },
+    @Body() body:updateFrequencyDTO,
     @Res() res: Response,
   ) {
+
+    const {date:str_date} = z.object({
+      date: z.string(),
+    }).parse(body)
+    const date = new Date(str_date);
+
     try {
-      const updatedFrequency = await this.service.update(id, body.date);
+
+      const updatedFrequency = await this.service.update(id, date);
 
       res.status(200).send({
         description: 'Frequência atualizada com sucesso',

@@ -209,25 +209,37 @@ export class frequencyService{
                 } : {}
             ]
         },
-        include: {
-            Student: true,
-            Class: true,
-            Coach: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true
+            include: {
+                Student: true,
+                Class: true,
+                Coach: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true
+                    }
                 }
+            },
+            orderBy: {
+                Date: 'desc'
             }
-        },
-        orderBy: {
-            Date: 'desc'
+        });
+
+        return Promise.all(frequencies.map(async (freq) => {
+            const studentForm = await this._prisma.studentForm.findUnique({
+                where: {
+                    studentId: freq.student_id
+                }
+            })
+            
+            return {
+                ...freq,
+                StudentForm: studentForm || null
+            };
         }
-    });
-
-    return frequencies;
+        ));
     }
-
+    
     async update(id:string,date:Date):Promise<frequency>{
         const doesTheFrequencyExists = await this._prisma.frequency.findUnique({
             where:{

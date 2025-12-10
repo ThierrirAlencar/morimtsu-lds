@@ -65,3 +65,12 @@ export class queryGetManyFrequencyDTO{
     })  
     coachId?:string
 }
+
+export class updateFrequencyDTO{
+    @ApiProperty({
+        name:"Data",
+        description:"A nova data da frequencia",
+        nullable:false
+    })
+    date:string
+}

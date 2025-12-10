@@ -76,11 +76,17 @@ export class userController{
     @ApiResponse({status:404, description:"Usuário não encontrado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
+    @ApiQuery({name:"id", description:"ID do usuário a ser atualizado"})
     @Put("/")
-    async put(@Req() req: AuthRequest,@Body() body:updateUserDTO, @Res() res: Response){
-        const {id} = z.object({
+    async put(@Req() req: AuthRequest,@Body() body:updateUserDTO, @Res() res: Response, @Query() query:QueryUser){
+        const {id:uid} = z.object({
             id:z.string().uuid()
         }).parse(req.user)
+
+        const {id} = z.object({
+            id:z.string().uuid()
+        }).parse(query)
+
         const __body = z.object({
             name: z.string().optional(),
             password: z.string().optional(),
@@ -105,7 +111,7 @@ export class userController{
             }
         }
     }
-
+    
     @ApiResponse({status:200, description:"usuário deletado com sucesso"})
     @ApiResponse({status:404, description:"Usuário não encontrado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})

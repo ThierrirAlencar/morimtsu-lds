@@ -56,7 +56,7 @@ export class queryGetManyFrequencyDTO{
         description:"Data que se deseja conferir",
         nullable:true,
     })
-    date?:Date
+    date?:string
 
     @ApiProperty({
         name:"coachId",

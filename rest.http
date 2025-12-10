@@ -1,4 +1,5 @@
-@baseUrl = http://127.0.0.1:5676
+@baseUrl = https://morimtsu-lds.onrender.com
+### http://127.0.0.1:5676
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjUyODYxNTUsImV4cCI6MTc2NTg5MDk1NX0.ssoA__XDY5kK3EUrjtUZUz1emPGjqKsKxxM1EeYIUhM
 
 
@@ -209,7 +210,7 @@ Accept: application/json
 #######################################
 ### 3️⃣ LISTAR / FILTRAR FREQUÊNCIAS
 #######################################
-GET {{baseUrl}}/frequency
+GET {{baseUrl}}/frequency/?date=2024-01-15
 Authorization: Bearer {{token}}
 
 

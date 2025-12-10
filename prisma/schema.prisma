@@ -81,6 +81,7 @@ model Class {
   classes UserClasses[]
   students StudentClasses[]
   frequency frequency[]
+  events events[]
 } 
 
 model student {
@@ -157,6 +158,19 @@ model promotion_config{
   ref_rank Rank
 
   needed_frequency Int @default(1)
+}
+
+model events{
+  id String @id @default(cuid())
+
+  title String
+
+  event_date DateTime
+
+  createdAt DateTime @default(now())
+
+  class_id String
+  Class Class @relation(fields: [class_id], references: [id])
 }
 
 //Relational classes (FK Classes to many to many relations)

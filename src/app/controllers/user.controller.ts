@@ -6,7 +6,7 @@ import { AuthRequest } from "src/infra/interfaces/AuthRequest";
 import { baseError, entityAlreadyExistsError, entityDoesNotExists, InvalidPasswordError, triedToUpdateForbidenValue } from "src/infra/utils/errors";
 import { AuthService } from "src/infra/validators/auth.service";
 import z, { any, email } from "zod";
-import { createUserDTO, LoginDTO, updateUserDTO } from "../dto/user";
+import { createUserDTO, LoginDTO, QueryUser, updateUserDTO } from "../dto/user";
 import { ApiHeader, ApiParam, ApiQuery, ApiResponse } from "@nestjs/swagger";
 import {User} from "generated/prisma"
 import { mailService } from "src/core/services/mail.service";
@@ -112,10 +112,16 @@ export class userController{
     @ApiHeader({name:"Authorization", description:"Bearer token de autenticação"})
     @UseGuards(AuthGuard("jwt"))
     @Delete("/")
-    async remove(@Req() req: AuthRequest, @Res() res: Response){
-        const {id} = z.object({
+    async remove(@Req() req: AuthRequest, @Res() res: Response, @Query() query:QueryUser){
+        
+        const {id:auth_id} = z.object({
             id:z.string().uuid()
         }).parse(req.user)
+
+        const {id} = z.object({
+            id:z.string().uuid()
+        }).parse(query)
+
         try{
             const _user = await this.userService.delete(id)
             res.send({

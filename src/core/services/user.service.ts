@@ -125,6 +125,13 @@ export class UserService {
       });
     }
 
+    //user classes
+    await this.__prisma.userClasses.deleteMany({
+      where: {
+        userId:id
+      },
+    });
+
     const _user = await this.__prisma.user.delete({
       where: {
         id,

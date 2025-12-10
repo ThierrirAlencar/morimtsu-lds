@@ -38,3 +38,8 @@ export class QueryAllUsersDTO{
     @ApiProperty({enum:["ADMIN","USER"], required:false, description:"Se fornecido, filtra os usuários por esse papel"})
     role?: Role
 }
+
+export class QueryUser{
+    @ApiProperty({description:"ID do usuário", example:"cmhm17rw60000ck2l639gnmui"})
+    id:string
+}

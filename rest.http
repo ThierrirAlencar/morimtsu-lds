@@ -77,11 +77,11 @@ Content-Type: application/json
 }
 
 ### Create class (with coachId)
-POST https://morimtsu-lds.onrender.com/class
+POST {{baseUrl}}/class
 Content-Type: application/json
 
 {
-  "name": "Turma de Celiane",
+  "name": "Turma de Danisio",
   "description": "Turma de Jiu-Jitsu para crianças",
   "coachId": [],
   "iconURL": "https://example.com/icon.png",
@@ -211,7 +211,7 @@ Accept: application/json
 #######################################
 ### 3️⃣ LISTAR / FILTRAR FREQUÊNCIAS
 #######################################
-GET {{baseUrl}}/frequency/?date=2024-01-15
+GET {{baseUrl}}/frequency
 Authorization: Bearer {{token}}
 
 

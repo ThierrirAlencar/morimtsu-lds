@@ -275,6 +275,6 @@ Authorization: Bearer {{token}}
 
 ### Promover aluno para próximo rank (rank progression automático)
 ### Valida frequência e promove para o próximo rank da sequência
-PATCH {{baseUrl}}/student/promote/rank?studentId=10fc9ba4-4eb0-4703-98d1-5e90eaba39c5
+PATCH {{baseUrl}}/student/promote/rank?studentId=2e1dfb8b-6dc4-4cab-b894-ecff99742742
 Authorization: Bearer {{token}}
 Content-Type: application/json

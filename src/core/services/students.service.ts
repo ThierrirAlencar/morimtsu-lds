@@ -591,12 +591,34 @@ export class studentServices {
 
     const { Presence, Rank: currentRank, Rating } = studentForm;
 
-    // Get next rank in progression
+    // Get available degrees for current rank
+    const currentRankKey = String(currentRank);
+    const currentRankDegrees = Ranking[currentRankKey] || [0];
+    const maxDegreeCurrentRank = Math.max(...currentRankDegrees);
+    const currentDegree = Rating || 0;
+
+    // Check if current degree is at maximum
+    if (currentDegree < maxDegreeCurrentRank) {
+      // Just increment the degree
+      const updatedForm = await this._prisma.studentForm.update({
+        where: {
+          studentId,
+        },
+        data: {
+          Rating: currentDegree + 1,
+          Presence: 0, // Reset frequency counter after progression
+        },
+      });
+
+      return updatedForm;
+    }
+
+    // If degree is at maximum, promote to next rank
     const nextRank = getNextRank(String(currentRank));
 
     if (!nextRank) {
       throw new prohibitedAction(
-        'Este estudante já atingiu o rank máximo ou não pode ser promovido',
+        'Este estudante já atingiu o rank máximo (máximo grau de sua faixa)',
       );
     }
 
@@ -613,16 +635,12 @@ export class studentServices {
       );
     }
 
-    // Validate frequency requirement
+    // Validate frequency requirement for rank promotion
     if (Presence < config.needed_frequency) {
       throw new prohibitedAction(
-        `O estudante não possui a frequência necessária. Frequência atual: ${Presence}, Necessária: ${config.needed_frequency}`,
+        `O estudante não possui a frequência necessária para ser promovido de faixa. Frequência atual: ${Presence}, Necessária: ${config.needed_frequency}`,
       );
     }
-
-    // Get available degrees for the next rank
-    const rankKey = String(nextRank);
-    const rankDegrees = Ranking[rankKey] || [0];
 
     // Update studentForm with next rank, reset degree and presence
     const updatedForm = await this._prisma.studentForm.update({

@@ -255,3 +255,13 @@ export class promoteStudentDTO{
     })
     password:string
 }
+
+export class promoteStudentRankDTO{
+    @ApiProperty({
+        description:" A nova faixa do estudante promovido",
+        enum:Rank,
+        example:"BRANCA",
+        nullable:true
+    })
+    newRank?:Rank
+}

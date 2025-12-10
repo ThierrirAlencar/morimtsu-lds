@@ -179,7 +179,7 @@ Authorization: Bearer {{token}}
 
 ### Promover estudante
 
-PATCH {{baseUrl}}/student/promote?studentId=bea9ab40-ef43-4fb6-9394-e9e846a7ae88
+PATCH {{baseUrl}}/student/promote?studentId=0b997c28-390c-4f18-aea8-aac2b763d170
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -272,5 +272,12 @@ Authorization: Bearer {{token}}
 DELETE {{baseUrl}}/config/rank/CINZA
 Authorization: Bearer {{token}}
 
+### Promover aluno
 
+PATCH {{baseUrl}}/student/promote/rank?studentId=b04162de-b36e-4fbd-b9c6-dc5dedfe6845
+Authorization: Bearer {{token}}
+Content-Type: application/json
 
+{
+  "newRank":"BRANCA"
+}

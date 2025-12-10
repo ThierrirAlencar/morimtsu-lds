@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from 'generated/prisma';
+import { Role } from '@prisma/client';
 
 interface user{id:string, role: Role}
 @Injectable()

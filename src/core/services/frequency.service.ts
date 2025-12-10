@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { error } from "console";
-import { frequency, Prisma, student } from "generated/prisma";
+import { frequency, Prisma, student } from "@prisma/client"
 import { throwError } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityDoesNotExists, valueNotProvided } from "src/infra/utils/errors";

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcryptjs';
 import { log } from 'console';
-import { Prisma, Role } from 'generated/prisma';
+import { Prisma, Role } from '@prisma/client';
 import { PrismaService } from 'src/infra/database/prisma.service';
 import {
   notification,

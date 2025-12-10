@@ -1,5 +1,5 @@
 import { UUID } from "crypto"
-import { Class, Prisma, student } from "generated/prisma"
+import { Class, Prisma, student } from "@prisma/client"
 
 
 export interface classRepository{

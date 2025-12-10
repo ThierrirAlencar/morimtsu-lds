@@ -1,4 +1,5 @@
-import { PrismaClient, Rank } from '../generated/prisma';
+import { PrismaClient, Rank } from "@prisma/client";
+
 
 const prisma = new PrismaClient();
 

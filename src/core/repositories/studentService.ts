@@ -1,5 +1,5 @@
 import { UUID } from "crypto";
-import { Prisma, student } from "generated/prisma";
+import { Prisma, student } from "@prisma/client";
 
 export interface studentService{
     create(data:Prisma.UserCreateInput):Promise<student>

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Prisma, Rank } from "generated/prisma";
+import { Prisma, Rank } from "@prisma/client";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityDoesNotExists } from "src/infra/utils/errors";
 

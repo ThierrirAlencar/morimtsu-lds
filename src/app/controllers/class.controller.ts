@@ -6,7 +6,7 @@ import z from "zod";
 import { createClassDTO, QueryClassParams, updateClassDTO } from "../dto/class";
 import { ApiResponse } from "@nestjs/swagger";
 import { timeStringToDate } from "src/infra/utils/toDateTimeString";
-import { Prisma } from "generated/prisma";
+import { Prisma } from "@prisma/client";
 import { AuthGuard } from "@nestjs/passport";
 import { AuthRequest } from "src/infra/interfaces/AuthRequest";
 

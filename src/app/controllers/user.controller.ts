@@ -110,6 +110,7 @@ export class userController{
     @ApiResponse({status:404, description:"Usuário não encontrado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @ApiHeader({name:"Authorization", description:"Bearer token de autenticação"})
+    @ApiQuery({name:"id", description:"ID do usuário a ser deletado"})
     @UseGuards(AuthGuard("jwt"))
     @Delete("/")
     async remove(@Req() req: AuthRequest, @Res() res: Response, @Query() query:QueryUser){

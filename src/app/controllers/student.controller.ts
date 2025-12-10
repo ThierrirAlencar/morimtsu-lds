@@ -531,28 +531,43 @@ export class StudentController {
     description: 'O estudante ou seu formulário não foram encontrados',
   })
   @Patch('/promote/rank')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiQuery({
+    name: 'studentId',
+    required: true,
+    type: String,
+    example: '550e8400-e29b-41d4-a716-446655440000',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Estudante promovido de rank com sucesso',
+    schema: {
+      example: {
+        studentId: '550e8400-e29b-41d4-a716-446655440000',
+        Rank: 'CINZA_BRANCA',
+        Rating: 0,
+        Presence: 0,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 405,
+    description:
+      'Estudante não atende aos requisitos de frequência ou já atingiu o rank máximo',
+  })
   async promoteRank(
     @Req() req: AuthRequest,
     @Res() res: Response,
     @Query('studentId') studentId: string,
-    @Body() body: promoteStudentRankDTO,
   ) {
-    const { newRank } = z.object({ newRank: z.string() }).parse(body);
-    const {id} = z.object({
-      id:z.string().uuid()
-    }).parse(req.user)
-    
     try {
-      const updatedForm = await this.studentService.promoteStudentRank(
-        studentId,
-        newRank as Rank,
-        id
-      );
+      const updatedForm =
+        await this.studentService.promoteStudentRank(studentId);
 
       res.status(200).send({
         statusCode: 200,
         description: 'Estudante promovido de rank com sucesso',
-        promotion_registry: updatedForm,
+        data: updatedForm,
       });
     } catch (err) {
       if (err instanceof baseError) {

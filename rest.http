@@ -77,11 +77,11 @@ Content-Type: application/json
 }
 
 ### Create class (with coachId)
-POST {{baseUrl}}/class
+POST https://morimtsu-lds.onrender.com/class
 Content-Type: application/json
 
 {
-  "name": "Turma de Danisio",
+  "name": "Turma de Celiane",
   "description": "Turma de Jiu-Jitsu para crianças",
   "coachId": [],
   "iconURL": "https://example.com/icon.png",
@@ -211,7 +211,7 @@ Accept: application/json
 #######################################
 ### 3️⃣ LISTAR / FILTRAR FREQUÊNCIAS
 #######################################
-GET {{baseUrl}}/frequency
+GET {{baseUrl}}/frequency/?date=2024-01-15
 Authorization: Bearer {{token}}
 
 
@@ -273,10 +273,8 @@ Authorization: Bearer {{token}}
 DELETE {{baseUrl}}/config/rank/CINZA
 Authorization: Bearer {{token}}
 
-### Promover aluno
-
-PATCH {{baseUrl}}/student/promote/rank?studentId=b04162de-b36e-4fbd-b9c6-dc5dedfe6845
+### Promover aluno para próximo rank (rank progression automático)
+### Valida frequência e promove para o próximo rank da sequência
+PATCH {{baseUrl}}/student/promote/rank?studentId=10fc9ba4-4eb0-4703-98d1-5e90eaba39c5
 Authorization: Bearer {{token}}
 Content-Type: application/json
-
-

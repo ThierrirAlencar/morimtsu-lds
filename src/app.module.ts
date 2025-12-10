@@ -10,9 +10,10 @@ import { ConfigModule } from './app/modules/config.module';
 import { EventModule } from './app/modules/event.module';
 import { dashboardModule } from './app/modules/dashboard.module';
 import { LoggerMiddleware } from './app/midleware/logger.middleware';
+import { promotionRegistryModule } from './app/modules/promotion_registry.module';
 
 @Module({
-  imports: [UserModule,AuthModule,classModule,studentModule, frequencyModule, ConfigModule, EventModule, dashboardModule],
+  imports: [UserModule,AuthModule,classModule,studentModule, frequencyModule, ConfigModule, EventModule, dashboardModule, promotionRegistryModule],
   controllers: [baseController],
   providers: [PrismaService],
 })

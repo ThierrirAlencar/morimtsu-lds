@@ -278,3 +278,7 @@ Authorization: Bearer {{token}}
 PATCH {{baseUrl}}/student/promote/rank?studentId=2e1dfb8b-6dc4-4cab-b894-ecff99742742
 Authorization: Bearer {{token}}
 Content-Type: application/json
+
+###
+POST {{baseUrl}}/class/cmiza6ib70004g3223iv1ltel/assign-coach/0c84d413-7ec9-4856-85e3-a9c0ada8c24a
+Authorization: Bearer {{token}}

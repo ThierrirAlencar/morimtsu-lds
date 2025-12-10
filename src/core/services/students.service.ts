@@ -6,6 +6,7 @@ import { retry } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityAlreadyExistsError, entityDoesNotExists, notEnoughPermissions, prohibitedAction } from "src/infra/utils/errors";
 import { string } from "zod";
+import { Ranking } from "src/infra/interfaces/ranks";
 
 interface QueryStudentFilters {
     query?: string;
@@ -503,7 +504,7 @@ export class studentServices{
         }
     }
 
-    async promoteStudentRank(studentId:string, newRank:Rank):Promise<Rank>{
+    async promoteStudentRank(studentId:string, newRank:Rank):Promise<StudentForm>{
         const doesTheStudentExists = await this._prisma.student.findUnique({
             where:{
                 id:studentId
@@ -513,11 +514,18 @@ export class studentServices{
         if(!doesTheStudentExists){
             throw new entityDoesNotExists()
         }
-        const {Presence, Rank} = await this._prisma.studentForm.findUnique({
+
+        const studentForm = await this._prisma.studentForm.findUnique({
             where:{
                 studentId
             }
         })
+
+        if(!studentForm){
+            throw new entityDoesNotExists()
+        }
+
+        const { Presence, Rank: currentRank, Rating } = studentForm;
 
         const config = await this._prisma.promotion_config.findFirst({
             where:{
@@ -530,19 +538,42 @@ export class studentServices{
         }
 
         if(Presence < config.needed_frequency){
-            throw new prohibitedAction("O estudante não possui a frequência necessária para ser promovido a esse rank")
+            throw new prohibitedAction("O estudante não possui a frequência necessária para ser promovido a esse rank ou grau")
         }
 
-        const studentForm = await this._prisma.studentForm.update({
-            where:{
-                studentId
-            },
-            data:{
-                Rank:newRank
-            }
-        })
+        // Obter os graus disponíveis para o novo rank
+        const maxDegree = Math.max(...Ranking[newRank] || [0]);
+        const currentDegree = Rating || 0;
 
-        return studentForm.Rank; 
+        let updatedForm: StudentForm;
+
+        // Se o grau atual é menor que o máximo disponível, aumentar grau
+        if (currentDegree < maxDegree) {
+            updatedForm = await this._prisma.studentForm.update({
+                where: {
+                    studentId
+                },
+                data: {
+                    Rank: newRank,
+                    Rating: currentDegree + 1,
+                    Presence: 0 // Zera a presença após progressão
+                }
+            });
+        } else {
+            // Se o grau já está no máximo, evoluir para o próximo rank
+            updatedForm = await this._prisma.studentForm.update({
+                where: {
+                    studentId
+                },
+                data: {
+                    Rank: newRank,
+                    Rating: 0, // Volta a grau 0 no novo rank
+                    Presence: 0 // Zera a presença após progressão
+                }
+            });
+        }
+
+        return updatedForm;
     }
 
 }

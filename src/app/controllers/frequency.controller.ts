@@ -246,12 +246,14 @@ export class frequencyController {
     @Res() res: Response,
     @Req() req: AuthRequest,
   ) {
-    const { classId, coachId, date, studentId } = query;
+    const { classId, coachId, date:str_date, studentId } = query;
     const { id } = z
       .object({
         id: z.string().uuid().optional(),
       })
       .parse(req.user);
+      
+    const date = str_date ? new Date(str_date) : undefined;
 
     try {
       const _service = await this.service.filterFrequencyByQuery({

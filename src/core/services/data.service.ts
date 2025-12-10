@@ -17,7 +17,7 @@ export class DataService{
                 id:admin_id
             }
         });
-
+        
         if(!admin || admin.role !== "ADMIN"){
             throw new prohibitedAction("Not enough permissions");
         }
@@ -30,12 +30,13 @@ export class DataService{
         });
         const totalClasses = await this._prisma.class.count();
         const totalEvents = await this._prisma.events.count();
-
+        
         return{
             totalClasses: totalClasses,
             totalCoaches: totalCoaches,
             totalEvents: totalEvents,
-            totalStudents: totalStudents
+            totalStudents: totalStudents,
+            mainAdmin: admin.name
         }
 
     }

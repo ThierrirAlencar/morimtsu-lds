@@ -81,7 +81,7 @@ POST {{baseUrl}}/class
 Content-Type: application/json
 
 {
-  "name": "Turma de Celiane",
+  "name": "Turma de Danisio",
   "description": "Turma de Jiu-Jitsu para crianças",
   "coachId": [],
   "iconURL": "https://example.com/icon.png",

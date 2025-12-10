@@ -538,22 +538,21 @@ export class StudentController {
     @Body() body: promoteStudentRankDTO,
   ) {
     const { newRank } = z.object({ newRank: z.string() }).parse(body);
-
+    const {id} = z.object({
+      id:z.string().uuid()
+    }).parse(req.user)
+    
     try {
       const updatedForm = await this.studentService.promoteStudentRank(
         studentId,
         newRank as Rank,
+        id
       );
 
       res.status(200).send({
         statusCode: 200,
         description: 'Estudante promovido de rank com sucesso',
-        updatedForm: {
-          rank: updatedForm.Rank,
-          degree: updatedForm.Rating,
-          presence: updatedForm.Presence,
-          message: `Aluno agora está em ${updatedForm.Rank} grau ${updatedForm.Rating}. Presença zerada para novo ciclo.`,
-        },
+        promotion_registry: updatedForm,
       });
     } catch (err) {
       if (err instanceof baseError) {

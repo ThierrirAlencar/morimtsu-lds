@@ -60,6 +60,7 @@ model User {
   users UserClasses[]
   frequency frequency[]
   studentData StudentForm?
+  promotionRegistry promotion_registry[]
 }
 
 model Class {
@@ -110,6 +111,7 @@ model student {
   classes StudentClasses[]
   formData StudentForm?
   frequency frequency[]
+  promotionRegistry promotion_registry[]
 }
 
 model StudentForm{
@@ -160,6 +162,20 @@ model promotion_config{
   needed_frequency Int @default(1)
 }
 
+model promotion_registry{
+  id String @id @default(cuid())
+
+  date DateTime @default(now())
+
+  student_id String
+  Student student @relation(fields: [student_id], references: [id])
+
+  coach_id String
+  coach User @relation(fields: [coach_id], references: [id])
+
+  from_rank Rank
+  to_rank Rank
+}
 model events{
   id String @id @default(cuid())
 

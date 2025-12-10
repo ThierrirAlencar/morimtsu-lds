@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { log } from "console";
 import { hash } from "bcrypt";
-import { Class, Gender, Prisma, Rank, student, StudentClasses, StudentForm } from "@prisma/client";
+import { Class, Gender, Prisma, promotion_registry, Rank, student, StudentClasses, StudentForm } from "@prisma/client";
 import { retry } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityAlreadyExistsError, entityDoesNotExists, notEnoughPermissions, prohibitedAction } from "src/infra/utils/errors";
@@ -504,7 +504,7 @@ export class studentServices{
         }
     }
 
-    async promoteStudentRank(studentId:string, newRank:Rank):Promise<StudentForm>{
+    async promoteStudentRank(studentId:string, newRank:Rank, coach_id:string):Promise<promotion_registry>{
         const doesTheStudentExists = await this._prisma.student.findUnique({
             where:{
                 id:studentId
@@ -545,6 +545,11 @@ export class studentServices{
         const maxDegree = Math.max(...Ranking[newRank] || [0]);
         const currentDegree = Rating || 0;
 
+        const {Rank:Old_rank} = await this._prisma.studentForm.findUnique({
+            where:{
+                studentId
+            }
+        })
         let updatedForm: StudentForm;
 
         // Se o grau atual é menor que o máximo disponível, aumentar grau
@@ -573,7 +578,17 @@ export class studentServices{
             });
         }
 
-        return updatedForm;
+
+        //Atualiza a promoção de rank
+        const updateRank = await this._prisma.promotion_registry.create({
+            data:{
+                from_rank:Old_rank,
+                to_rank:updatedForm.Rank,
+                coach_id,
+                student_id:updatedForm.studentId
+            }
+        })
+        return updateRank;
     }
 
 }

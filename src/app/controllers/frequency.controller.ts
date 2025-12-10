@@ -18,6 +18,7 @@ import {
   createFrequencyDTO,
   queryDeleteFrequencyDTO,
   queryGetManyFrequencyDTO,
+  updateFrequencyDTO,
 } from '../dto/frequency';
 import z from 'zod';
 import { baseError, entityDoesNotExists } from 'src/infra/utils/errors';
@@ -252,7 +253,7 @@ export class frequencyController {
         id: z.string().uuid().optional(),
       })
       .parse(req.user);
-      
+
     const date = str_date ? new Date(str_date) : undefined;
 
     try {
@@ -342,11 +343,18 @@ export class frequencyController {
   @Put('/:id')
   async update(
     @Param('id') id: string,
-    @Body() body: { date: Date },
+    @Body() body:updateFrequencyDTO,
     @Res() res: Response,
   ) {
+
+    const {date:str_date} = z.object({
+      date: z.string(),
+    }).parse(body)
+    const date = new Date(str_date);
+
     try {
-      const updatedFrequency = await this.service.update(id, body.date);
+      
+      const updatedFrequency = await this.service.update(id, date);
 
       res.status(200).send({
         description: 'Frequência atualizada com sucesso',

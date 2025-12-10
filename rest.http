@@ -1,4 +1,5 @@
-@baseUrl = https://morimtsu-lds.onrender.com
+@baseUrl = http://127.0.0.1:5676
+### https://morimtsu-lds.onrender.com
 ### http://127.0.0.1:5676
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZWIyM2I4Yy0zZTI2LTQxNTYtYTU0Yy0yZWEwYmVkNWIwOTciLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NjUyODYxNTUsImV4cCI6MTc2NTg5MDk1NX0.ssoA__XDY5kK3EUrjtUZUz1emPGjqKsKxxM1EeYIUhM
 
@@ -278,6 +279,4 @@ PATCH {{baseUrl}}/student/promote/rank?studentId=b04162de-b36e-4fbd-b9c6-dc5dedf
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
-{
-  "newRank":"BRANCA"
-}
+

@@ -17,7 +17,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Rank } from 'generated/prisma';
 
-@Controller('/config')
+@Controller('config')
 export class ConfigController {
   constructor(private _configService: ConfigService) {}
 

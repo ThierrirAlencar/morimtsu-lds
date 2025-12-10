@@ -227,4 +227,23 @@ export class frequencyService{
 
     return frequencies;
     }
+
+    async update(id:string,date:Date):Promise<frequency>{
+        const doesTheFrequencyExists = await this._prisma.frequency.findUnique({
+            where:{
+                id
+            }
+        })
+
+        if(!doesTheFrequencyExists){
+            throw new entityDoesNotExists()
+        }
+        return await this._prisma.frequency.update({
+            where:{
+                id
+            },
+            data:{
+                Date:date
+            }})
+    }
 }

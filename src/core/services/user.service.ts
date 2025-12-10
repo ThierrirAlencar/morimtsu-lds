@@ -111,6 +111,20 @@ export class UserService {
       throw new entityDoesNotExists();
     }
 
+    const theresForm = await this.__prisma.studentForm.findFirst({
+      where: {
+        userId:id
+      },
+    });
+
+    if (theresForm) {
+      await this.__prisma.studentForm.deleteMany({
+        where: {
+          userId:id
+        },
+      });
+    }
+
     const _user = await this.__prisma.user.delete({
       where: {
         id,

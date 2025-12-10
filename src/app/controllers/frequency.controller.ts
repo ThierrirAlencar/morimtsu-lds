@@ -24,6 +24,7 @@ import z from 'zod';
 import { baseError, entityDoesNotExists } from 'src/infra/utils/errors';
 import { ApiHeader, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { frequencyListResponseJSON } from 'src/infra/utils/jsons/frequency/json';
 
 @Controller('frequency')
 export class frequencyController {
@@ -117,118 +118,7 @@ export class frequencyController {
   @ApiResponse({
     status: 200,
     description: 'Informações retornadas com sucesso',
-    example: JSON.parse(`
-            {
-  "description": "Query feita com sucesso!!",
-  "body": [
-    {
-      "id": "cmhw2hexa0001il64lyr9hpx6",
-      "Date": "2025-11-12T13:59:59.182Z",
-      "coach_id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-      "student_id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-      "class_id": "cmhkniubx0000il9w54y6t8ee",
-      "Student": {
-        "id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-        "name": "LORRANNY",
-        "nickname": "Lorr",
-        "Contact": "00000000",
-        "birthDate": "2025-11-04T13:44:41.400Z",
-        "gender": "male",
-        "email": "lorrannyyasmin6@gmail.com",
-        "CPF": "00000000-00",
-        "parentName": "Marcos",
-        "parentContact": "00000000",
-        "createdAt": "2025-11-04T13:45:50.377Z"
-      },
-      "Class": {
-        "id": "cmhkniubx0000il9w54y6t8ee",
-        "name": "Test Class REST - without coach v1",
-        "description": "Classe criada pelo teste REST",
-        "icon_url": "askkahsjjaksjjskaskaj",
-        "startTime": "1970-01-01T20:00:00.000Z",
-        "endTime": "1970-01-01T21:00:00.000Z",
-        "maxAge": 12,
-        "minAge": 6
-      },
-      "Coach": {
-        "id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-        "name": "Saulo",
-        "email": "admin@gmail.com"
-      }
-    },
-    {
-      "id": "cmhw2fxi30001ilb4st8tf7ck",
-      "Date": "2025-11-12T13:58:49.948Z",
-      "coach_id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-      "student_id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-      "class_id": "cmhkniubx0000il9w54y6t8ee",
-      "Student": {
-        "id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-        "name": "LORRANNY",
-        "nickname": "Lorr",
-        "Contact": "00000000",
-        "birthDate": "2025-11-04T13:44:41.400Z",
-        "gender": "male",
-        "email": "lorrannyyasmin6@gmail.com",
-        "CPF": "00000000-00",
-        "parentName": "Marcos",
-        "parentContact": "00000000",
-        "createdAt": "2025-11-04T13:45:50.377Z"
-      },
-      "Class": {
-        "id": "cmhkniubx0000il9w54y6t8ee",
-        "name": "Test Class REST - without coach v1",
-        "description": "Classe criada pelo teste REST",
-        "icon_url": "askkahsjjaksjjskaskaj",
-        "startTime": "1970-01-01T20:00:00.000Z",
-        "endTime": "1970-01-01T21:00:00.000Z",
-        "maxAge": 12,
-        "minAge": 6
-      },
-      "Coach": {
-        "id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-        "name": "Saulo",
-        "email": "admin@gmail.com"
-      }
-    },
-    {
-      "id": "cmhw2diss0001ilp8bpbscwtu",
-      "Date": "2025-11-12T13:56:57.562Z",
-      "coach_id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-      "student_id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-      "class_id": "cmhkniubx0000il9w54y6t8ee",
-      "Student": {
-        "id": "e95b7c4f-65da-49af-9910-bdb5c7441743",
-        "name": "LORRANNY",
-        "nickname": "Lorr",
-        "Contact": "00000000",
-        "birthDate": "2025-11-04T13:44:41.400Z",
-        "gender": "male",
-        "email": "lorrannyyasmin6@gmail.com",
-        "CPF": "00000000-00",
-        "parentName": "Marcos",
-        "parentContact": "00000000",
-        "createdAt": "2025-11-04T13:45:50.377Z"
-      },
-      "Class": {
-        "id": "cmhkniubx0000il9w54y6t8ee",
-        "name": "Test Class REST - without coach v1",
-        "description": "Classe criada pelo teste REST",
-        "icon_url": "askkahsjjaksjjskaskaj",
-        "startTime": "1970-01-01T20:00:00.000Z",
-        "endTime": "1970-01-01T21:00:00.000Z",
-        "maxAge": 12,
-        "minAge": 6
-      },
-      "Coach": {
-        "id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
-        "name": "Saulo",
-        "email": "admin@gmail.com"
-      }
-    }
-  ]
-}
-        `),
+    example: frequencyListResponseJSON,
   })
   @ApiResponse({
     status: 404,

@@ -5,18 +5,9 @@ import { baseError, entityDoesNotExists } from "src/infra/utils/errors";
 import { ApiParam, ApiQuery, ApiResponse } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import z from "zod";
+import { CreateEventDTO, UpdateEventDTO } from "../dto/event";
 
-interface CreateEventDTO {
-  title: string;
-  event_date: Date;
-  class_id: string;
-}
 
-interface UpdateEventDTO {
-  title?: string;
-  event_date?: Date;
-  class_id?: string;
-}
 
 @Controller("/events")
 export class EventsController {
@@ -41,7 +32,10 @@ export class EventsController {
   @UseGuards(AuthGuard("jwt"))
   @Post("/")
   async create(@Body() body: CreateEventDTO, @Res() res: Response) {
-    const { title, event_date, class_id } = body;
+    
+    const { title, event_date:str_date, class_id } = body;
+
+    const event_date = new Date(str_date)
 
     try {
       const event = await this._eventsService.create({

@@ -2,13 +2,13 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res, UseGuards 
 import { Response } from "express";
 import { EventsService } from "src/core/services/events.service";
 import { baseError, entityDoesNotExists } from "src/infra/utils/errors";
-import { ApiParam, ApiQuery, ApiResponse } from "@nestjs/swagger";
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import z from "zod";
 import { CreateEventDTO, UpdateEventDTO } from "../dto/event";
 
 
-
+@ApiTags("events")
 @Controller("/events")
 export class EventsController {
   constructor(private _eventsService: EventsService) {}

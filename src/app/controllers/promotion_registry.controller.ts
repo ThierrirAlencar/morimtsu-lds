@@ -1,12 +1,12 @@
 import { Controller, Get, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { get } from "http";
 import { PromotionRegistryService } from "src/core/services/promotion_registry.service";
 import { baseError } from "src/infra/utils/errors";
 
-
+@ApiTags("promotion_registry")
 @Controller("promotion_registry")
 export class PromotionRegistryController{
     constructor(

@@ -13,10 +13,10 @@ import { Response } from 'express';
 import { ConfigService } from 'src/core/services/config.service';
 import { baseError, entityDoesNotExists } from 'src/infra/utils/errors';
 import { createConfigDTO, updateConfigDTO } from '../dto/config';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { Rank } from '@prisma/client';
-
+@ApiTags("config")
 @Controller('config')
 export class ConfigController {
   constructor(private _configService: ConfigService) {}

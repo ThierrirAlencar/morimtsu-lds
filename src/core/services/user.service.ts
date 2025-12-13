@@ -118,10 +118,13 @@ export class UserService {
     });
 
     if (theresForm) {
-      await this.__prisma.studentForm.deleteMany({
+      await this.__prisma.studentForm.updateMany({
         where: {
           userId:id
         },
+        data:{
+          userId:undefined
+        }
       });
     }
 

@@ -76,7 +76,7 @@ export class userController{
     @ApiResponse({status:404, description:"Usuário não encontrado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
-    @ApiQuery({name:"id", description:"ID do usuário a ser atualizado"})
+    @ApiQuery({name:"id", description:"ID do usuário a ser atualizado",nullable:true})
     @Put("/")
     async put(@Req() req: AuthRequest,@Body() body:updateUserDTO, @Res() res: Response, @Query() query:QueryUser){
         const {id:uid} = z.object({
@@ -95,7 +95,7 @@ export class userController{
         }).parse(body)
 
         try{
-            const _user = await this.userService.update(id, __body as any)
+            const _user = await this.userService.update(id ? id : uid, __body as any)
             res.send({
                 status:201,
                 description:"User updated with success",

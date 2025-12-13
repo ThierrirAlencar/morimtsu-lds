@@ -1,13 +1,13 @@
 import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiResponse } from "@nestjs/swagger";
+import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { DataService } from "src/core/services/data.service";
 import { AuthRequest } from "src/infra/interfaces/AuthRequest";
 import { baseError } from "src/infra/utils/errors";
 import z from "zod";
 
-
+@ApiTags("info")
 @Controller('dashboard')
 export class dashboardController{
     constructor(

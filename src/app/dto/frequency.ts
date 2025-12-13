@@ -16,7 +16,7 @@ export class createFrequencyDTO{
         description:"A data aonde o aluno esteve presente, por padrão será o horário aonde a frequencia foi registrada",
         nullable:true
     })
-    Date?: String
+    Date?: string
 
     @ApiProperty({
         name:"studentIDs",

@@ -52,7 +52,7 @@ export class frequencyController {
     @Res() res: Response,
     @Body() Body: createFrequencyDTO,
   ) {
-    const { classId: class_id, studentIDs: studentsIDs, Date } = Body;
+    const { classId: class_id, studentIDs: studentsIDs, Date:str_date } = Body;
     const { id: coach_id } = z
       .object({
         id: z.string().uuid(),
@@ -63,6 +63,7 @@ export class frequencyController {
         class_id,
         coach_id,
         studentsIDs,
+        date: str_date? new Date(str_date) : new Date()
       });
 
       res.status(201).send({

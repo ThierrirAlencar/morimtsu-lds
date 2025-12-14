@@ -30,7 +30,7 @@ export class DataService{
         });
         const totalClasses = await this._prisma.class.count();
         const totalEvents = await this._prisma.events.count();
-        
+        console.log(totalEvents)
         return{
             totalClasses: totalClasses,
             totalCoaches: totalCoaches,

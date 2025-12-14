@@ -656,4 +656,44 @@ export class studentServices {
 
     return updatedForm;
   }
+
+  async getStudentsCloseToPromotion():Promise<student[]>{
+    // Fetch all student forms with their student records
+    const forms = await this._prisma.studentForm.findMany({
+      include: { student: true },
+    });
+
+    const studentsClose: student[] = [];
+
+    for (const form of forms) {
+      const currentRankKey = String(form.Rank);
+      const currentRankDegrees = Ranking[currentRankKey] || [0];
+      const maxDegreeCurrentRank = Math.max(...currentRankDegrees);
+      const currentDegree = form.Rating || 0;
+
+      // Only students at max degree are eligible for rank promotion (next rank)
+      if (currentDegree < maxDegreeCurrentRank) continue;
+
+      const nextRank = getNextRank(currentRankKey);
+      if (!nextRank) continue; // no next rank
+
+      const config = await this._prisma.promotion_config.findFirst({
+        where: { ref_rank: nextRank as Rank },
+      });
+      if (!config) continue;
+
+      const needed = config.needed_frequency || 0;
+      const presence = form.Presence || 0;
+
+      const diff = needed - presence; // how many more presences needed
+
+      // Include if within 5 or already meets requirement (diff <= 5)
+      if (diff <= 5) {
+        // push the linked student record
+        if (form.student) studentsClose.push(form.student);
+      }
+    }
+
+    return studentsClose;
+  }
 }

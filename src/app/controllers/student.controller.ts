@@ -91,6 +91,35 @@ export class StudentController {
     }
   }
 
+  @UseGuards(AuthGuard("jwt"))
+  @ApiResponse({status:200, description:"Lista retornada com sucesso", example:JSON.parse(`
+      
+{
+  "description": "Fetched with success",
+  "response": []
+}
+    `)})
+  @Get("/findCloseToPromote")
+  async findCloseToPromoteStudents(@Res() res:Response){
+    try{
+      const response = await this.studentService.getStudentsCloseToPromotion();
+
+      res.status(200).send({
+        description:"Fetched with success",
+        response
+      })
+
+
+    }catch(err){
+      if(err instanceof baseError){
+        res.status(err.http_status).send(err)
+      }
+      else{
+        res.status(500).send(err)
+      }
+    }
+  }
+
   @Delete('/:id')
   @ApiResponse({ status: 200, description: 'Student deleted successfully' })
   @ApiResponse({ status: 404, description: 'Student not found' })

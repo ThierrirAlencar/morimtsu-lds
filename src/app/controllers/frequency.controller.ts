@@ -89,12 +89,12 @@ export class frequencyController {
     description: 'Erro desconhecido reportar a desenvolvedores.',
   })
   @Delete('/')
-  async delete(@Query() query: queryDeleteFrequencyDTO, @Res() res: Response) {
+  async delete(@Body() body: queryDeleteFrequencyDTO, @Res() res: Response) {
     const { ids } = z
       .object({
         ids: z.array(z.string().cuid()),
       })
-      .parse(query);
+      .parse(body);
     
     try {
       const __service = await this.service.delete(ids);

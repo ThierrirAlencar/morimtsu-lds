@@ -84,7 +84,7 @@ export class userController{
         }).parse(req.user)
 
         const {id} = z.object({
-            id:z.string().uuid()
+            id:z.string().uuid().optional()
         }).parse(query)
 
         const __body = z.object({

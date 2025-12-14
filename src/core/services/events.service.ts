@@ -84,6 +84,7 @@ export class EventsService{
 
     async listAll():Promise<events[]>{
         const eventsList = await this._prisma.events.findMany()
+        console.log(eventsList)
         return eventsList
     }
 

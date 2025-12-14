@@ -1,12 +1,11 @@
 import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Response } from "express";
 import { DataService } from "src/core/services/data.service";
 import { AuthRequest } from "src/infra/interfaces/AuthRequest";
 import { baseError } from "src/infra/utils/errors";
 import z from "zod";
-
+import { Response } from "express";
 @ApiTags("info")
 @Controller('dashboard')
 export class dashboardController{
@@ -32,12 +31,14 @@ export class dashboardController{
         
         const {id:admin_id} = z.object({
             id:z.string().uuid()
-        }).parse({
-            admin_id:req.user
-        })
+        }).parse(req.user)
 
         try{
-            return await this._dataService.getAplicationData(admin_id);
+            const a =  await this._dataService.getAplicationData(admin_id);
+            res.status(200).send({
+                description:"Data fetched",
+                response:a
+            })
         }catch(err){
             if(err instanceof baseError){
                 res.status(err.http_status).send(err);

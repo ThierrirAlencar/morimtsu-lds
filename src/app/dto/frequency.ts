@@ -31,9 +31,9 @@ export class createFrequencyDTO{
 export class queryDeleteFrequencyDTO{
     @ApiProperty({
         name:"id",
-        description:"O id do registro de frequencia"
+        description:"Lista de Ids do registro de frequencia"
     })
-    id:string
+    ids:string[]
 }
 
 export class queryGetManyFrequencyDTO{

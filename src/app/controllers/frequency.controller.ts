@@ -90,14 +90,14 @@ export class frequencyController {
   })
   @Delete('/')
   async delete(@Query() query: queryDeleteFrequencyDTO, @Res() res: Response) {
-    const { id } = z
+    const { ids } = z
       .object({
-        id: z.string().uuid(),
+        ids: z.array(z.string().cuid()),
       })
       .parse(query);
     
     try {
-      const __service = await this.service.delete(id);
+      const __service = await this.service.delete(ids);
 
       res.status(200).send({
         description: 'Deletado com sucesso',

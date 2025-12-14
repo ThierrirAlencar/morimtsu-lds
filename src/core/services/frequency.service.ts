@@ -150,41 +150,62 @@ export class frequencyService{
         })
     }
 
-    async delete(id:string):Promise<frequency>{
-        const frequency = await this._prisma.frequency.findUnique({
-            where:{
-                id
-            }
-        })
-
-        if(!frequency){
-            throw new entityDoesNotExists()
+    async delete(ids: string[]): Promise<frequency[]> {
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            throw new entityDoesNotExists();
         }
-        //subtract
-        const {Presence:s_presence, } = await this._prisma.studentForm.findUnique({
-            where:{
-                id:frequency.student_id
-            },
-            select:{
-                Presence:true
-            }
-        })
 
-        const _updatedForm = await this._prisma.studentForm.update({
-            where:{
-                id:frequency.student_id
+        // Find the frequency records to be deleted
+        const frequencies = await this._prisma.frequency.findMany({
+            where: {
+                id: {
+                    in: ids,
+                },
             },
-            data:{
-                Presence:s_presence-1
-            }
-        })
+        });
 
-        
-        return await this._prisma.frequency.delete({
-            where:{
-                id
+        if (!frequencies || frequencies.length === 0) {
+            throw new entityDoesNotExists();
+        }
+
+        // Collect affected student IDs
+        const affectedStudentIds = Array.from(new Set(frequencies.map((f) => f.student_id)));
+
+        // Delete the frequency records in bulk
+        await this._prisma.frequency.deleteMany({
+            where: {
+                id: {
+                    in: ids,
+                },
+            },
+        });
+
+        // Recalculate and update Presence for each affected student
+        const updatePromises = affectedStudentIds.map(async (studentId) => {
+            const totalPresences = await this._prisma.frequency.count({
+                where: { student_id: studentId },
+            });
+
+            // Update studentForm if exists
+            const form = await this._prisma.studentForm.findUnique({
+                where: { studentId },
+                select: { studentId: true },
+            });
+
+            if (form) {
+                return this._prisma.studentForm.update({
+                    where: { studentId },
+                    data: { Presence: totalPresences },
+                });
             }
-        })
+
+            return null;
+        });
+
+        await Promise.all(updatePromises);
+
+        // Return the records that were deleted
+        return frequencies;
     }
 
     async filterFrequencyByQuery(filters:frequencyFilters){

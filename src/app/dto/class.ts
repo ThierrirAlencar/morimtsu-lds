@@ -100,13 +100,6 @@ export class updateClassDTO{
     description?:string
 
     @ApiProperty({
-        description:"Id de um professor. Por padrão o usuário ADMIN será adicionado se este campo estiver em branco",
-        nullable:true
-    })
-    coachId?:string | null
-
-    
-    @ApiProperty({
         description:"URl da imagem de ícone da turma",
         nullable:true
     })
@@ -150,4 +143,13 @@ export class QueryClassParams {
         description: 'Maximum age filter for classes'
     })
     maxAge?: number;
+}
+
+export class AssignCoachToClass{
+    @ApiProperty({
+        description:"Lista de Ids dos professores",
+        isArray:true,
+        nullable:false,
+    })
+    coachIds: string[]
 }

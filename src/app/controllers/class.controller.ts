@@ -90,7 +90,7 @@ export class classController{
             const _class = await this._classService.update({
                 description,icon_url,maxAge,minAge,name,
                 endTime:endTime?timeStringToDate(endTime):undefined,
-                startTime:startTime?timeStringToDate(startTime):undefined
+                startTime:startTime?timeStringToDate(startTime):undefined,
             } as Prisma.ClassUpdateInput, id)
             res.status(201).send({
                 status:201,
@@ -344,10 +344,16 @@ export class classController{
     @ApiResponse({status:404, description:"Turma ou usuário não encontrado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
-    @Post("/:classId/assign-coach/:coachId")
-    async assignCoach(@Param("classId") classId:string, @Param("coachId") coachId:string, @Res() res:Response){
+    @Post("/:classId/assign-coach")
+    async assignCoach(@Param("classId") classId:string, @Body() body, @Res() res:Response){
+        
+        const {coachIds} = z.object({
+            coachIds: z.array(z.string().uuid())
+        }).parse(body)
+
+
         try{
-            const _response = await this._classService.assignCoachsToClass(classId, coachId)
+            const _response = await this._classService.assignCoachsToClass(classId, coachIds)
             res.status(201).send({
                 status: 201,
                 description: "Coach assigned to class successfully",

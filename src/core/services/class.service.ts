@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { log } from "console";
 import { Class, Prisma, student, User } from "@prisma/client";
 import { PrismaService } from "src/infra/database/prisma.service";
-import { entityAlreadyExistsError, entityDoesNotExists } from "src/infra/utils/errors";
+import { entityAlreadyExistsError, entityDoesNotExists, prohibitedAction } from "src/infra/utils/errors";
 import { timeStringToDate } from "src/infra/utils/toDateTimeString";
 import { frequencyService } from "./frequency.service";
 
@@ -293,5 +293,55 @@ export class classService{
             })
         }))
         return _relation
+   }
+
+    async removeCoachsFromClass(classId:string, coachId:string[]){
+        const doesTheClassExists = await this.__prisma.class.findUnique({
+            where:{
+                id:classId
+            }
+        })
+        
+        if(!doesTheClassExists){
+            throw new entityDoesNotExists()
+        }
+
+        // Verify that all coaches exist in this class before deleting
+        const existingCoaches = await this.__prisma.userClasses.findMany({
+            where:{
+                classId,
+                userId: { in: coachId }
+            },
+            include: { user: true }
+        })
+
+        if(existingCoaches.length === 0){
+            throw new entityDoesNotExists()
+        }
+
+        // Check if trying to remove all admins from class
+        const adminCoaches = existingCoaches.filter(uc => uc.user.role === 'ADMIN')
+        const remainingAdmins = await this.__prisma.userClasses.findMany({
+            where:{
+                classId,
+                userId: { notIn: coachId },
+                user: { role: 'ADMIN' }
+            },
+            include: { user: true }
+        })
+
+        if(adminCoaches.length > 0 && remainingAdmins.length === 0){
+            throw new prohibitedAction('Cannot remove all admins from the class')
+        }
+
+        // Delete all coach relationships at once
+        const deletedRelations = await this.__prisma.userClasses.deleteMany({
+            where:{
+                classId,
+                userId: { in: coachId }
+            }
+        })
+
+        return deletedRelations
    }
 }

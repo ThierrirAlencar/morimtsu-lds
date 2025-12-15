@@ -367,4 +367,41 @@ export class classController{
             }
         }
     }
+
+    @ApiResponse({status:201, description:"Coach removido da turma com sucesso",example:JSON.parse(`
+        {
+            "status": 201,
+            "description": "Coach assigned to class successfully",
+            "_response": {
+                "classId": "cmhm17rw60000ck2l639gnmui",
+                "userId": "beb23b8c-3e26-4156-a54c-2ea0bed5b097"
+            }
+        }
+    `)})
+    @ApiResponse({status:404, description:"Turma ou usuário não encontrado"})
+    @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
+    @UseGuards(AuthGuard("jwt"))
+    @Post("/:classId/remove-coach")
+    async removeCoachs(@Param("classId") classId:string, @Body() body, @Res() res:Response){
+        
+        const {coachIds} = z.object({
+            coachIds: z.array(z.string().uuid())
+        }).parse(body)
+
+
+        try{
+            const _response = await this._classService.removeCoachsFromClass(classId, coachIds)
+            res.status(201).send({
+                status: 201,
+                description: "Coach removed from class successfully",
+                _response
+            })
+        }catch(err){
+            if(err instanceof entityDoesNotExists){
+                res.status(err.http_status).send(err)
+            }else{
+                res.status(500).send(err)
+            }
+        }
+    }
 }

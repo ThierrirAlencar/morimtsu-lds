@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { hash } from "bcryptjs";
+import { log } from "console";
 import { retry } from "rxjs";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { EmailType, SendEmail } from "src/infra/lib/nodemailer";
@@ -72,7 +73,6 @@ export class mailService{
                     <body>
                     <div class="container">
                         <div class="header">
-                        <img src="https://github.com/srtaayanamy/Morimitsu/blob/main/src/assets/Logo.png" alt="Logo" width="120" />
                         <h1>Recuperação de Senha</h1>
                         </div>
                         <div class="content">
@@ -83,7 +83,7 @@ export class mailService{
 
                         <p>Se você não solicitou essa alteração, pode ignorar este e-mail. Sua senha permanecerá a mesma.</p>
 
-                        <p>Atenciosamente,<br/>Equipe ImageForge</p>
+                        <p>Atenciosamente,<br/>Equipe Morimitsu</p>
                         </div>
                         <div class="footer">
                             Este é um e-mail automático. Não responda diretamente a esta mensagem.
@@ -191,12 +191,11 @@ export class mailService{
                     <body>
                     <div class="container">
                         <div class="header">
-                        <img src="https://github.com/srtaayanamy/Morimitsu/blob/main/src/assets/Logo.png" alt="Logo" width="120" />
                         <h1>Bem vindo à plataforma Morimitsu!</h1>
                         </div>
                         <div class="content">
                         <p>Olá,<strong>${userName}</strong></p>
-                        <p>Esté email foi cadastrado na plataforma <a href="https://github.com/srtaayanamy/Morimitsu">Morimitsu</a></p>
+                        <p>Esté email foi cadastrado na plataforma <a href="https://morimitsu.vercel.app/">Morimitsu</a></p>
                         <p>Se não foi você quem se cadastrou na nossa aplicaçaõ usando este email, por favor entre em contato e solicite a remoção!</p>
 
                         <p>Atenciosamente,<br/>Equipe Morimitsu</p>
@@ -218,6 +217,7 @@ export class mailService{
             await SendEmail(email)
             return `Welcome email sent to ${userName}`
         }catch(err){
+            log(err)
             throw new FSMTPError()
         }
 

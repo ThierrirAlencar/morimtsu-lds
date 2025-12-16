@@ -31,7 +31,7 @@ export class userController{
     })
     @ApiResponse({status:409, description:"Já existe um usuário com o nome ou email utilizado"})
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
-    @ApiResponse({status:504, description:"Erro no envio do email. Isso nao quer dizer que o usuário não foi criado com sucesso, mas que não foi possível enviar o email de boas vindas, cheque a validade do email."})
+    @ApiResponse({status:504, description:"Erro no envio do email. Isso nao quer dizer que o usuário não foi criado com sucesso, mas que não foi possível enviar o email de boas vindas, cheque a validade do endereço de email cadastrado."})
     @Post("/")
     async post(@Body() body:createUserDTO, @Res() res:Response){
         const {email,name,password,role} = z.object({
@@ -46,7 +46,7 @@ export class userController{
             const _user = await this.userService.create({
                 email,name,password,role
             })
-            const _mail = await this.mailService.sendWelcomeEmail(name,email)
+            const _mail = await this.mailService.sendWelcomeEmail(email,name)
             res.send({
                 status:201, 
                 description:"User created with success",

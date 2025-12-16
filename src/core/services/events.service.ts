@@ -3,6 +3,9 @@ import { events, Prisma, PrismaClient } from "@prisma/client";
 import { PrismaService } from "src/infra/database/prisma.service";
 import { entityDoesNotExists } from "src/infra/utils/errors";
 
+interface completeEvents extends events{
+    classname:string
+}
 @Injectable()
 export class EventsService{
     
@@ -51,7 +54,7 @@ export class EventsService{
         })
     }
 
-    async listByClass(classId:string):Promise<events[]>{
+    async listByClass(classId:string):Promise<completeEvents[]>{
         const doesTheClassExists = await this._prisma.class.findUnique({
             where:{
                 id: classId
@@ -67,10 +70,21 @@ export class EventsService{
                 class_id: classId
             }
         })
-        return eventsList
+        return await Promise.all(eventsList.map(async e=>{
+            const classroom = await this._prisma.class.findUnique({
+                where:{
+                    id:e.class_id
+                }
+            })
+
+            return{
+                ...e,
+                classname:classroom.name
+            }
+        }))
     }
 
-    async listByDateRange(startDate:Date, endDate:Date):Promise<events[]>{
+    async listByDateRange(startDate:Date, endDate:Date):Promise<completeEvents[]>{
         const eventsList = await this._prisma.events.findMany({
             where:{
                 event_date:{
@@ -79,13 +93,35 @@ export class EventsService{
                 }
             }
         })
-        return eventsList
+        return await Promise.all(eventsList.map(async e=>{
+            const classroom = await this._prisma.class.findUnique({
+                where:{
+                    id:e.class_id
+                }
+            })
+
+            return{
+                ...e,
+                classname:classroom.name
+            }
+        }))
     }
 
-    async listAll():Promise<events[]>{
+    async listAll():Promise<completeEvents[]>{
         const eventsList = await this._prisma.events.findMany()
         console.log(eventsList)
-        return eventsList
+        return await Promise.all(eventsList.map(async e=>{
+            const classroom = await this._prisma.class.findUnique({
+                where:{
+                    id:e.class_id
+                }
+            })
+
+            return{
+                ...e,
+                classname:classroom.name
+            }
+        }))
     }
 
     async getById(id:string):Promise<events>{

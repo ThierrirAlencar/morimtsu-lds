@@ -1,4 +1,5 @@
 import { createTransport } from "nodemailer";
+import { ADMIN_EMAIL, ADMIN_PASSWORD } from "./env";
 
 
 /** Interface de email utilizada para enviar emails
@@ -17,8 +18,8 @@ const config = {
     host: "smtp.gmail.com", // Padrão para Gmail, mas pode ser alterado
     port:587, // Conversão para número e padrão 587 (STARTTLS)
     auth: {
-        user: process.env.ADMIN_EMAIL, // Usuário do e-mail
-        pass: process.env.ADMIN_PASSWORD  // Senha ou Senha de App
+        user: ADMIN_EMAIL, // Usuário do e-mail
+        pass: ADMIN_PASSWORD // Senha ou Senha de App
     },
     secure:465 // SSL para porta 465, STARTTLS para outras
 };
@@ -69,7 +70,7 @@ export async function SendEmail(email:EmailType) {
         subject,
         html,
         to,
-        from:process.env.ADMIN_EMAIL
+        from:ADMIN_EMAIL
     })
     return emailSent
 }

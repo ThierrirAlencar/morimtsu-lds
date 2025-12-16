@@ -3,7 +3,7 @@ import { Response } from "express";
 import { classService } from "src/core/services/class.service";
 import { baseError, entityDoesNotExists } from "src/infra/utils/errors";
 import z from "zod";
-import { createClassDTO, QueryClassParams, updateClassDTO } from "../dto/class";
+import { AssignCoachToClass, createClassDTO, QueryClassParams, updateClassDTO } from "../dto/class";
 import { ApiResponse } from "@nestjs/swagger";
 import { timeStringToDate } from "src/infra/utils/toDateTimeString";
 import { Prisma } from "@prisma/client";
@@ -345,7 +345,7 @@ export class classController{
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
     @Post("/:classId/assign-coach")
-    async assignCoach(@Param("classId") classId:string, @Body() body, @Res() res:Response){
+    async assignCoach(@Param("classId") classId:string, @Body() body:AssignCoachToClass, @Res() res:Response){
         
         const {coachIds} = z.object({
             coachIds: z.array(z.string().uuid())
@@ -382,7 +382,7 @@ export class classController{
     @ApiResponse({status:500, description:"Erro desconhecido. Reportar para devs"})
     @UseGuards(AuthGuard("jwt"))
     @Post("/:classId/remove-coach")
-    async removeCoachs(@Param("classId") classId:string, @Body() body, @Res() res:Response){
+    async removeCoachs(@Param("classId") classId:string, @Body() body:AssignCoachToClass, @Res() res:Response){
         
         const {coachIds} = z.object({
             coachIds: z.array(z.string().uuid())

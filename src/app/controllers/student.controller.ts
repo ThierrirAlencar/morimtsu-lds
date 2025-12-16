@@ -589,9 +589,12 @@ export class StudentController {
     @Res() res: Response,
     @Query('studentId') studentId: string,
   ) {
+    const {id} = z.object({
+      id:z.string().uuid()
+    }).parse(req.user)
     try {
       const updatedForm =
-        await this.studentService.promoteStudentRank(studentId);
+        await this.studentService.promoteStudentRank(studentId, id);
 
       res.status(200).send({
         statusCode: 200,

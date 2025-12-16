@@ -566,7 +566,7 @@ export class studentServices {
     };
   }
 
-  async promoteStudentRank(studentId: string): Promise<StudentForm> {
+  async promoteStudentRank(studentId: string,promoterId: string,){
     // Verify student exists
     const doesTheStudentExists = await this._prisma.student.findUnique({
       where: {
@@ -641,7 +641,15 @@ export class studentServices {
         `O estudante não possui a frequência necessária para ser promovido de faixa. Frequência atual: ${Presence}, Necessária: ${config.needed_frequency}`,
       );
     }
-
+    //cria um registro de frequencia
+    const promoteData = await this._prisma.promotion_registry.create({
+      data:{
+        from_rank: currentRank,
+        to_rank:nextRank as Rank,
+        coach_id:promoterId,
+        student_id:studentId
+      }
+    })
     // Update studentForm with next rank, reset degree and presence
     const updatedForm = await this._prisma.studentForm.update({
       where: {
@@ -654,7 +662,7 @@ export class studentServices {
       },
     });
 
-    return updatedForm;
+    return {updatedForm, promoteData};
   }
 
   async getStudentsCloseToPromotion():Promise<student[]>{

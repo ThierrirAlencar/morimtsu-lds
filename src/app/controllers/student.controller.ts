@@ -99,10 +99,10 @@ export class StudentController {
   "response": []
 }
     `)})
-  @Get("/findCloseToPromote")
+  @Get("/find_close_to_promotion")
   async findCloseToPromoteStudents(@Res() res:Response){
     try{
-      const response = await this.studentService.getStudentsCloseToPromotion();
+      const response = await this.studentService.getStudentsReadyForPromotion();
 
       res.status(200).send({
         description:"Fetched with success",
@@ -589,9 +589,12 @@ export class StudentController {
     @Res() res: Response,
     @Query('studentId') studentId: string,
   ) {
+    const {id} = z.object({
+      id:z.string().uuid()
+    }).parse(req.user)
     try {
       const updatedForm =
-        await this.studentService.promoteStudentRank(studentId);
+        await this.studentService.promoteStudentRank(studentId, id);
 
       res.status(200).send({
         statusCode: 200,

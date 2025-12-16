@@ -566,7 +566,7 @@ export class studentServices {
     };
   }
 
-  async promoteStudentRank(studentId: string): Promise<StudentForm> {
+  async promoteStudentRank(studentId: string,promoterId: string,){
     // Verify student exists
     const doesTheStudentExists = await this._prisma.student.findUnique({
       where: {
@@ -641,7 +641,15 @@ export class studentServices {
         `O estudante não possui a frequência necessária para ser promovido de faixa. Frequência atual: ${Presence}, Necessária: ${config.needed_frequency}`,
       );
     }
-
+    //cria um registro de frequencia
+    const promoteData = await this._prisma.promotion_registry.create({
+      data:{
+        from_rank: currentRank,
+        to_rank:nextRank as Rank,
+        coach_id:promoterId,
+        student_id:studentId
+      }
+    })
     // Update studentForm with next rank, reset degree and presence
     const updatedForm = await this._prisma.studentForm.update({
       where: {
@@ -654,46 +662,65 @@ export class studentServices {
       },
     });
 
-    return updatedForm;
+    return {updatedForm, promoteData};
   }
 
-  async getStudentsCloseToPromotion():Promise<student[]>{
-    // Fetch all student forms with their student records
-    const forms = await this._prisma.studentForm.findMany({
-      include: { student: true },
-    });
-
-    const studentsClose: student[] = [];
-
-    for (const form of forms) {
-      const currentRankKey = String(form.Rank);
-      const currentRankDegrees = Ranking[currentRankKey] || [0];
-      const maxDegreeCurrentRank = Math.max(...currentRankDegrees);
-      const currentDegree = form.Rating || 0;
-
-      // Only students at max degree are eligible for rank promotion (next rank)
-      if (currentDegree < maxDegreeCurrentRank) continue;
-
-      const nextRank = getNextRank(currentRankKey);
-      if (!nextRank) continue; // no next rank
-
-      const config = await this._prisma.promotion_config.findFirst({
-        where: { ref_rank: nextRank as Rank },
+    async getStudentsReadyForPromotion(): Promise<student[]> {
+      // 1. Busca todos os formulários com aluno
+      const forms = await this._prisma.studentForm.findMany({
+        include: { student: true },
       });
-      if (!config) continue;
 
-      const needed = config.needed_frequency || 0;
-      const presence = form.Presence || 0;
+      // 2. Busca todas as configurações de promoção
+      const promotionConfigs = await this._prisma.promotion_config.findMany();
 
-      const diff = needed - presence; // how many more presences needed
+      // Map para acesso rápido por rank
+      const promotionConfigMap = new Map(
+        promotionConfigs.map(config => [config.ref_rank, config])
+      );
 
-      // Include if within 5 or already meets requirement (diff <= 5)
-      if (diff <= 5) {
-        // push the linked student record
-        if (form.student) studentsClose.push(form.student);
+      // Evita duplicação de alunos
+      const studentsMap = new Map<string, student>();
+
+      for (const form of forms) {
+        // Segurança
+        if (!form.student) continue;
+        log(`Checando aluno:${form.student.name}_________________________________________`)
+        const currentRank = String(form.Rank);
+
+        // 3. Valida se o rank existe
+        const degrees = Ranking[currentRank];
+        if (!degrees) continue;
+
+        const maxDegree = Math.max(...degrees);
+        const currentDegree = form.Rating ?? 0;
+
+        // 4. Só pode promover se estiver no grau máximo
+        // if (currentDegree < maxDegree) continue;
+
+        // 5. Obtém próximo rank
+        const nextRank = getNextRank(currentRank);
+        if (!nextRank) continue;
+        log(nextRank)
+        // 6. Busca configuração do próximo rank
+        const config = promotionConfigMap.get(nextRank as Rank);
+        if (!config) continue;
+        const needed = config.needed_frequency ?? 0;
+        const presence = form.Presence ?? 0;
+        log("have:"+presence+"; need:"+needed)
+        // 7. Regra principal:
+        // presença deve ser pelo menos 5 a mais que o necessário
+        var excess = presence - needed;
+
+        excess = excess < 0?excess*=-1:excess;
+
+        log("Excesso:"+excess)
+        if (excess <= 5) {
+          studentsMap.set(form.student.id, form.student);
+        }
       }
+
+      return Array.from(studentsMap.values());
     }
 
-    return studentsClose;
-  }
 }

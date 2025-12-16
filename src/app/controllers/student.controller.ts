@@ -99,10 +99,10 @@ export class StudentController {
   "response": []
 }
     `)})
-  @Get("/findCloseToPromote")
+  @Get("/find_close_to_promotion")
   async findCloseToPromoteStudents(@Res() res:Response){
     try{
-      const response = await this.studentService.getStudentsCloseToPromotion();
+      const response = await this.studentService.getStudentsReadyForPromotion();
 
       res.status(200).send({
         description:"Fetched with success",

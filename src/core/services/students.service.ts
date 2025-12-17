@@ -609,8 +609,15 @@ export class studentServices {
           Presence: 0, // Reset frequency counter after progression
         },
       });
-
-      return updatedForm;
+      const promoteData = await this._prisma.promotion_registry.create({
+        data:{
+          from_rank: currentRank,
+          to_rank:currentRank,
+          coach_id:promoterId,
+          student_id:studentId
+        }
+      })
+      return {updatedForm,promoteData};
     }
 
     // If degree is at maximum, promote to next rank

@@ -7,6 +7,19 @@ export class PromotionRegistryService {
     constructor(private _prisma:PrismaService) {}
 
     async getAll(){
-        return this._prisma.promotion_registry.findMany();
+        const registry = await this._prisma.promotion_registry.findMany()
+
+        return await Promise.all(registry.map(async e=>{
+            const student = await this._prisma.student.findUnique({
+                where:{
+                    id:e.student_id
+                }
+            })
+
+            return{
+                ...e,
+                student_name:student.name
+            }
+        }));
     }
 } 

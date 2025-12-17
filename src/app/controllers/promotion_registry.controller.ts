@@ -14,7 +14,21 @@ export class PromotionRegistryController{
     ){
 
     }
-    @ApiResponse({status:200, description:"Retornado com sucesso"})
+    @ApiResponse({status:200, description:"Retornado com sucesso", example:JSON.parse(`
+            {
+  "description": "Sucessfully returned promotion history",
+  "response": [
+    {
+      "id": "cmj0cj3r60001ilroi7wgv8e3",
+      "date": "2025-12-10T18:32:01.214Z",
+      "student_id": "2e1dfb8b-6dc4-4cab-b894-ecff99742742",
+      "coach_id": "beb23b8c-3e26-4156-a54c-2ea0bed5b097",
+      "from_rank": "AMARELA",
+      "to_rank": "AMARELA",
+      "student_name": "julia3"
+    }]
+    }
+        `)})
     @Get("/")
     @UseGuards(AuthGuard("jwt"))
     async getAll(@Res() res:Response){

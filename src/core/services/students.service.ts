@@ -725,6 +725,8 @@ export class studentServices {
         // 5. Obtém próximo rank
         //Só vai buscar o próximo ranking se o grau já estiver no máximo
         var nextRank:string
+        var nextDegree = form.Rating;
+        
         if(form.Rating!=currentRankRecord.length){
           nextRank = currentRank
           nextDegree+=1
@@ -733,7 +735,7 @@ export class studentServices {
           nextRank = getNextRank(currentRank);
         }
 
-        var nextDegree = form.Rating;
+        
         if (!nextRank) continue;
         log(`Ranking Atual:${currentRank};Próximo Ranking:${nextRank}`)
 
@@ -744,13 +746,6 @@ export class studentServices {
         const presence = form.Presence ?? 0;
         log("have:"+presence+"; need:"+needed)
 
-        if(form.Rating!=4){
-          nextRank = currentRank
-          nextDegree+=1
-        }else{
-          nextDegree=0;
-        }
-      
         // 7. Regra principal:
         // presença deve ser pelo menos 5 a mais que o necessário
         var excess = presence<needed? presence - needed: 1;

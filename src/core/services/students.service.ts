@@ -20,7 +20,14 @@ import {
 } from 'src/infra/utils/errors';
 import { string } from 'zod';
 import { Ranking, getNextRank } from 'src/infra/interfaces/ranks';
-
+interface specialStudent extends student{
+    nextRank: String,
+    nextRating: number,
+    form:StudentForm,
+    needed:number,
+    excess:number,
+    presence:number
+}
 interface QueryStudentFilters {
   query?: string;
   maxAge?: number;
@@ -600,6 +607,15 @@ export class studentServices {
     // Check if current degree is at maximum
     if (currentDegree < maxDegreeCurrentRank) {
       // Just increment the degree
+      // Get promotion config for next rank
+      const config = await this._prisma.promotion_config.findFirst({
+        where: {
+          ref_rank: currentRank,
+        },
+      });
+      if(studentForm.Presence < config.needed_frequency){
+          throw new prohibitedAction("Não possui presença o suficiente para promover o grau; Nescessário"+config.needed_frequency+" atual:"+studentForm.Presence)
+      }
       const updatedForm = await this._prisma.studentForm.update({
         where: {
           studentId,
@@ -672,7 +688,7 @@ export class studentServices {
     return {updatedForm, promoteData};
   }
 
-    async getStudentsReadyForPromotion(): Promise<student[]> {
+  async getStudentsReadyForPromotion(){
       // 1. Busca todos os formulários com aluno
       const forms = await this._prisma.studentForm.findMany({
         include: { student: true },
@@ -687,47 +703,70 @@ export class studentServices {
       );
 
       // Evita duplicação de alunos
-      const studentsMap = new Map<string, student>();
+
+      const studentsMap = new Map<string, specialStudent>();
 
       for (const form of forms) {
         // Segurança
         if (!form.student) continue;
         log(`Checando aluno:${form.student.name}_________________________________________`)
         const currentRank = String(form.Rank);
-
+        const currentRankRecord = Ranking[currentRank]
+        
         // 3. Valida se o rank existe
         const degrees = Ranking[currentRank];
         if (!degrees) continue;
-
         const maxDegree = Math.max(...degrees);
         const currentDegree = form.Rating ?? 0;
-
+        log(currentRankRecord)
         // 4. Só pode promover se estiver no grau máximo
         // if (currentDegree < maxDegree) continue;
 
         // 5. Obtém próximo rank
-        const nextRank = getNextRank(currentRank);
+        //Só vai buscar o próximo ranking se o grau já estiver no máximo
+        var nextRank:string
+        if(form.Rating!=currentRankRecord.length){
+          nextRank = currentRank
+          nextDegree+=1
+        }else{
+          nextDegree = 0;
+          nextRank = getNextRank(currentRank);
+        }
+
+        var nextDegree = form.Rating;
         if (!nextRank) continue;
-        log(nextRank)
+        log(`Ranking Atual:${currentRank};Próximo Ranking:${nextRank}`)
+
         // 6. Busca configuração do próximo rank
         const config = promotionConfigMap.get(nextRank as Rank);
         if (!config) continue;
         const needed = config.needed_frequency ?? 0;
         const presence = form.Presence ?? 0;
         log("have:"+presence+"; need:"+needed)
+
+        if(form.Rating!=4){
+          nextRank = currentRank
+          nextDegree+=1
+        }else{
+          nextDegree=0;
+        }
+      
         // 7. Regra principal:
         // presença deve ser pelo menos 5 a mais que o necessário
-        var excess = presence - needed;
+        var excess = presence<needed? presence - needed: 1;
 
         excess = excess < 0?excess*=-1:excess;
 
         log("Excesso:"+excess)
         if (excess <= 5) {
-          studentsMap.set(form.student.id, form.student);
+          studentsMap.set(form.student.id, {
+            ...form.student,
+            excess,presence,needed,nextRank,form,nextRating:nextDegree
+          });
         }
       }
-
-      return Array.from(studentsMap.values());
-    }
+      const students = Array.from(studentsMap.values())
+      return students ;
+  }
 
 }

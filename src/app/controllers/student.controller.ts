@@ -96,7 +96,52 @@ export class StudentController {
       
 {
   "description": "Fetched with success",
-  "response": []
+  "response": [
+    {
+      "id": "b04162de-b36e-4fbd-b9c6-dc5dedfe6845",
+      "name": "ANNA JULIA DE SOUSA FELIX",
+      "nickname": "toto",
+      "Contact": "(88) 99365-4722",
+      "birthDate": "2023-09-02T00:00:00.000Z",
+      "gender": "female",
+      "email": "annalrlrko@gmail.com",
+      "CPF": "095.635.023-55",
+      "parentName": "mae",
+      "parentContact": "(88) 99356-7402",
+      "createdAt": "2025-12-10T13:13:30.775Z",
+      "excess": 1,
+      "presence": 73,
+      "needed": 10,
+      "nextRank": "BRANCA",
+      "form": {
+        "id": "cmj015i200004fw1q99rzz8ca",
+        "Rating": 4,
+        "Presence": 73,
+        "Comments": "",
+        "Rank": "BRANCA",
+        "IFCE_student_registration": "",
+        "Health_issues": null,
+        "Medication_usage": null,
+        "Allergies": null,
+        "studentId": "b04162de-b36e-4fbd-b9c6-dc5dedfe6845",
+        "userId": null,
+        "student": {
+          "id": "b04162de-b36e-4fbd-b9c6-dc5dedfe6845",
+          "name": "ANNA JULIA DE SOUSA FELIX",
+          "nickname": "toto",
+          "Contact": "(88) 99365-4722",
+          "birthDate": "2023-09-02T00:00:00.000Z",
+          "gender": "female",
+          "email": "annalrlrko@gmail.com",
+          "CPF": "095.635.023-55",
+          "parentName": "mae",
+          "parentContact": "(88) 99356-7402",
+          "createdAt": "2025-12-10T13:13:30.775Z"
+        }
+      },
+      "nextRating": 0
+    }
+  ]
 }
     `)})
   @Get("/find_close_to_promotion")
